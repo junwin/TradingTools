@@ -30,7 +30,7 @@ namespace KaiTrade.Interfaces
         /// setup the trade summary from an Order
         /// </summary>
         /// <param name="?"></param>
-        void FromOrder(KaiTrade.Interfaces.Order order);
+        void FromOrder(KaiTrade.Interfaces.IOrder order);
 
         /// <summary>
         /// KaiTrade order Identity

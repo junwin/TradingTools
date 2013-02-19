@@ -78,7 +78,7 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Get/Set a list of account allocations used by this
         /// </summary>
-        List<KaiTrade.Interfaces.AccountAllocation> Items
+        List<KaiTrade.Interfaces.IAccountAllocation> Items
         { get; set;}
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace KaiTrade.Interfaces
         /// </summary>
         /// <param name="myAccountCode"></param>
         /// <returns></returns>
-        KaiTrade.Interfaces.AccountAllocation CreateAccountAllocation(string myAccountCode);
+        KaiTrade.Interfaces.IAccountAllocation CreateAccountAllocation(string myAccountCode);
 
         /// <summary>
         /// Create an empty account allocation and insert it in the allocations after the index specified
@@ -99,34 +99,18 @@ namespace KaiTrade.Interfaces
         /// <param name="myAccountCode"></param>
         /// <param name="myPos">0 based index where the account alloc will be inserted</param>
         /// <returns></returns>
-        KaiTrade.Interfaces.AccountAllocation InsertCreateAccountAllocation(string myAccountCode, int myPos);
+        KaiTrade.Interfaces.IAccountAllocation InsertCreateAccountAllocation(string myAccountCode, int myPos);
 
-        /// <summary>
-        /// set up from an XML databinding
-        /// </summary>
-        /// <param name="myAllocation"></param>
-        void FromXMLDB(KAI.kaitns.Allocation myAllocation);
+        
 
-        /// <summary>
-        /// set up from an XML databinding - opyionally leaving the ID
-        ///
-        /// </summary>
-        /// <param name="myAllocation"></param>
-        /// <param name="replaceID">if true  replace the ID</param>
-        void FromXMLDB(KAI.kaitns.Allocation myAllocation, bool replaceID);
-
-        /// <summary>
-        /// Return an XMLDB representation
-        /// </summary>
-        /// <returns></returns>
-        KAI.kaitns.Allocation ToXMLDB();
+        
 
         /// <summary>
         /// Get the account allocation for the ID passed or return null
         /// </summary>
         /// <param name="myID"></param>
         /// <returns></returns>
-        KaiTrade.Interfaces.AccountAllocation GetAccountAllocation(string myID);
+        KaiTrade.Interfaces.IAccountAllocation GetAccountAllocation(string myID);
 
         /// <summary>
         /// Remove the account allocation specified by the ID passed

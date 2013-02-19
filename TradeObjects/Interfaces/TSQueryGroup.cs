@@ -30,11 +30,7 @@ namespace KaiTrade.Interfaces
         /// <param name="myXML"></param>
         void FromXml(string myXML);
 
-        /// <summary>
-        /// Set up group from XMLDB
-        /// </summary>
-        /// <param name="myDB"></param>
-        void FromXmlDB(KAI.kaitns.TSQueryGroup myDB);
+        
 
         /// <summary>
         /// Store a query group as XML
@@ -42,11 +38,7 @@ namespace KaiTrade.Interfaces
         /// <returns></returns>
         string GetXML();
 
-        /// <summary>
-        /// Get XML databinding object
-        /// </summary>
-        /// <returns></returns>
-        KAI.kaitns.TSQueryGroup GetXMLDB();
+       
 
         /// <summary>
         /// Get/Set the group name
@@ -88,24 +80,16 @@ namespace KaiTrade.Interfaces
         /// will be subscribed to
         /// </summary>
         /// <param name="mySubscriber"></param>
-        void addSubscriber(KaiTrade.Interfaces.Subscriber mySubscriber);
+        void addSubscriber(KaiTrade.Interfaces.ISubscriber mySubscriber);
 
         /// <summary>
         /// Unsubscribe to the  to the query group - any sets that have a publisher interface
         /// will be unsubscribed
         /// </summary>
         /// <param name="mySubscriber"></param>
-        void UnSubscribe(KaiTrade.Interfaces.Subscriber mySubscriber);
+        void UnSubscribe(KaiTrade.Interfaces.ISubscriber mySubscriber);
 
-        /// <summary>
-        /// Get the data for all sets in the group using the facade passed in
-        /// </summary>
-        void GetData(KaiTrade.Interfaces.Facade myFacade);
-
-        /// <summary>
-        /// Stop any data updates for the sets in use
-        /// </summary>
-        void StopData(KaiTrade.Interfaces.Facade myFacade);
+        
 
         /// <summary>
         /// get/set list of TS Sets

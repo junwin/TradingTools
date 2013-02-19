@@ -123,13 +123,13 @@ namespace KaiTrade.Interfaces
         /// Apply the update to the corresponding prices
         /// </summary>
         /// <param name="update"></param>
-        void ApplyUpdate(KaiTrade.Interfaces.PXUpdate update);
+        void ApplyUpdate(KaiTrade.Interfaces.IPXUpdate update);
 
         /// <summary>
         /// Get the price values as an updates
         /// </summary>
         /// <returns></returns>
-        KaiTrade.Interfaces.PXUpdate  AsUpdate();
+        KaiTrade.Interfaces.IPXUpdate  AsUpdate();
 
         /// <summary>
         /// API Time of last update(from driver)

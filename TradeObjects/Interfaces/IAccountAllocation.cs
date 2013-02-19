@@ -34,7 +34,7 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Get/Set the parent allocation
         /// </summary>
-        KaiTrade.Interfaces.Allocation Parent
+        KaiTrade.Interfaces.IAllocation Parent
         { get; set;}
 
         /// <summary>
@@ -93,22 +93,8 @@ namespace KaiTrade.Interfaces
         decimal LeavesQty
         { get; }
 
-        /// <summary>
-        /// Get/Set the group of orders associated with this accont allocation
-        /// </summary>
-        KaiTrade.Interfaces.OrderGroup OrderGroup
-        { get; set; }
+        
 
-        /// <summary>
-        /// set up from an XML databinding
-        /// </summary>
-        /// <param name="myAllocation"></param>
-        void FromXMLDB(KAI.kaitns.AccountAllocation myAllocation);
-
-        /// <summary>
-        /// Return an XMLDB representation
-        /// </summary>
-        /// <returns></returns>
-        KAI.kaitns.AccountAllocation ToXMLDB();
+        
     }
 }

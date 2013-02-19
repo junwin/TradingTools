@@ -121,7 +121,7 @@ namespace KaiTrade.Interfaces
         /// Create an empty expression
         /// </summary>
         /// <returns></returns>
-        KaiTrade.Interfaces.TSExpression CreateExpression();
+        KaiTrade.Interfaces.ITSExpression CreateExpression();
 
         /// <summary>
         /// Called on Set updates
@@ -166,7 +166,7 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Publisher used to publising trigger results e.g. a CQG Condition
         /// </summary>
-        KaiTrade.Interfaces.Publisher TriggerPublisher
+        KaiTrade.Interfaces.IPublisher TriggerPublisher
         { get; set; }
 
         /// <summary>
@@ -208,45 +208,45 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Get/Set the price agregator associated with the set if any
         /// </summary>
-        KaiTrade.Interfaces.PriceAgregator PriceAgregator
-        {get; set;}
+        //KaiTrade.Interfaces.PriceAgregator PriceAgregator
+        //{get; set;}
 
         /// <summary>
         /// Data items/bars
         /// </summary>
-        List<KaiTrade.Interfaces.TSItem> Items
+        List<KaiTrade.Interfaces.ITSItem> Items
         { get; }
 
         /// <summary>
         /// get the current item being updated - the current bar
         /// </summary>
-        KaiTrade.Interfaces.TSItem CurrentItem
+        KaiTrade.Interfaces.ITSItem CurrentItem
         { get;}
         /// <summary>
         /// get the last complete bar - the one before the currenty updating top bar
         /// </summary>
-        KaiTrade.Interfaces.TSItem LastCompleteItem
+        KaiTrade.Interfaces.ITSItem LastCompleteItem
         { get;}
 
         /// <summary>
         /// Add a individual bar to the set
         /// </summary>
         /// <param name="myTSItem"></param>
-        void AddItem(KaiTrade.Interfaces.TSItem myTSItem);
+        void AddItem(KaiTrade.Interfaces.ITSItem myTSItem);
 
         /// <summary>
         /// Replace a bar in the set of bars
         /// </summary>
         /// <param name="myTSItem"></param>
         /// <param name="myIndex"></param>
-        void ReplaceItem(KaiTrade.Interfaces.TSItem myTSItem, int myIndex);
+        void ReplaceItem(KaiTrade.Interfaces.ITSItem myTSItem, int myIndex);
 
         /// <summary>
         /// get a bar item
         /// </summary>
         /// <param name="myIndex"></param>
         /// <returns></returns>
-        KaiTrade.Interfaces.TSItem GetItem( int myIndex);
+        KaiTrade.Interfaces.ITSItem GetItem( int myIndex);
 
         /// <summary>
         /// Get/Set a condition/trigger name
@@ -268,7 +268,7 @@ namespace KaiTrade.Interfaces
         /// Additional parameters used with the TSSet, for example for 
         /// a trade system
         /// </summary>
-        List<KaiTrade.Interfaces.K2Parameter> Parameters
+        List<KaiTrade.Interfaces.IParameter> Parameters
         { get; set; }
 
         /// <summary>
@@ -334,12 +334,12 @@ namespace KaiTrade.Interfaces
         /// the set may add bars and call other routines
         /// </summary>
         /// <param name="update"></param>
-        void ApplyPriceUpdate(KaiTrade.Interfaces.PXUpdate update);
+        void ApplyPriceUpdate(KaiTrade.Interfaces.IPXUpdate update);
 
         /// <summary>
         /// Get the last update the set had
         /// </summary>
-        KaiTrade.Interfaces.PXUpdate LastUpdate
+        KaiTrade.Interfaces.IPXUpdate LastUpdate
         { get; }
 
         /// <summary>
@@ -503,19 +503,9 @@ namespace KaiTrade.Interfaces
         /// Get a new empty time series item
         /// </summary>
         /// <returns></returns>
-        KaiTrade.Interfaces.TSItem GetNewItem();
+        KaiTrade.Interfaces.ITSItem GetNewItem();
 
-        /// <summary>
-        /// Render all data as xml
-        /// </summary>
-        /// <returns></returns>
-        KAI.kaitns.TSDataSet ToDataBinding();
-
-        /// <summary>
-        /// read all data from xml
-        /// </summary>
-        /// <param name="myDB"></param>
-        void From(KAI.kaitns.TSDataSet myDB);
+       
 
         /// <summary>
         /// Return a string of Tab separated data good for Excel
@@ -526,20 +516,20 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Get/Set the list of expressions
         /// </summary>
-        List<KaiTrade.Interfaces.TSExpression> Expressions
+        List<KaiTrade.Interfaces.ITSExpression> Expressions
         { get; set;}
 
         /// <summary>
         /// get/set the list of pattern matchers
         /// </summary>
-        List<KaiTrade.Interfaces.PatternMatcher> PatternMatchers
-        { get; set;}
+        //List<KaiTrade.Interfaces.PatternMatcher> PatternMatchers
+        //{ get; set;}
 
         /// <summary>
         /// Add a pattern matcher to the list of matcher in the set
         /// </summary>
         /// <param name="myMatcher"></param>
-        void AddPatternMatcher(KaiTrade.Interfaces.PatternMatcher myMatcher);
+        //void AddPatternMatcher(KaiTrade.Interfaces.PatternMatcher myMatcher);
 
         /// <summary>
         /// Switch the set into test mode - the set will replay all the

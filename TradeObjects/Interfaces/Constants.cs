@@ -75,18 +75,18 @@ namespace KaiTrade.Interfaces
 
     public struct FIXOrderType
     {
-        public const char LIMIT = QuickFix.OrdType.LIMIT;
-        public const char MARKET = QuickFix.OrdType.MARKET;
-        public const char STOP = QuickFix.OrdType.STOP;
-        public const char STOPLIMIT = QuickFix.OrdType.STOP_LIMIT;
+        public const char LIMIT = '2';
+        public const char MARKET = '1';
+        public const char STOP = '3';
+        public const char STOPLIMIT = '4';
         public const char KSTOP = 'z';
         public const char KTRAILINGSTOP = 's';
         public const char KTARGET = 'y';
         public const char KMULTITARGET = 't';
         public const char KRETRACEMENT = 's';
         public const char KHELD = 'x';
-        public const char MOC = QuickFix.OrdType.MARKET_ON_CLOSE;
-        public const char LOC = QuickFix.OrdType.LIMIT_ON_CLOSE;
+        public const char MOC = '5';
+        public const char LOC = 'B';
         public const char KOCO = 'w';
         public const char TRIGGER ='v';
         public const char KICEBERG = 'u';
@@ -95,18 +95,7 @@ namespace KaiTrade.Interfaces
         public const char KPROFIT = 'p';
     }
 
-    public struct FIXOrderStatus
-    {
-        public const char CANCELED = QuickFix.OrdStatus.CANCELED;
-        public const char FILLED = QuickFix.OrdStatus.FILLED;
-        public const char PARTIALLY_FILLED = QuickFix.OrdStatus.PARTIALLY_FILLED;
-        public const char NEW = QuickFix.OrdStatus.NEW;
-        public const char REPLACED = QuickFix.OrdStatus.REPLACED;
-        public const char REJECTED = QuickFix.OrdStatus.REJECTED;
-        public const char PENDING_NEW = QuickFix.OrdStatus.PENDING_NEW;
-        public const char PENDING_CANCEL = QuickFix.OrdStatus.PENDING_CANCEL;
-        public const char PENDING_CANCEL_REPLACE = QuickFix.OrdStatus.PENDING_CANCEL_REPLACE;
-    }
+   
 
      public struct OrderStatus
     {

@@ -37,7 +37,7 @@ namespace KaiTrade.Interfaces
     /// </summary>
      public enum PXUpdateType { bidask, bid, ask, trade, image, none };
 
-     public delegate void PXUpdated(PXUpdate pxUpdate);
+     public delegate void PXUpdated(IPXUpdate pxUpdate);
      public delegate void PXSourceStateChanged(PXSourceState state);
 
     public class PXFields
@@ -244,13 +244,13 @@ namespace KaiTrade.Interfaces
             set;
         }
 
-        void CalculateDeltas(PXUpdate prevUpdate);
+        void CalculateDeltas(IPXUpdate prevUpdate);
 
         /// <summary>
         /// Sets the current update using an existing update
         /// </summary>
         /// <param name="update"></param>
-        void From(KaiTrade.Interfaces.PXUpdate update);
+        void From(KaiTrade.Interfaces.IPXUpdate update);
 
         void From(string myMnemonic, KaiTrade.Interfaces.L1PX myL1PX);
 

@@ -79,13 +79,9 @@
     <Compile Include="IAllocation.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="IDriver.cs" />
-    <Compile Include="IDriverSession.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="IFill.cs" />
-    <Compile Include="IAlertHandler.cs" />
     <Compile Include="IClearingHouse.cs" />
-    <Compile Include="IDriverData.cs" />
     <Compile Include="IFirm.cs" />
     <Compile Include="IGroup.cs" />
     <Compile Include="IExchange.cs" />
@@ -95,7 +91,6 @@
     <Compile Include="IPosition.cs" />
     <Compile Include="IPriceFormatConverter.cs" />
     <Compile Include="IServer.cs" />
-    <Compile Include="ITradeSystemManager.cs" />
     <Compile Include="IUserTrial.cs" />
     <Compile Include="IDOM.cs" />
     <Compile Include="IDOMData.cs" />
@@ -115,6 +110,8 @@
     <Compile Include="ITradeLimits.cs" />
     <Compile Include="ITSExpression.cs" />
     <Compile Include="ITSItem.cs" />
+    <Compile Include="IPublisher.cs" />
+    <Compile Include="ISubscriber.cs" />
     <Compile Include="TSQueryGroup.cs" />
     <Compile Include="TSSet.cs" />
     <Compile Include="IUser.cs" />

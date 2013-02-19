@@ -37,7 +37,7 @@ namespace KaiTrade.Interfaces
         decimal BasePrice
         { get; set; }
 
-        K2DOMSlot[] K2DOMSlots
+        IDOMSlot[] K2DOMSlots
         { get; set; }
     }
 

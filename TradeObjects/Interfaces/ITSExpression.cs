@@ -58,10 +58,6 @@ namespace KaiTrade.Interfaces
         string BaseExpression
         { get;}
 
-        /// <summary>
-        /// Expression alg or calculation used to evaluate this expression
-        /// </summary>
-        StatExpression StatExpression
-        { get; set; }
+        
     }
 }

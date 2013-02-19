@@ -35,7 +35,7 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Get set the DOM data associated with this object
         /// </summary>
-        K2DOMData DOMData
+        IDOMData DOMData
         { get; set; }
 
         /// <summary>
@@ -45,20 +45,20 @@ namespace KaiTrade.Interfaces
         /// <param name="maxPxMovement">Maximum price movement allowed </param>
         /// <param name="minPxIncrement">minimum price increment - usually a tick</param>
         /// <returns></returns>
-        K2DOMData Create(decimal startPx, decimal maxPxMovement, decimal minPxIncrement);
+        IDOMData Create(decimal startPx, decimal maxPxMovement, decimal minPxIncrement);
 
         /// <summary>
         /// This will update the depth based on the slices passed, will replace the qty
         /// at each slice
         /// </summary>
         /// <param name="updateSlices"></param>
-        void Update(K2DOMSlot[] updateSlices);
+        void Update(IDOMSlot[] updateSlices);
 
         /// <summary>
         /// Update a DOM using a pxUpdate
         /// </summary>
         /// <param name="pxUpdate"></param>
-        void Update(PXUpdate pxUpdate);
+        void Update(IPXUpdate pxUpdate);
 
         /// <summary>
         /// Update a specifc bid offer
