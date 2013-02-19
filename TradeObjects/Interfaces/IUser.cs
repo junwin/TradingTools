@@ -1,16 +1,18 @@
-/***************************************************************************
- *
- *      Copyright (c) 2009,2010 KaiTrade LLC (registered in Delaware)
- *                     All Rights Reserved Worldwide
- *
- * STRICTLY PROPRIETARY and CONFIDENTIAL
- *
- * WARNING:  This file is the confidential property of KaiTrade LLC For
- * use only by those with the express written permission and license from
- * KaiTrade LLC.  Unauthorized reproduction, distribution, use or disclosure
- * of this file or any program (or document) is prohibited.
- *
- ***************************************************************************/
+//-----------------------------------------------------------------------
+// <copyright file="IUser.cs" company="KaiTrade LLC">
+// Copyright (c) 2013, KaiTrade LLC.
+//// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+//// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>// <author>John Unwin</author>
+// <website>https://github.com/junwin/K2RTD.git</website>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +22,7 @@ namespace KaiTrade.Interfaces
     /// <summary>
     /// Interface of an object representing a KaiTrade user
     /// </summary>
-    public interface User
+    public interface IUser
     {
         /// <summary>
         /// DO NOT USE Get the unique identifer for the user allocated by the system

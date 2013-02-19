@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------
-// <copyright file="IClient.cs" company="KaiTrade LLC">
+// <copyright file="ITSExpression.cs" company="KaiTrade LLC">
 // Copyright (c) 2013, KaiTrade LLC.
 //// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,22 +20,48 @@ using System.Text;
 namespace KaiTrade.Interfaces
 {
     /// <summary>
-    /// Provides an interface that is implemented by objects that want to
-    /// receive messaged - this normally used to subscribe to updates from the
-    /// application facade. See also the Subscriber interface used for prices
+    /// Defines the format of the expression - Native
     /// </summary>
-    public interface IClient
+    public enum TSFormat
+    {
+        KTA, DriverSpecific
+    }
+
+    /// <summary>
+    /// Identifies some expression use to get
+    /// time series data from a provider
+    /// </summary>
+    public interface ITSExpression
     {
         /// <summary>
-        /// Handle a status message sent to the client
+        /// Get/Set the format of this expression
         /// </summary>
-        /// <param name="myMessage">KTA Message to process</param>
-        void OnStatusMessage(Message myMessage);
+        TSFormat Format
+        { get; set;}
 
         /// <summary>
-        /// Handle a general message sent to the client
+        /// Some expression to be evaluated by the driver or provider
+        /// of TS data
         /// </summary>
-        /// <param name="myMessage">KTA Message to process</param>
-        void OnMessage(Message myMessage);
+        string Expression
+        { get; set;}
+
+        /// <summary>
+        /// Allias used to identify the result of some expression - e.g. for RTD
+        /// </summary>
+        string Alias
+        { get; set; }
+
+        /// <summary>
+        /// Name of the Base expression/alg/calc to be used
+        /// </summary>
+        string BaseExpression
+        { get;}
+
+        /// <summary>
+        /// Expression alg or calculation used to evaluate this expression
+        /// </summary>
+        StatExpression StatExpression
+        { get; set; }
     }
 }

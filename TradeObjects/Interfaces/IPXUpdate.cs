@@ -1,16 +1,18 @@
-﻿/***************************************************************************
- *
- *      Copyright (c) 2009,2010,2011 KaiTrade LLC (registered in Delaware)
- *                     All Rights Reserved Worldwide
- *
- * STRICTLY PROPRIETARY and CONFIDENTIAL
- *
- * WARNING:  This file is the confidential property of KaiTrade LLC For
- * use only by those with the express written permission and license from
- * KaiTrade LLC.  Unauthorized reproduction, distribution, use or disclosure
- * of this file or any program (or document) is prohibited.
- *
- ***************************************************************************/
+﻿//-----------------------------------------------------------------------
+// <copyright file="IPXUpdate.cs" company="KaiTrade LLC">
+// Copyright (c) 2013, KaiTrade LLC.
+//// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+//// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>// <author>John Unwin</author>
+// <website>https://github.com/junwin/K2RTD.git</website>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +67,7 @@ namespace KaiTrade.Interfaces
     /// and that its possible to get updates containing the same values for some of the fields
     /// where some price source soes not explicitly produce just the changed price fields
     /// </summary>
-    public interface PXUpdate
+    public interface IPXUpdate
     {
         /// <summary>
         /// Provider of the update - normally the driver ID
