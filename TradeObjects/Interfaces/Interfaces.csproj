@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BCE029A7-B8C5-490D-AEBC-E3F94F1BBE96}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Interfaces</RootNamespace>
+    <AssemblyName>KTInterfaces</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>KaiKey.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\build\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\build\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>..\..\build\bin\KTInterfaces.XML</DocumentationFile>
+    <NoWarn>1591,1573,1572</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IAccount.cs" />
+    <Compile Include="IAccountAllocation.cs" />
+    <Compile Include="IAllocation.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="IDriver.cs" />
+    <Compile Include="DriverManager.cs" />
+    <Compile Include="DriverSession.cs" />
+    <Compile Include="Facade.cs" />
+    <Compile Include="Factory.cs" />
+    <Compile Include="Field.cs" />
+    <Compile Include="Fill.cs" />
+    <Compile Include="IAlertHandler.cs" />
+    <Compile Include="IClearingHouse.cs" />
+    <Compile Include="IDriverData.cs" />
+    <Compile Include="IFirm.cs" />
+    <Compile Include="IGroup.cs" />
+    <Compile Include="IExchange.cs" />
+    <Compile Include="IMQExchange.cs" />
+    <Compile Include="IMQRoutingKey.cs" />
+    <Compile Include="IPlugInData.cs" />
+    <Compile Include="IPosition.cs" />
+    <Compile Include="IPriceFormatConverter.cs" />
+    <Compile Include="IServer.cs" />
+    <Compile Include="ITradeSystemManager.cs" />
+    <Compile Include="IUserTrial.cs" />
+    <Compile Include="IDOM.cs" />
+    <Compile Include="IDOMData.cs" />
+    <Compile Include="IDOMSlot.cs" />
+    <Compile Include="OCOManager.cs" />
+    <Compile Include="PatterMatcherFactory.cs" />
+    <Compile Include="PatternMatcher.cs" />
+    <Compile Include="PNLItem.cs" />
+    <Compile Include="PriceAgregator.cs" />
+    <Compile Include="PublisherSurrogate.cs" />
+    <Compile Include="PXUpdate.cs" />
+    <Compile Include="StatExpression.cs" />
+    <Compile Include="StatExpressionFactory.cs" />
+    <Compile Include="IParameter.cs" />
+    <Compile Include="TradeSignal.cs" />
+    <Compile Include="TradeSignalManager.cs" />
+    <Compile Include="TradeSummary.cs" />
+    <Compile Include="L1PX.cs" />
+    <Compile Include="Leg.cs" />
+    <Compile Include="LimitChecker.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="MessageHelper.cs" />
+    <Compile Include="MetaDataManager.cs" />
+    <Compile Include="ORAlgManager.cs" />
+    <Compile Include="ORAlgorithm.cs" />
+    <Compile Include="Order.cs" />
+    <Compile Include="OrderGroup.cs" />
+    <Compile Include="OrderManager.cs" />
+    <Compile Include="PositionPublisher.cs" />
+    <Compile Include="ProductManager.cs" />
+    <Compile Include="ProductPriceAlg.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Publisher.cs" />
+    <Compile Include="PublisherManager.cs" />
+    <Compile Include="RunningSpreadTrade.cs" />
+    <Compile Include="Session.cs" />
+    <Compile Include="SessionManager.cs" />
+    <Compile Include="SpreadManager.cs" />
+    <Compile Include="SpreadTrade.cs" />
+    <Compile Include="Strategy.cs" />
+    <Compile Include="StrategyGroup.cs" />
+    <Compile Include="StrategyManager.cs" />
+    <Compile Include="Subscriber.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="SyntheticPriceCalc.cs" />
+    <Compile Include="TradableProduct.cs" />
+    <Compile Include="Trade.cs" />
+    <Compile Include="TradeLimits.cs" />
+    <Compile Include="TradeSystem.cs" />
+    <Compile Include="Transaction.cs" />
+    <Compile Include="TriggeredOrder.cs" />
+    <Compile Include="TriggeredOrderManager.cs" />
+    <Compile Include="TSExpression.cs" />
+    <Compile Include="TSItem.cs" />
+    <Compile Include="TSQueryGroup.cs" />
+    <Compile Include="TSSet.cs" />
+    <Compile Include="TSSetManager.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="UserManager.cs" />
+    <Compile Include="UserOptionsManager.cs" />
+    <Compile Include="Venue.cs" />
+    <Compile Include="VenueManager.cs" />
+    <Compile Include="IVenueTradeDestination.cs" />
+    <Compile Include="WindowManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="KaiKey.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
