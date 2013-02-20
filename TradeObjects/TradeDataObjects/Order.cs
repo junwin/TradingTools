@@ -173,22 +173,14 @@ namespace K2DataObjects
 
             ExtendedOrdTypeParameters = o.ExtendedOrdTypeParameters;
 
-            if (o.OrderQty != null)
-            {
-                OrderQty = (long)o.OrderQty;
-            }
-            if (o.MaxFloor != null)
-            {
-                MaxFloor = (long)o.MaxFloor;
-            }
-            if (o.Price != null)
-            {
-                Price = o.Price;
-            }
-            if (o.StopPx != null)
-            {
-                StopPx = o.StopPx;
-            }
+            OrderQty = (long)o.OrderQty;
+            
+            MaxFloor = (long)o.MaxFloor;
+            
+            Price = o.Price;
+           
+            StopPx = o.StopPx;
+            
             if (o.TimeInForce != null)
             {
                 TimeInForce = o.TimeInForce.ToString();
@@ -201,26 +193,16 @@ namespace K2DataObjects
             {
                 OrdStatus = o.OrdStatus;
             }
-            if (o.LeavesQty != null)
-            {
-                LeavesQty = o.LeavesQty;
-            }
-            if (o.CumQty != null)
-            {
-                CumQty = o.CumQty;
-            }
-            if (o.LastPx != null)
-            {
-                LastPx = o.LastPx;
-            }
-            if (o.LastQty != null)
-            {
-                LastQty = o.LastQty;
-            }
-            if (o.AvgPx != null)
-            {
-                AvgPx = o.AvgPx;
-            }
+            LeavesQty = o.LeavesQty;
+            
+            CumQty = o.CumQty;
+            
+            LastPx = o.LastPx;
+            
+            LastQty = o.LastQty;
+            
+            AvgPx = o.AvgPx;
+            
 
             Text = o.Text;
             if (o.TransactTime != null)
