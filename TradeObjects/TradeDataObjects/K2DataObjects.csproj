@@ -10,7 +10,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>K2DataObjects</RootNamespace>
     <AssemblyName>K2DataObjects</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -45,10 +44,6 @@
     <AssemblyOriginatorKeyFile>KaiKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KTInterfaces">
-      <HintPath>build\bin\KTInterfaces.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>build\bin\log4net.dll</HintPath>
       <Private>False</Private>
@@ -128,4 +123,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{BCE029A7-B8C5-490D-AEBC-E3F94F1BBE96}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
