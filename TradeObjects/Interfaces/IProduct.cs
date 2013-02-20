@@ -69,6 +69,9 @@ namespace KaiTrade.Interfaces
             set;
         }
 
+        bool Active
+        { get; set; }
+
         /// <summary>
         /// get/set product long name
         /// </summary>

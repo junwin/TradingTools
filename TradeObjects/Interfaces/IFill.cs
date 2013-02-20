@@ -176,6 +176,6 @@ namespace KaiTrade.Interfaces
         /// Set this fill up from a fix execution report
         /// </summary>
         /// <param name="execReport"></param>
-        void SetUpFromFixExecReport(string execReport);
+        //void SetUpFromFixExecReport(string execReport);
     }
 }

@@ -79,7 +79,7 @@
     <Compile Include="IAllocation.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Field.cs" />
+    <Compile Include="IField.cs" />
     <Compile Include="IFill.cs" />
     <Compile Include="IClearingHouse.cs" />
     <Compile Include="IFirm.cs" />
@@ -87,7 +87,6 @@
     <Compile Include="IExchange.cs" />
     <Compile Include="IMQExchange.cs" />
     <Compile Include="IMQRoutingKey.cs" />
-    <Compile Include="IPlugInData.cs" />
     <Compile Include="IPosition.cs" />
     <Compile Include="IPriceFormatConverter.cs" />
     <Compile Include="IServer.cs" />
@@ -113,7 +112,7 @@
     <Compile Include="IPublisher.cs" />
     <Compile Include="ISubscriber.cs" />
     <Compile Include="TSQueryGroup.cs" />
-    <Compile Include="TSSet.cs" />
+    <Compile Include="ITSSet.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="IVenue.cs" />
     <Compile Include="IVenueTradeDestination.cs" />

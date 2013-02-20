@@ -94,7 +94,7 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// get/set list of TS Sets
         /// </summary>
-        List<KaiTrade.Interfaces.TSSet> Items
+        List<KaiTrade.Interfaces.ITSSet> Items
         { get; set;}
     }
 }

@@ -75,7 +75,7 @@ namespace KaiTrade.Interfaces
         /// Get/Set the fields list for the publisher - setting this will replace all
         /// existing fields in the publisher and issue an image
         /// </summary>
-        System.Collections.Generic.List<KaiTrade.Interfaces.Field> FieldList
+        System.Collections.Generic.List<KaiTrade.Interfaces.IField> FieldList
         {
             get;
             set;
@@ -84,13 +84,13 @@ namespace KaiTrade.Interfaces
         /// Called by a client/data feed with a complete set of fields - this sets up an image in the subject
         /// </summary>
         /// <param name="itemList">list of items</param>
-        void OnImage(System.Collections.Generic.List<Field> itemList);
+        void OnImage(System.Collections.Generic.List<IField> itemList);
 
         /// <summary>
         /// Called by a client/data feed when one or more fields value changes
         /// </summary>
         /// <param name="itemList">list of changed items</param>
-        void OnUpdate(System.Collections.Generic.List<Field> itemList);
+        void OnUpdate(System.Collections.Generic.List<IField> itemList);
 
         /// <summary>
         /// update some arbitary field in the publisher - note not all publishers
@@ -111,7 +111,7 @@ namespace KaiTrade.Interfaces
         /// Called when the client/datafeed status changes
         /// </summary>
         /// <param name="itemList"></param>
-        void OnStatusChange(System.Collections.Generic.List<Field> itemList);
+        void OnStatusChange(System.Collections.Generic.List<IField> itemList);
 
         /// <summary>
         /// get/set the publisher base status - will event all subscribers

@@ -23,7 +23,7 @@ namespace KaiTrade.Interfaces
     /// <summary>
     /// Defines some data field
     /// </summary>
-    public interface Field
+    public interface IField
     {
         /// <summary>
         /// Current value of the field

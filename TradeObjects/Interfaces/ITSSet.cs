@@ -1,16 +1,18 @@
-﻿/***************************************************************************
- *
- *      Copyright (c) 2009,2010,2011,2012 KaiTrade LLC (registered in Delaware)
- *                     All Rights Reserved Worldwide
- *
- * STRICTLY PROPRIETARY and CONFIDENTIAL
- *
- * WARNING:  This file is the confidential property of KaiTrade LLC For
- * use only by those with the express written permission and license from
- * KaiTrade LLC.  Unauthorized reproduction, distribution, use or disclosure
- * of this file or any program (or document) is prohibited.
- *
- ***************************************************************************/
+﻿//-----------------------------------------------------------------------
+// <copyright file="ITSSet.cs" company="KaiTrade LLC">
+// Copyright (c) 2013, KaiTrade LLC.
+//// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+//// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>// <author>John Unwin</author>
+// <website>https://github.com/junwin/K2RTD.git</website>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,7 +25,7 @@ namespace KaiTrade.Interfaces
     /// publisher function will support wider distribution of data
     /// </summary>
     /// <param name="mySet"></param>
-    public delegate void TSUpdate(KaiTrade.Interfaces.TSSet mySet);
+    public delegate void TSUpdate(KaiTrade.Interfaces.ITSSet mySet);
 
     /// <summary>
     /// Provides a closely coupled update for clients of the set - note that
@@ -32,7 +34,7 @@ namespace KaiTrade.Interfaces
     /// Called when a bar is added to the set
     /// </summary>
     /// <param name="mySet"></param>
-    public delegate void TSAdded(KaiTrade.Interfaces.TSSet mySet);
+    public delegate void TSAdded(KaiTrade.Interfaces.ITSSet mySet);
 
     /// <summary>
     /// Provides a closely coupled update for clients of the set - note that
@@ -40,7 +42,7 @@ namespace KaiTrade.Interfaces
     /// publisher function will support wider distribution of data
     /// </summary>
     /// <param name="mySet"></param>
-    public delegate void TSStatus(KaiTrade.Interfaces.TSSet mySet);
+    public delegate void TSStatus(KaiTrade.Interfaces.ITSSet mySet);
 
     /// <summary>
     /// Defines periods used when requesting historic bar data (or conditions)
@@ -91,7 +93,7 @@ namespace KaiTrade.Interfaces
     /// Set of time based data, bars, expressions, conditions and custom studies and the properties
     /// needed to make request
     /// </summary>
-    public interface TSSet
+    public interface ITSSet
     {
         /// <summary>
         /// KaiTrade unique ID
@@ -121,7 +123,7 @@ namespace KaiTrade.Interfaces
         /// Create an empty expression
         /// </summary>
         /// <returns></returns>
-        KaiTrade.Interfaces.ITSExpression CreateExpression();
+        //KaiTrade.Interfaces.ITSExpression CreateExpression();
 
         /// <summary>
         /// Called on Set updates
@@ -516,8 +518,8 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Get/Set the list of expressions
         /// </summary>
-        List<KaiTrade.Interfaces.ITSExpression> Expressions
-        { get; set;}
+        //List<KaiTrade.Interfaces.ITSExpression> Expressions
+        //{ get; set;}
 
         /// <summary>
         /// get/set the list of pattern matchers

@@ -244,13 +244,13 @@ namespace KaiTrade.Interfaces
         /// render as XML
         /// </summary>
         /// <returns></returns>
-        string AsXML();
+        //string AsXML();
 
         /// <summary>
         /// set state from xml
         /// </summary>
         /// <param name="myDB"></param>
-        void FromXML(string xml);
+        //void FromXML(string xml);
 
         /// <summary>
         /// Return a string of Tab separated data good for Excel

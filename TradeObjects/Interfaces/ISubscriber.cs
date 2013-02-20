@@ -27,20 +27,20 @@ namespace KaiTrade.Interfaces
         /// </summary>
         /// <param name="mySender">The sending publisher - can be null</param>
         /// <param name="itemList">list of fields and values</param>
-        void OnImage(IPublisher mySender, System.Collections.Generic.List<Field> itemList);
+        void OnImage(IPublisher mySender, System.Collections.Generic.List<IField> itemList);
 
        /// <summary>
         /// Called by a publisher when one or more fields value changes
        /// </summary>
         /// <param name="mySender">The sending publisher - can be null</param>
        /// <param name="itemList">list of changed feilds</param>
-        void OnUpdate(IPublisher mySender, System.Collections.Generic.List<Field> itemList);
+        void OnUpdate(IPublisher mySender, System.Collections.Generic.List<IField> itemList);
 
         /// <summary>
         /// Called when the subject status changes
         /// </summary>
         /// <param name="mySender">The sending publisher - can be null</param>
         /// <param name="itemList">list of status fields</param>
-        void OnStatusChange(IPublisher mySender, System.Collections.Generic.List<Field> itemList);
+        void OnStatusChange(IPublisher mySender, System.Collections.Generic.List<IField> itemList);
     }
 }
