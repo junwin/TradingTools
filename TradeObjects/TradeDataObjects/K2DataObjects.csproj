@@ -101,6 +101,7 @@
     <Compile Include="TSQueryGroupData.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserTrial.cs" />
+    <Compile Include="CurveValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
