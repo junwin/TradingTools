@@ -23,7 +23,10 @@ using Newtonsoft.Json;
 
 namespace K2DataObjects
 {
-    [DataContract]
+    /// <summary>
+    /// Defines a user to the system
+    /// </summary>
+	[DataContract]
     [JsonObject(MemberSerialization.OptIn)]
     [global::System.Data.Linq.Mapping.TableAttribute(Name = "dbo.User")]
     public class User : KaiTrade.Interfaces.IUser
