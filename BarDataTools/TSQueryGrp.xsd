@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns:kaitns="http://www.kaitrade.com/KA" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.kaitrade.com/KA" xmlns="http://www.w3.org/2001/XMLSchema">
+  <element name="TSQueryGroup">
+    <complexType>
+      <sequence>
+        <element maxOccurs="unbounded" name="TSDataSet">
+          <complexType>
+            <sequence minOccurs="0">
+              <element name="TSExpression">
+                <complexType>
+                  <attribute name="Expression" type="string" use="required" />
+                  <attribute name="Alias" type="string" use="required" />
+                </complexType>
+              </element>
+            </sequence>
+            <attribute name="Mnemonic" type="string" use="required" />
+            <attribute name="Identity" type="string" use="required" />
+            <attribute name="Name" type="string" use="required" />
+            <attribute name="TSType" type="unsignedByte" use="required" />
+            <attribute name="Alias" type="string" use="required" />
+            <attribute name="SessionFlags" type="unsignedByte" use="required" />
+            <attribute name="ConditionName" type="string" use="required" />
+            <attribute name="StudyName" type="string" use="required" />
+            <attribute name="Period" type="unsignedByte" use="required" />
+            <attribute name="RangeType" type="unsignedByte" use="required" />
+            <attribute name="StartTime" type="dateTime" use="required" />
+            <attribute name="EndTime" type="dateTime" use="required" />
+            <attribute name="IntStart" type="unsignedByte" use="required" />
+            <attribute name="IntEnd" type="byte" use="required" />
+            <attribute name="IntraDayInterval" type="unsignedByte" use="required" />
+            <attribute name="IncludeEnd" type="boolean" use="required" />
+            <attribute name="UpdatesEnabled" type="boolean" use="required" />
+            <attribute name="Text" type="string" use="required" />
+            <attribute name="SessionFilter" type="unsignedByte" use="required" />
+            <attribute name="TSVolumeType" type="unsignedByte" use="optional" />
+            <attribute name="VolumeLevel" type="unsignedByte" use="optional" />
+            <attribute name="IncludeFlatTicks" type="boolean" use="optional" />
+            <attribute name="StrategyName" type="string" use="optional" />
+            <attribute name="AutoCreateStrategy" type="boolean" use="optional" />
+          </complexType>
+        </element>
+      </sequence>
+      <attribute name="Name" type="string" use="required" />
+      <attribute name="Mnemonic" type="string" use="required" />
+    </complexType>
+  </element>
+</schema>
