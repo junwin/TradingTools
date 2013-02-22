@@ -5,6 +5,10 @@ using System.Text;
 
 namespace BarDataTools
 {
+	/// <summary>
+	/// Used to establish a time range between bars, this can
+	/// be used to see if bars are missing 
+	/// </summary>
     public class BarRange
     {
         string _mnemonic;

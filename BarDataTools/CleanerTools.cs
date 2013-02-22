@@ -10,7 +10,22 @@ namespace BarDataTools
     /// </summary>
     public class CleanerTools
     {
-        
+        /// <summary>
+        /// Finds the missing bars in some set of price bars given the interval of 
+		/// each bar
+        /// </summary>
+        /// <returns>
+        /// The gaps in the data as BarRange objects
+        /// </returns>
+        /// <param name='priceBars'>
+        /// Price bars.
+        /// </param>
+        /// <param name='startTicks'>
+        /// Start ticks.
+        /// </param>
+        /// <param name='intervalTicks'>
+        /// Interval ticks.
+        /// </param>
         public static List<BarRange> FindMissingBars(K2DataObjects.PriceBar[] priceBars, long startTicks, long intervalTicks)
         {
             List<BarRange> missingRanges = new List<BarRange>();

@@ -8,6 +8,16 @@ namespace BarDataTools
 {
     public class BarDataUtils
     {
+		/// <summary>
+		/// Gets the price bar from a ITSItem, TSItem is data returned from a driver
+		/// that connects to the prices source CQG, IB,  etc
+		/// </summary>
+		/// <returns>
+		/// The price bar.
+		/// </returns>
+		/// <param name='tsItem'>
+		/// Ts item.
+		/// </param>
         static public  K2DataObjects.PriceBar GetPriceBar(KaiTrade.Interfaces.ITSItem tsItem)
         {
             K2DataObjects.PriceBar bar = new K2DataObjects.PriceBar();
@@ -28,6 +38,19 @@ namespace BarDataTools
 
         }
 
+		/// <summary>
+		/// Takes a set of real time curve values and collapses them into
+		/// discrete time bars using the last value
+		/// </summary>
+		/// <param name='curveValues'>
+		/// Curve values.
+		/// </param>
+		/// <param name='inValues'>
+		/// In values.
+		/// </param>
+		/// <param name='timeGranularity'>
+		/// Time granularity/interval of bar
+		/// </param>
         static public void TimeBaseCollapse(Dictionary<long, Dictionary<string, K2DataObjects.CurveValue>> curveValues, K2DataObjects.CurveValue[] inValues, long timeGranularity)
         {  
             try
@@ -56,6 +79,16 @@ namespace BarDataTools
             {
             }
         }
+
+		/// <summary>
+		/// Gets the curve values contained in a TSItem
+		/// </summary>
+		/// <returns>
+		/// The curve value.
+		/// </returns>
+		/// <param name='tsItem'>
+		/// Ts item.
+		/// </param>
         static public K2DataObjects.CurveValue[] GetCurveValue(KaiTrade.Interfaces.ITSItem tsItem)
         {
             if (tsItem.CurveValues.Length > 0)
