@@ -12,5 +12,11 @@ namespace DriverBase
         string AppPath { get; set; }
         Factory Factory { get; }
         void RequestProductDetails(KaiTrade.Interfaces.IProduct prod);
+        L1PriceSupport.IL1PX GetL1Prices(KaiTrade.Interfaces.IProduct product);
+        void SetL1Prices(KaiTrade.Interfaces.IProduct product, L1PriceSupport.IL1PX L1Price);
+
+        KaiTrade.Interfaces.IDOM  GetDOM(KaiTrade.Interfaces.IProduct product);
+        void SetDOM(KaiTrade.Interfaces.IProduct product, KaiTrade.Interfaces.IDOM DOM);
+        
     }
 }

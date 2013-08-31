@@ -1123,66 +1123,50 @@ namespace KTASimulator
         /// <param name="msg"></param>
         public void pullOrder(KaiTrade.Interfaces.IMessage msg)
         {
-            QuickFix.Message myQFPullOrder = null;
+            KaiTrade.Interfaces.ICancelOrderRequest cancel = null;
             try
             {
+                cancel = JsonConvert.DeserializeObject<K2DataObjects.CancelOrderRequest>(msg.Data);
+
+                KaiTrade.Interfaces.IFill fill = new K2DataObjects.Fill();
+                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.REPLACED;
+                fill.ExecType = KaiTrade.Interfaces.ExecType.ORDER_STATUS;
+                fill.OrderID = DriverBase.Identities.Instance.getNextOrderID();
+
+
+                if (cancel.ClOrdID.Length == 0)
+                {
+                    sendCancelRej(cancel, KaiTrade.Interfaces.CxlRejReason.UnknownOrder, "a clordid must be specified on a modify order");
+                    Exception myE = new Exception("a clordid must be specified on a modify order");
+                    throw myE;
+                }
+
+                if (cancel.OrigClOrdID.Length == 0)
+                {
+                    sendCancelRej(cancel, KaiTrade.Interfaces.CxlRejReason.UnknownOrder, "a original clordid must be specified on a modify order");
+                    Exception myE = new Exception("an original clordid must be specified on a modify order");
+                    throw myE;
+                }
+
                 // Extract the raw FIX Message from the inbound message
                 string strOrder = msg.Data;
 
-                // Use QuickFix to handle the message
-                myQFPullOrder = new QuickFix.Message(strOrder);
-
-                // Get the FIX id's these are mandatory
-                QuickFix.ClOrdID clOrdID = new QuickFix.ClOrdID();
-                QuickFix.OrigClOrdID origClOrdID = new QuickFix.OrigClOrdID();
-
-                if (myQFPullOrder.isSetField(clOrdID))
+                if (m_Markets.ContainsKey(cancel.Mnemonic))
                 {
-                    myQFPullOrder.getField(clOrdID);
+                    m_Markets[cancel.Mnemonic].pullOrder(msg);
+                    return;
                 }
-                else
-                {
-                    sendCancelRej(myQFPullOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a clordid must be specified on a cancel order");
-                    Exception myE = new Exception("a clordid must be specified on a cancel order");
-                    throw myE;
-                }
-
-                if (myQFPullOrder.isSetField(origClOrdID))
-                {
-                    myQFPullOrder.getField(origClOrdID);
-                }
-                else
-                {
-                    sendCancelRej(myQFPullOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a original clordid must be specified on a cancel order");
-                    Exception myE = new Exception("an original clordid must be specified on a cancel order");
-                    throw myE;
-                }
-
-                // Get the   product/intrument we want to order
-                string myMnemonic = KaiUtil.QFUtils.GetProductMnemonic(m_ID, "", myQFPullOrder);
-
-                // is this new market processing?
-                QuickFix.SecurityID securityID = new QuickFix.SecurityID();
-                if (myQFPullOrder.isSetField(securityID))
-                {
-                    myQFPullOrder.getField(securityID);
-                    // is this new market processing?
-                    if (m_Markets.ContainsKey(securityID.ToString()))
-                    {
-                        m_Markets[securityID.ToString()].pullOrder(msg);
-                        return;
-                    }
-                }
+ 
 
                 // Get the context - we must have this to access the CQG order
                 DriverBase.OrderContext myContext = null;
-                if (m_ClOrdIDOrderMap.ContainsKey(origClOrdID.getValue()))
+                if (m_ClOrdIDOrderMap.ContainsKey(cancel.OrigClOrdID))
                 {
-                    myContext = m_ClOrdIDOrderMap[origClOrdID.getValue()];
+                    myContext = m_ClOrdIDOrderMap[cancel.OrigClOrdID];
                 }
                 if (myContext == null)
                 {
-                    sendCancelRej(myQFPullOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "an order does not exist for the cancel requested");
+                    sendCancelRej(cancel, KaiTrade.Interfaces.CxlRejReason.UnknownOrder, "an order does not exist for the cancel requested");
                     Exception myE = new Exception("an order does not exist for the cancel requested");
                     throw myE;
                 }
@@ -1191,33 +1175,19 @@ namespace KTASimulator
                 double myAveFillPrice = 0.0;
                 double myLastFillQty = 0.0;
 
+                myContext.ClOrdID = cancel.ClOrdID;
+                myContext.OrigClOrdID = cancel.OrigClOrdID;
 
-                // update the ClOrdID's on our order in the context
-                QuickFix.ClOrdID newClordID = new QuickFix.ClOrdID(clOrdID.getValue());
+                // send order in book exec report
+                sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, 0.0, (int)myContext.LeavesQty, myContext.CumQty, 0.0, 0.0, "", "");
 
-                QuickFix.OrigClOrdID newOrigClOrdID = new QuickFix.OrigClOrdID(origClOrdID.getValue());
-                myContext.QFOrder.setField(newClordID);
-                myContext.QFOrder.setField(newOrigClOrdID);
-
-
-
-
-                // send order canceled exec report
-                QuickFix.OrdStatus myOrdStatus = new QuickFix.OrdStatus(QuickFix.OrdStatus.CANCELED);
-                QuickFix.ExecType myExecType = new QuickFix.ExecType(QuickFix.ExecType.ORDER_STATUS);
-
-
-                sendExecReport(myContext.QFOrder, new QuickFix.OrderID(myContext.OrderID), myOrdStatus, myExecType,
-                                 0, myContext.LeavesQty, myContext.CumQty, 0, 0);
-
-
-
+                myContext.OrdStatus = fill.OrderStatus;
 
             }
             catch (Exception myE)
             {
 
-                m_Log.Error("pullOrder", myE);
+                Log.Error("pullOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -1354,145 +1324,101 @@ namespace KTASimulator
         /// <param name="msg"></param>
         public void modifyOrder(KaiTrade.Interfaces.IMessage msg)
         {
-            QuickFix.Message myQFModOrder = null;
+
+
+            KaiTrade.Interfaces.IModifyOrderRequst mod = null;
             try
             {
-                if (m_QueueReplaceRequests)
-                {
-                    base.ApplyReplaceRequest(msg);
-                    return;
-                }
+                mod = JsonConvert.DeserializeObject<K2DataObjects.ModifyOrderRequest>(msg.Data);
                 // Extract the raw FIX Message from the inbound message
                 string strOrder = msg.Data;
 
-                // Use QuickFix to handle the message
-                myQFModOrder = new QuickFix.Message(strOrder);
+                KaiTrade.Interfaces.IFill fill = new K2DataObjects.Fill();
+                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.REPLACED;
+                fill.ExecType = KaiTrade.Interfaces.ExecType.ORDER_STATUS;
+                fill.OrderID = DriverBase.Identities.Instance.getNextOrderID();
 
-                // Get the FIX id's these are mandatory
-                QuickFix.ClOrdID clOrdID = new QuickFix.ClOrdID();
-                QuickFix.OrigClOrdID origClOrdID = new QuickFix.OrigClOrdID();
 
-                if (myQFModOrder.isSetField(clOrdID))
+                if (mod.ClOrdID.Length == 0)
                 {
-                    myQFModOrder.getField(clOrdID);
-                }
-                else
-                {
-                    sendCancelReplaceRej(myQFModOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a clordid must be specified on a modify order");
+
+                    sendCancelReplaceRej(mod, KaiTrade.Interfaces.CxlRejReason.UnknownOrder, "a clordid must be specified on a modify order");
                     Exception myE = new Exception("a clordid must be specified on a modify order");
                     throw myE;
                 }
 
-                if (myQFModOrder.isSetField(origClOrdID))
+                if (mod.OrigClOrdID.Length == 0)
                 {
-                    myQFModOrder.getField(origClOrdID);
-                }
-                else
-                {
-                    sendCancelReplaceRej(myQFModOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a original clordid must be specified on a modify order");
+                    sendCancelReplaceRej(mod, KaiTrade.Interfaces.CxlRejReason.UnknownOrder, "a original clordid must be specified on a modify order");
                     Exception myE = new Exception("an original clordid must be specified on a modify order");
                     throw myE;
                 }
 
-                // Get the   product/intrument we want to order
-                string myMnemonic = KaiUtil.QFUtils.GetProductMnemonic(m_ID, "", myQFModOrder);
-
                 // is this new market processing?
-                QuickFix.SecurityID securityID = new QuickFix.SecurityID();
-                if (myQFModOrder.isSetField(securityID))
-                {
-                    myQFModOrder.getField(securityID);
-                    // is this new market processing?
-                    if (m_Markets.ContainsKey(securityID.ToString()))
+
+                    if (m_Markets.ContainsKey(mod.Mnemonic))
                     {
-                        m_Markets[securityID.ToString()].modifyOrder(msg);
+                        m_Markets[mod.Mnemonic].modifyOrder(msg);
                         return;
                     }
-                }
+ 
+
                 // Get the context - we must have this to access the CQG order
                 DriverBase.OrderContext myContext = null;
-                if (m_ClOrdIDOrderMap.ContainsKey(origClOrdID.getValue()))
+                if (m_ClOrdIDOrderMap.ContainsKey(mod.OrigClOrdID))
                 {
-                    myContext = m_ClOrdIDOrderMap[origClOrdID.getValue()];
+                    myContext = m_ClOrdIDOrderMap[mod.OrigClOrdID];
                 }
                 if (myContext == null)
                 {
-                    sendCancelReplaceRej(myQFModOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "an order does not exist for the modify requested");
+                    sendCancelReplaceRej(mod, KaiTrade.Interfaces.CxlRejReason.UnknownOrder, "an order does not exist for the modify requested");
                     Exception myE = new Exception("an order does not exist for the modify requested");
                     throw myE;
                 }
 
 
                 // modify the limit price
-                QuickFix.Price newPrice = new QuickFix.Price();
-                if (myQFModOrder.isSetField(newPrice))
+                if (mod.Price.HasValue)
                 {
-                    myQFModOrder.getField(newPrice);
-                    myContext.QFOrder.setField(newPrice);
-
-
+                    myContext.Price = (decimal)mod.Price.Value;
                 }
 
                 // modify the stop price
-                QuickFix.StopPx newStopPx = new QuickFix.StopPx();
-                if (myQFModOrder.isSetField(newStopPx))
+                if (mod.StopPrice.HasValue)
                 {
-                    myQFModOrder.getField(newStopPx);
-                    myContext.QFOrder.setField(newStopPx);
-
-
+                    myContext.StopPrice = (decimal)mod.StopPrice.Value;
                 }
 
 
                 // modify the qtyqty
-                QuickFix.OrderQty newOrderQty = new QuickFix.OrderQty();
-                if (myQFModOrder.isSetField(newOrderQty))
+                if (mod.Qty.HasValue)
                 {
-                    myQFModOrder.getField(newOrderQty);
-                    myContext.OrderQty = (int)newOrderQty.getValue();
-                    myContext.QFOrder.setField(newOrderQty);
-                    // force the leaves qty for the purpose of a simple simulation
-                    //myContext.LeavesQty = (int)newOrderQty.getValue();
+                    myContext.OrderQty = (int)mod.Qty.Value;
 
                 }
-
-
 
                 // update the ClOrdID's on our order in the context
-                QuickFix.ClOrdID newClordID = new QuickFix.ClOrdID(clOrdID.getValue());
-
-                QuickFix.OrigClOrdID newOrigClOrdID = new QuickFix.OrigClOrdID(origClOrdID.getValue());
-                myContext.QFOrder.setField(newClordID);
-                myContext.QFOrder.setField(newOrigClOrdID);
+                myContext.ClOrdID = mod.ClOrdID;
+                myContext.OrigClOrdID = mod.OrigClOrdID;
 
                 // record the context against the new clordid
-                RecordOrderContext(clOrdID.getValue(), myContext);
-                //m_OrderContextClOrdID.Add(clOrdID.getValue(), myContext);
+                m_ClOrdIDOrderMap.Add(mod.ClOrdID, myContext);
 
                 // send order in book exec report
-                QuickFix.OrdStatus myOrdStatus = new QuickFix.OrdStatus(QuickFix.OrdStatus.REPLACED);
-                QuickFix.ExecType myExecType = new QuickFix.ExecType(QuickFix.ExecType.ORDER_STATUS);
-
-                sendExecReport(myContext.QFOrder, new QuickFix.OrderID(myContext.OrderID), myOrdStatus, myExecType,
-                                 0, myContext.LeavesQty, myContext.CumQty, 0, 0);
-
-                if (newPrice.getValue() == 100)
-                {
-                    m_FillList.Add(myContext);
-                }
-
+                sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, 0.0, (int)myContext.LeavesQty, myContext.CumQty, 0.0, 0.0, "", "");
 
             }
             catch (Exception myE)
             {
 
-                m_Log.Error("modifyOrder", myE);
+                Log.Error("modifyOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
-                SendAdvisoryMessage("SIM:modifyOrder: problem modify order:" + myE.ToString());
+                SendAdvisoryMessage("TDA:modifyOrder: problem modify order:" + myE.ToString());
 
             }
+     
         }
 
         

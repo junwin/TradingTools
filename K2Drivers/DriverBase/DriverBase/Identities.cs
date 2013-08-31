@@ -61,20 +61,14 @@ namespace DriverBase
             string strRet = m_PrePend + (++m_orderID).ToString("X");
             return strRet;
         }
-        public QuickFix.OrderID genOrderID()
-        {
-            return new QuickFix.OrderID(getNextOrderID());
-        }
+        
 
         public string getNextExecID()
         {
             string strRet = m_PrePend + (++m_orderID).ToString("X");
             return strRet;
         }
-        public QuickFix.ExecID genExecID()
-        {
-            return new QuickFix.ExecID(getNextExecID());
-        }
+        
 
         public string genReqID()
         {

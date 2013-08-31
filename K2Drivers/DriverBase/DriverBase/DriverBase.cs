@@ -1004,8 +1004,8 @@ namespace DriverBase
         {
             try
             {
-                // try to get a PXPublisher
-                //PXPublisher myPXPublisher = m_PublisherRegister[myMnemonic] as PXPublisher;
+                // try to get a L1PriceSupport.PXPublisher
+                //L1PriceSupport.PXPublisher myL1PriceSupport.PXPublisher = m_PublisherRegister[myMnemonic] as L1PriceSupport.PXPublisher;
                 if (!m_PublisherRegister.ContainsKey(update.Mnemonic))
                 {
                     return;
@@ -1024,7 +1024,7 @@ namespace DriverBase
                 if (myPublisher != null)
                 {
 
-                     PXPublisher myPXPublisher = myPublisher as PXPublisher;
+                    L1PriceSupport.PXPublisher myPXPublisher = myPublisher as L1PriceSupport.PXPublisher;
 
                      if (myPXPublisher != null)
                      {
@@ -1085,14 +1085,14 @@ namespace DriverBase
             try
             {
                 // a PXPublisher - we only support these for prices
-                PXPublisher myPXPub = myPublisher as PXPublisher;
+                L1PriceSupport.PXPublisher myPXPub = myPublisher as L1PriceSupport.PXPublisher;
                 if (myPXPub == null)
                 {
                     // we allow publishers (new style) that impliment the PXUpdae to work as well
                     KaiTrade.Interfaces.IPXUpdate upd = myPublisher as KaiTrade.Interfaces.IPXUpdate;
                     if (upd == null)
                     {
-                        throw new Exception("Not a valid publisher type - only PXPublishers allowed here");
+                        throw new Exception("Not a valid publisher type - only L1PriceSupport.PXPublishers allowed here");
                     }
 
                 }
@@ -1150,11 +1150,11 @@ namespace DriverBase
         {
             try
             {
-            // a PXPublisher - we only support these for prices
-            PXPublisher myPXPub = myPublisher as PXPublisher;
+            // a L1PriceSupport.PXPublisher - we only support these for prices
+            L1PriceSupport.PXPublisher myPXPub = myPublisher as L1PriceSupport.PXPublisher;
             if (myPXPub == null)
             {
-                throw new Exception("Not a valid publisher type - only PXPublishers allowed here");
+                throw new Exception("Not a valid publisher type - only L1PriceSupport.PXPublishers allowed here");
             }
 
             if (m_PublisherRegister.ContainsKey(myPublisher.TopicID()))
@@ -1928,7 +1928,7 @@ namespace DriverBase
         /// <param name="myClOrdID"></param>
         /// <param name="myFixMsg"></param>
         /// <param name="myApiOrder"></param>
-        protected OrderContext RecordOrderContext(string myClOrdID, QuickFix.Message myFixMsg, object myApiOrder, string myApiID)
+        protected OrderContext RecordOrderContext(string myClOrdID,  object myApiOrder, string myApiID)
         {
             OrderContext myCntx = null;
             try

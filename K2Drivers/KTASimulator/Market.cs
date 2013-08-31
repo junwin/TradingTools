@@ -137,18 +137,20 @@ namespace KTASimulator
                     }
                 }
 
+                L1PriceSupport.IL1PX L1PX = m_Parent.Facade.GetL1Prices(m_Product);
+
                 if (cntx.OrderType == KaiTrade.Interfaces.OrderType.MARKET)
                 {
                     if (cntx.Side == KaiTrade.Interfaces.Side.BUY)
                     {
 
-                        fillOrder(cntx, m_Product.L1PX.OfferSize.Value, m_Product.L1PX.OfferPrice);
+                        fillOrder(cntx, L1PX.OfferSize.Value, L1PX.OfferPrice);
 
                     }
                     else if (cntx.Side == KaiTrade.Interfaces.Side.SELL)
                     {
 
-                        fillOrder(cntx, m_Product.L1PX.BidSize.Value, m_Product.L1PX.BidPrice.Value);
+                        fillOrder(cntx, L1PX.BidSize.Value, L1PX.BidPrice.Value);
 
                     }
                 }
@@ -156,16 +158,16 @@ namespace KTASimulator
                 {
                     if (cntx.Side == KaiTrade.Interfaces.Side.BUY)
                     {
-                        if (cntx.Price >= m_Product.L1PX.OfferPrice.Value)
+                        if (cntx.Price >= L1PX.OfferPrice.Value)
                         {
-                            fillOrder(cntx, m_Product.L1PX.OfferSize.Value, m_Product.L1PX.OfferPrice);
+                            fillOrder(cntx, L1PX.OfferSize.Value, L1PX.OfferPrice);
                         }
                     }
                     else if (cntx.Side == KaiTrade.Interfaces.Side.SELL)
                     {
-                        if (cntx.Price <= m_Product.L1PX.BidPrice.Value)
+                        if (cntx.Price <= L1PX.BidPrice.Value)
                         {
-                            fillOrder(cntx, m_Product.L1PX.BidSize.Value, m_Product.L1PX.BidPrice);
+                            fillOrder(cntx, L1PX.BidSize.Value, L1PX.BidPrice);
                         }
                     }
                     else
