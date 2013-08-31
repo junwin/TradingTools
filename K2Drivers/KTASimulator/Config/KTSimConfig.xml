@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Created by Liquid XML Data Binding Libraries (www.liquid-technologies.com) for John Unwin-->
+<kaitns:KTSimConfig xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:kaitns="http://www.kaitrade.com/KA" xmlns:spztns="http://www.unwin.com/EAI">
+ 
+  
+  
+  <kaitns:SimulatorProduct LowPrice="98.00" HighPrice="110.50" isAutoFill="false" RunAsMarket="True">
+    <kaitns:InstrDef Sym="F.US.EPM11" Exch="ZZ" MMY="201106" CFI="FXXXXX" TradeVenue="KTSIM" LongName="CME eMini SP500" Mnemonic="F.US.EPM11" Currency="USD"/>
+    <kaitns:CannedData RepeatOnEnd="true" CannedDataFile="F.US.EPM11_data.csv" RunInterval="100" RunRealTime="false" playOnSubscribe="true"/>
+  </kaitns:SimulatorProduct>
+  
+  
+  <kaitns:SimulatorProduct LowPrice="98.00" HighPrice="110.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ES" Exch="ZZ" MMY="201112" CFI="FXXXXX" TradeVenue="KTSIM" LongName="CME eMini SP500" Mnemonic="KTSIM:ZZ:ES:FXXXXX:201112"/>
+	</kaitns:SimulatorProduct>
+  
+  
+  
+  <kaitns:SimulatorProduct LowPrice="98.00" HighPrice="110.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ES" Exch="ZZ" MMY="201109" CFI="FXXXXX" TradeVenue="KTSIM" LongName="CME eMini SP500" Mnemonic="KTSIM:ZZ:ES:FXXXXX:2011909"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="98.00" HighPrice="110.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ES" Exch="ZZ" MMY="201106" CFI="FXXXXX" TradeVenue="KTSIM" LongName="CME eMini SP500" Mnemonic="KTSIM:ZZ:ES:FXXXXX:201106"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="98.00" HighPrice="110.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ES" Exch="ZZ" MMY="201103" CFI="FXXXXX" TradeVenue="KTSIM" LongName="CME eMini SP500" Mnemonic="KTSIM:ZZ:ES:FXXXXX:201103"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="135.00" HighPrice="137.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZB" Exch="ZZ" MMY="201103" CFI="FXXXXX" TradeVenue="KTSIM" LongName="30 Year T Bond" Mnemonic="KTSIM:ZZ:ZB:FXXXXX:201103"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="118.00" HighPrice="119" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZF" Exch="ZZ" MMY="201103" CFI="FXXXXX" TradeVenue="KTSIM" LongName="5 year note" Mnemonic="KTSIM:ZZ:ZF:FXXXXX:201103"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="118.00" HighPrice="119" isAutoFill="false">
+    <kaitns:InstrDef Sym="OPT1" Exch="ZZ" MMY="201103" Strk="100" CFI="OPXXXX" TradeVenue="KTSIM" LongName="Option Test " Mnemonic="KTSIM:ZZ:OPT1:OPXXXX:201103"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="450.00" HighPrice="470" isAutoFill="false">
+    <kaitns:InstrDef Sym="MIB30C26500" Exch="ZZ" MMY="201003" Strk="26500" CFI="OCXXXX" TradeVenue="KTSIM" LongName="Option Test " Mnemonic="KTSIM:ZZ:MIB30C26500:OCXXXX:201003:26500"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="200.00" HighPrice="230" isAutoFill="false">
+    <kaitns:InstrDef Sym="MIB30C27000" Exch="ZZ" MMY="201003" Strk="27000" CFI="OCXXXX" TradeVenue="KTSIM" LongName="Option Test " Mnemonic="KTSIM:ZZ:MIB30C27000:OCXXXX:201003:27000"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="60.00" HighPrice="80" isAutoFill="false">
+    <kaitns:InstrDef Sym="MIB30C27500" Exch="ZZ" MMY="201003" Strk="27500" CFI="OCXXXX" TradeVenue="KTSIM" LongName="Option Test " Mnemonic="KTSIM:ZZ:MIB30C27500:OCXXXX:201003:27500"/>
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="1010.00" HighPrice="1015.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZSE" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:ZSE:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="36" HighPrice="38" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZLE" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:ZLE:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="390" HighPrice="395" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZME" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:ZME:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="414.00" HighPrice="419.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="GOOG" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:GOOG:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="20.00" HighPrice="25.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="MSFT" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:MSFT:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="30.00" HighPrice="40.00" isAutoFill="true">
+    <kaitns:InstrDef Sym="HPQ" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:HPQ:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="4.00" HighPrice="10.00" isAutoFill="true">
+    <kaitns:InstrDef Sym="CY" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:CY:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="3.0" HighPrice="5.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="AMD" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:AMD:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="20.0" HighPrice="25.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="TXN" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:TXN:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="10.00" HighPrice="20.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="EMC" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:EMC:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="23.00" HighPrice="30.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="VMW" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:VMW:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="11.00" HighPrice="15.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="DELL" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:DELL:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="104.00" HighPrice="114.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="IBM" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:IBM:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="25.00" HighPrice="30.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="MRK" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:MRK:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="25.00" HighPrice="30.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZSELL" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:ZSELL:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="25.00" HighPrice="30.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZBUY" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:ZBUY:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="25.00" HighPrice="30.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="ZXXX" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:ZXXX:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="11.00" HighPrice="13.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="GE" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:GE:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="1.4" HighPrice="1.6" isAutoFill="false">
+    <kaitns:InstrDef Sym="USDGBP" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:USDGBP:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="95.00" HighPrice="100.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="AAPL" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:AAPL:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="27300" HighPrice="27400" isAutoFill="false">
+    <kaitns:InstrDef Sym="SOL" Exch="SJ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:SJ:SOL:ESXXXX" Currency="RND" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="7000" HighPrice="7200" isAutoFill="false">
+    <kaitns:InstrDef Sym="EXX" Exch="SJ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:SJ:EXX:ESXXXX" Currency="RND" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="10.00" HighPrice="10.00" isAutoFill="true">
+    <kaitns:InstrDef Sym="T1" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:T1:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="5.0" HighPrice="5.00" isAutoFill="false">
+    <kaitns:InstrDef Sym="T2" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="KTSIM:ZZ:T2:ESXXXX" Currency="USD" />
+  </kaitns:SimulatorProduct>
+  <kaitns:SimulatorProduct LowPrice="11.00" HighPrice="15.50" isAutoFill="false">
+    <kaitns:InstrDef Sym="BTEST" Exch="ZZ" CFI="ESXXXX" TradeVenue="KTSIM" Mnemonic="BTEST" Currency="USD" />
+  </kaitns:SimulatorProduct>
+</kaitns:KTSimConfig>
+
+

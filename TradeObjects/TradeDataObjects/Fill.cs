@@ -88,7 +88,20 @@ namespace K2DataObjects
         /// </summary>
         private string m_OrderIdentity = "";
 
+        /// <summary>
+        /// Free format text asscociated with the fill
+        /// </summary>
+        private string _text = "";
+
         
+
+
+        /// <summary>
+        /// Reject reason if the order is cancelled
+        /// </summary>
+        private string _OrdRejReason = "";
+
+       
 
         public log4net.ILog m_Log = log4net.LogManager.GetLogger("Kaitrade");
 
@@ -333,6 +346,25 @@ namespace K2DataObjects
         [System.Data.Linq.Mapping.Column]
         public DateTime SystemTime
         { get; set; }
+
+
+        [DataMember]
+        [JsonProperty]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Name = "[OrdRejReason]", Storage = "_OrdRejReason", DbType = "NVarChar(64)", CanBeNull = true, IsPrimaryKey = false)]
+        public string OrdRejReason
+        {
+            get { return _OrdRejReason; }
+            set { _OrdRejReason = value; }
+        }
+
+        [DataMember]
+        [JsonProperty]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Name = "[Text]", Storage = "_text", DbType = "NVarChar(256)", CanBeNull = true, IsPrimaryKey = false)]
+        public string Text
+        {
+            get { return _text; }
+            set { _text = value; }
+        }
 
         /*
         public  void SetUpFromFixExecReport(string r)

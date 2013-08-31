@@ -173,6 +173,17 @@ namespace KaiTrade.Interfaces
         }
 
         /// <summary>
+        /// Free format text asscociated with the fill
+        /// </summary>
+        string Text { get; set; }
+
+
+        /// <summary>
+        /// Reject reason if the order is cancelled
+        /// </summary>
+        string OrdRejReason { get; set; }
+
+        /// <summary>
         /// Set this fill up from a fix execution report
         /// </summary>
         /// <param name="execReport"></param>

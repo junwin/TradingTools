@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Created by Liquid XML Data Binding Libraries (www.liquid-technologies.com) for John Unwin-->
+<kaitns:TSDataSet  xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:kaitns="http://www.kaitrade.com/KA" Mnemonic="F.US.EPM11" Identity="39fac088-633a-4486-
+
+9f03-ea39718be7ab" Name="zzzzzz" TSType="0" Alias="zzzzzz" SessionFlags="1" ConditionName="" StudyName="" Period="0" RangeType="0" StartTime="2011-03-21T10:52:54"
+
+EndTime="2011-03-21T10:52:54" IntStart="0" IntEnd="-10" IntraDayInterval="1" IncludeEnd="true" UpdatesEnabled="true" Text="" SessionFilter="0" TSVolumeType="0"
+
+VolumeLevel="10" IncludeFlatTicks="false" StrategyID="">
+<kaitns:TSDataItem High="1293.25" Low="1293" Open="1293" Close="1293" Mid="1293.125" Index="0" TimeStamp="2011-03-21T10:46:00" Range="0.25" TrueHigh="1293.25" TrueLow="1293" TrueRange="0.25" HLC3="1293.08333333333" Avg="1293.0625"/>
+  <kaitns:TSDataItem High="1293.75" Low="1293" Open="1293" Close="1293.75" Mid="1293.375" Index="1" TimeStamp="2011-03-21T10:47:00" Range="0.75"
+
+TrueHigh="1293.75" TrueLow="1293" TrueRange="0.75" HLC3="1293.5" Avg="1293.375"/>
+  <kaitns:TSDataItem High="1294" Low="1293.25" Open="1294" Close="1293.5" Mid="1293.625" Index="2" TimeStamp="2011-03-21T10:48:00" Range="0.75"
+
+TrueHigh="1294" TrueLow="1293.25" TrueRange="0.75" HLC3="1293.58333333333" Avg="1293.6875"/>
+  <kaitns:TSDataItem High="1294" Low="1293.5" Open="1293.5" Close="1293.75" Mid="1293.75" Index="3" TimeStamp="2011-03-21T10:49:00" Range="0.5"
+
+TrueHigh="1294" TrueLow="1293.5" TrueRange="0.5" HLC3="1293.75" Avg="1293.6875"/>
+  <kaitns:TSDataItem High="1294" Low="1293.5" Open="1293.75" Close="1294" Mid="1293.75" Index="4" TimeStamp="2011-03-21T10:50:00" Range="0.5"
+
+TrueHigh="1294" TrueLow="1293.5" TrueRange="0.5" HLC3="1293.83333333333" Avg="1293.8125"/>
+  <kaitns:TSDataItem High="1294.25" Low="1293.75" Open="1294" Close="1294" Mid="1294" Index="5" TimeStamp="2011-03-21T10:51:00" Range="0.5"
+
+TrueHigh="1294.25" TrueLow="1293.75" TrueRange="0.5" HLC3="1294" Avg="1294"/>
+  <kaitns:TSDataItem High="1294" Low="1293.5" Open="1294" Close="1293.5" Mid="1293.75" Index="6" TimeStamp="2011-03-21T10:52:00" Range="0.5"
+
+TrueHigh="1294" TrueLow="1293.5" TrueRange="0.5" HLC3="1293.66666666667" Avg="1293.75"/>
+  <kaitns:TSDataItem High="1293.75" Low="1293.25" Open="1293.75" Close="1293.5" Mid="1293.5" Index="7" TimeStamp="2011-03-21T10:53:00" Range="0.5"
+
+TrueHigh="1293.75" TrueLow="1293.25" TrueRange="0.5" HLC3="1293.5" Avg="1293.5625"/>
+  <kaitns:TSDataItem High="1294" Low="1293.5" Open="1293.75" Close="1293.5" Mid="1293.75" Index="8" TimeStamp="2011-03-21T10:54:00" Range="0.5"
+
+TrueHigh="1294" TrueLow="1293.5" TrueRange="0.5" HLC3="1293.66666666667" Avg="1293.6875"/>
+  <kaitns:TSDataItem High="1293.75" Low="1293.5" Open="1293.5" Close="1293.5" Mid="1293.625" Index="9" TimeStamp="2011-03-21T10:55:00" Range="0.25"
+
+TrueHigh="1293.75" TrueLow="1293.5" TrueRange="0.25" HLC3="1293.58333333333" Avg="1293.5625"/>
+</kaitns:TSDataSet>

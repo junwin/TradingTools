@@ -5,11 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B97CD4B3-C02E-4A86-BE8C-46E07E9F5417}</ProjectGuid>
+    <ProjectGuid>{89402270-6D0E-4E11-A04B-587AC5E6E1A7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>K2DataObjects</RootNamespace>
-    <AssemblyName>K2DataObjects</AssemblyName>
+    <RootNamespace>K2Depth</RootNamespace>
+    <AssemblyName>K2Depth</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -44,19 +45,45 @@
     <AssemblyOriginatorKeyFile>KaiKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\build\bin\log4net.dll</HintPath>
+    <Reference Include="K2DataObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\build\bin\K2DataObjects.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="KaiUtil, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\build\bin\KaiUtil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KTInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\build\bin\KTInterfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\build\bin\log4net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.3.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\build\bin\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="quickfix_net, Version=1.0.3941.22288, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\build\bin\quickfix_net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="quickfix_net_messages, Version=1.0.3941.22292, Culture=neutral, PublicKeyToken=f58c1f57af40d9c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\build\bin\quickfix_net_messages.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,59 +91,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Account.cs" />
-    <Compile Include="CancelOrderRequest.cs" />
-    <Compile Include="ClearingHouse.cs" />
-    <Compile Include="DataContext.cs" />
-    <Compile Include="Exchange.cs" />
-    <Compile Include="Fill.cs" />
-    <Compile Include="Firm.cs" />
-    <Compile Include="Group.cs" />
-    <Compile Include="DOMData.cs" />
-    <Compile Include="DOMSlot.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="Parameter.cs" />
-    <Compile Include="MQExchange.cs" />
-    <Compile Include="MQRoutingKey.cs" />
-    <Compile Include="Order.cs" />
-    <Compile Include="Position.cs" />
-    <Compile Include="PriceBar.cs" />
-    <Compile Include="Product.cs" />
+    <Compile Include="DOMUpdateProcessor.cs" />
+    <Compile Include="K2DOM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="PXUpdateBase.cs" />
-    <Compile Include="ModifyOrderRequest.cs" />
-    <Compile Include="RequestCancelRejectResponse.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="SubmitRequest.cs" />
-    <Compile Include="Trade.cs" />
-    <Compile Include="TradeSignal.cs" />
-    <Compile Include="TradeVenue.cs" />
-    <Compile Include="TradeVenueDestination.cs" />
-    <Compile Include="TSItem.cs" />
-    <Compile Include="TSDataSetData.cs" />
-    <Compile Include="TSExpression.cs" />
-    <Compile Include="TSPrice.cs" />
-    <Compile Include="TSQueryGroupData.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserTrial.cs" />
-    <Compile Include="CurveValue.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="KaiKey.snk" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -126,10 +106,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
-      <Project>{BCE029A7-B8C5-490D-AEBC-E3F94F1BBE96}</Project>
-      <Name>Interfaces</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

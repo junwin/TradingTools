@@ -1,0 +1,1635 @@
+/***************************************************************************
+ *    
+ *      Copyright (c) 2009,2010,2011 KaiTrade LLC (registered in Delaware)
+ *                     All Rights Reserved Worldwide
+ *
+ * STRICTLY PROPRIETARY and CONFIDENTIAL
+ *
+ * WARNING:  This file is the confidential property of KaiTrade LLC For
+ * use only by those with the express written permission and license from
+ * KaiTrade LLC.  Unauthorized reproduction, distribution, use or disclosure 
+ * of this file or any program (or document) is prohibited. 
+ * 
+ ***************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Timers;
+using System.IO;
+using Newtonsoft.Json;
+
+namespace KTASimulator
+{
+    
+
+    public class KTASimulator : DriverBase.DriverBase
+    {
+
+        private delegate void SendResponseDelegate(string myType, string myMsg);
+        SendResponseDelegate m_SRDelegate;
+
+        private Object m_PriceUpdateLock = new Object();
+        private Object m_GetTSReqToken = new object();
+       
+        /// <summary>
+        /// Map to the products that we can simulate indexes by Mnemonic
+        /// </summary>
+        private Dictionary<string, SimulatorProduct> m_Products;
+
+        /// <summary>
+        /// Map of order contectxs to Order ID
+        /// </summary>
+        private Dictionary<string, DriverBase.OrderContext> m_OrderContextOrdID;
+
+        /// <summary>
+        /// Map of order contectxs to Order ClOrdID
+        /// </summary>
+        //private Dictionary<string, DriverBase.OrderContext> m_OrderContextClOrdID;
+
+        
+        /// <summary>
+        /// Simulator config
+        /// </summary>
+        private SimulatorConfig _config;
+
+        /// <summary>
+        /// thread to generate some simple prices
+        /// </summary>
+        private Thread m_PriceThread;
+
+        /// <summary>
+        /// do the price gen loop true=> run price updates
+        /// </summary>
+        private bool m_GenPrices = false;
+
+        private Dictionary<string, FilePriceSource> m_FilePrices;
+
+        private Random m_RNGen;
+
+        /// <summary>
+        /// Timer for those algos that require some time based processing
+        /// </summary>
+        private System.Timers.Timer m_Timer;
+
+        /// <summary>
+        /// Timer interval used for the timer
+        /// </summary>
+        private long m_TimerInterval = 5000;
+
+        /// <summary>
+        /// List of orders to fill over time
+        /// </summary>
+        List<DriverBase.OrderContext> m_FillList;
+
+        private Dictionary<string, Market> m_Markets;
+
+        /// <summary>
+        /// Is the zSELL order triggered?
+        /// </summary>
+        private bool m_ZSELLTrigger = false;
+        /// <summary>
+        /// Is the zSELL order triggered?
+        /// </summary>
+        private bool m_ZBUYTrigger = false;
+
+        private SimulatorMainUI m_MainForm = null;
+
+     
+
+        public KTASimulator()
+        {
+            
+            m_Name = "KTSIM";
+            m_ID = "KTSIM";
+            m_Tag = "";
+
+            m_Log.Info(m_Name + " Created");
+
+            m_SRDelegate = new SendResponseDelegate(this.handleResponse);
+
+            m_OrderContextOrdID = new Dictionary<string, DriverBase.OrderContext>();
+            //m_OrderContextClOrdID = new Dictionary<string, DriverBase.OrderContext>();
+            m_Markets = new Dictionary<string, Market>();
+            m_FillList = new List<DriverBase.OrderContext>();
+            genSampleConfig();
+
+            m_Products = new Dictionary<string, KAI.kaitns.SimulatorProduct>();
+
+            m_RNGen = new Random();
+
+            m_FilePrices = new Dictionary<string, FilePriceSource>();
+
+            m_MainForm = new SimulatorMainUI();
+
+            m_MainForm.Simulator = this;
+
+            
+
+
+        }
+
+        /// <summary>
+        /// Display or Hide any UI the driver has
+        /// </summary>
+        /// <param name="uiVisible">true => show UI, False => hide UI</param>
+        public override void ShowUI(bool uiVisible)
+        {
+            try
+            {
+                if (uiVisible)
+                {
+                    m_MainForm.Show();
+                }
+                else
+                {
+                    m_MainForm.Hide();
+                }
+            }
+            catch (Exception myE)
+            {
+            }
+        }
+
+        public log4net.ILog Log
+        {
+            get { return m_Log; }
+        }
+
+        public void StartTimer()
+        {
+            if (m_TimerInterval > 0)
+            {
+                m_Timer = new System.Timers.Timer(m_TimerInterval);
+                m_Timer.Elapsed += new ElapsedEventHandler(OnTimer);
+                m_Timer.Interval = (double)m_TimerInterval;
+                m_Timer.Enabled = true;
+            }
+        }
+
+        public void StopTimer()
+        {
+            if (m_Timer != null)
+            {
+                m_Timer.Enabled = false;
+            }
+            m_Timer = null;
+        }
+
+        private void OnTimer(object source, ElapsedEventArgs e)
+        {
+            try
+            {
+                doFillList();  
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("OnTimer", myE);
+            }
+        }
+
+
+        private void genSampleConfig()
+        {
+            _config = new KAI.kaitns.KTSimConfig();
+            KAI.kaitns.SimulatorProduct mySimProduct = new KAI.kaitns.SimulatorProduct();
+            KAI.kaitns.InstrDef myProduct = new KAI.kaitns.InstrDef();
+            KAI.kaitns.CannedData cannedData = new KAI.kaitns.CannedData();
+
+            myProduct.Sym = "EPZ8";
+            myProduct.CFI = "FXXXXX";
+            myProduct.MMY = "20081219";
+            myProduct.Exch = "CME";
+            myProduct.TradeVenue = "CQG";
+            myProduct.Mnemonic = "EMINI";
+            myProduct.LongName = "CME eMini SP500";
+            myProduct.Src = "ZPZ8";
+
+            mySimProduct.InstrDef = myProduct;
+            mySimProduct.HighPrice = 99.99;
+            mySimProduct.LowPrice = 98.99;
+            mySimProduct.IsAutoFill = true;
+            mySimProduct.IsCannedData = true;
+            mySimProduct.RunAsMarket = true;
+
+            cannedData.CannedDataFile = "filepath";
+            cannedData.RepeatOnEnd = true;
+            cannedData.RunInterval = 100;
+            cannedData.RunRealTime = true;
+            cannedData.PlayOnSubscribe = true;
+            
+            mySimProduct.CannedData = cannedData;
+             
+            _config.SimulatorProduct.Add(mySimProduct);
+            
+
+            //m_Config.
+            _config.ToXmlFile("KTSimConfigTEMP.xml");
+        }
+
+        /// <summary>
+        /// Override the base class DoStart
+        /// </summary>
+        protected override void DoStart(string myState)
+        {
+            try
+            {
+                m_Log = log4net.LogManager.GetLogger("Kaitrade");
+
+                m_Log.Info("KTA Simulator Driver Started");
+
+                // try load our config file
+                processConfigFile(m_ConfigPath + "KTSimConfig.xml");
+ 
+                m_GenPrices = true;
+                m_PriceThread = new Thread(new ThreadStart(this.generatePrices));
+                m_PriceThread.SetApartmentState(ApartmentState.MTA);
+                m_PriceThread.Start();
+                 
+                // do the file thing in SubscribeMD
+                //this.AddPriceFile("KTSIM:ZZ:DELL:ESXXXX", "testdata.csv");
+
+                // Report that we are open - this will show in the Driver view
+                // in the dashboard
+                SendStatusMessage(KaiTrade.Interfaces.Status.open, "KT Simulator Driver is open");
+
+                AddAccount("JSMITH", "Simulator JSMITH", "KAI");
+                AddAccount("MGiles", "Simulator MGiles", "KAI");
+                AddAccount("MWTrader", "Simulator MWTrader", "KAIB");
+                AddAccount("AKlien", "Simulator AKlien", "KAIB");
+                AddAccount("ACMEFund", "Simulator ACMEFund", "KAIB");
+                AddAccount("NewTrade", "Simulator NewTrade", "KAIB");
+                AddAccount("TestBadAccount", "Account will be rejected", "KAIB");
+
+                /// Get any price files in PriceData and use them for markets and price generation
+                try
+                {
+                    GetPriceFiles();
+                }
+                catch (Exception myE)
+                {
+                }
+                setStatus(KaiTrade.Interfaces.Status.open);
+                StartTimer();
+                m_RunningState = new DriverBase.DriverStatus(DriverBase.StatusConditon.good, DriverBase.StatusConditon.good);
+                if (m_State.IsValidHideDriverUI)
+                {
+                    if (!m_State.HideDriverUI)
+                    {
+                        m_MainForm.Show();
+                    }
+                }
+
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("doStart", myE);
+            }
+
+
+        }
+
+        /// <summary>
+        /// Get the running status of some driver
+        /// compliments the StatusRequest();
+        /// </summary>
+        public override DriverBase.DriverStatus GetRunningStatus()
+        {
+            // returns none on all states - unless overridden
+            return m_RunningState;
+            
+        }
+
+        /// <summary>
+        /// Process the config file for the simulator
+        /// </summary>
+        /// <param name="myPath"></param>
+        private void processConfigFile(string myPath)
+        {
+            try
+            {
+                _config = new KAI.kaitns.KTSimConfig();
+                _config.FromXmlFile(myPath);
+
+                // process the config file products these are the things we will simulate
+                foreach (KAI.kaitns.SimulatorProduct myProd in _config.SimulatorProduct)
+                {
+                    try
+                    {
+                        if (myProd.CannedData == null)
+                        {
+                            m_Products.Add(myProd.InstrDef.Mnemonic, myProd);
+                        }
+
+                        if (myProd.InstrDef.Mnemonic.IndexOf(':') >= 0)
+                        {
+                            sendSecurityDefinition(myProd);
+                        }
+
+                        else
+                        {
+                            AddProductDirect(myProd.InstrDef.Mnemonic,myProd.InstrDef.CFI, myProd.InstrDef.Exch, "", "", myProd.InstrDef.Sym, "", "",myProd.InstrDef.Currency,null, true);
+                            if (myProd.IsValidRunAsMarket)
+                            {
+                                if (myProd.RunAsMarket)
+                                {  
+                                    CreateMarket(myProd.InstrDef.Mnemonic);                                  
+                                }
+                            }
+                            if (myProd.CannedData != null)
+                            {
+                                this.AddPriceFile(myProd.InstrDef.Mnemonic, myProd.CannedData.CannedDataFile, myProd.CannedData.RunInterval.IntValue(), myProd.CannedData.RunRealTime, myProd.CannedData.RepeatOnEnd, myProd.CannedData.PlayOnSubscribe);
+                            }
+                            
+
+                        }
+                    }
+                    catch (Exception myE)
+                    {
+                        m_Log.Error("processConfigFile:loop", myE);
+                    }
+                }
+
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("processConfigFile", myE);
+            }
+        }
+
+        private SimulatorProduct getProduct(string myMnemonic)
+        {
+            throw new Exception("Not implimented");
+            
+            /*
+            KAI.kaitns.SimulatorProduct myProd = null;
+            if (m_Products.ContainsKey(myMnemonic))
+            {
+                myProd = m_Products[myMnemonic];
+            }
+            return myProd;
+             */
+
+        }
+
+       
+
+        protected override void SubscribeMD(KaiTrade.Interfaces.IPublisher pub, int depthLevels, string requestID)
+        {
+            try
+            {
+                string topic = pub.TopicID();
+                topic = topic.Substring(2, topic.Length - 2);
+               
+                if(m_FilePrices.ContainsKey(pub.TopicID()))
+                {
+                    if (m_FilePrices[pub.TopicID()].PlayOnSubscribe)
+                    {
+                        // note file source may not support depth
+                        m_FilePrices[pub.TopicID()].DepthLevels = depthLevels;
+
+                        m_FilePrices[pub.TopicID()].Start(m_FilePrices[pub.TopicID()].FilePath);
+                    }
+                }
+                else if (m_FilePrices.ContainsKey(topic))
+                {
+                    // note file source may not support depth
+                    m_FilePrices[topic].DepthLevels = depthLevels;
+
+                    if (m_FilePrices[topic].PlayOnSubscribe)
+                    {
+                        m_FilePrices[topic].Start(m_FilePrices[topic].FilePath);
+                    }
+                }
+                
+
+
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("SubscribeMD", myE);
+            }
+        }
+
+        protected override void UnSubscribeMD(KaiTrade.Interfaces.IPublisher pub)
+        {
+            // no action
+        }
+
+        
+        
+
+        private void loadTSSet(KaiTrade.Interfaces.ITSSet myTSSet)
+        {
+            try
+            {
+                if (myTSSet.UpdatesEnabled)
+                {
+                    StartBarsGenerate(myTSSet);
+                }
+                else
+                {
+                    string fileName = myTSSet.Mnemonic + "_tsset.xml";
+                    KAI.kaitns.TSDataSet myDB = new KAI.kaitns.TSDataSet();
+                    //fileName.Replace(':','');
+                    myDB.FromXmlFile(fileName);
+                    myTSSet.From(myDB);
+                    myTSSet.Added = true;
+                }
+            }
+            catch(Exception myE)
+            {
+            }
+        }
+        public override void RequestTSData(KaiTrade.Interfaces.ITSSet myTSSet)
+        {
+            lock (m_GetTSReqToken)
+            {
+               
+                try
+                {
+                    switch (myTSSet.TSType)
+                    {
+                        case KaiTrade.Interfaces.TSType.BarData:
+                            loadTSSet(myTSSet); 
+                            break;
+                        case KaiTrade.Interfaces.TSType.ConstantBars:
+                             
+                            break;
+                        case KaiTrade.Interfaces.TSType.Condition:
+                             
+                            break;
+                        case KaiTrade.Interfaces.TSType.StudyData:
+                             
+                            break;
+                        case KaiTrade.Interfaces.TSType.Expression:
+                             
+                            break;
+                        case KaiTrade.Interfaces.TSType.TradeSystem:
+                             
+                            break;
+
+                        default:
+                            m_DriverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
+                            break;
+                    }
+
+
+                }
+                catch (Exception myE)
+                {
+                    m_Log.Error("RequestTSData", myE);
+                    this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "DoGetTSData" + myE.Message);
+
+                }
+            }
+        }
+
+       
+        public void CreateMarket(string mnemonic)
+        {
+            try
+            {
+                Market market = new Market(mnemonic, this);
+                m_Markets.Add(mnemonic, market);
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("CreateMarket", myE);
+            }
+        }
+
+        public void GetPriceFiles()
+        {
+            try
+            {
+                string basePath = Facade.AppPath + @"\PriceData";
+                string[] files = Directory.GetFiles(basePath, "*.csv");
+                foreach (string file in files)
+                {
+                    int endMnemonicPos = file.IndexOf("_data.csv");
+                    if (endMnemonicPos > 0)
+                    {
+                        int startMnemonic = file.IndexOf("PriceData");
+                        string mnemonic = file.Substring(startMnemonic+10);
+                        endMnemonicPos = mnemonic.IndexOf("_data.csv");
+                        mnemonic = mnemonic.Substring(0, endMnemonicPos);
+
+                        AddPriceFile(mnemonic, file, 1, true, true, true);
+                        CreateMarket(mnemonic);
+                    }
+                }
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("GetPriceFiles", myE);
+            }
+        }
+
+        public void AddPriceFile(string mnemonic, string filePath, int interval, bool runRealTime, bool repeatOnEnd, bool playOnSubscribe)
+        {
+            try
+            {
+                FilePriceSource pxSrc = new FilePriceSource(this);
+                m_FilePrices.Add(mnemonic, pxSrc);
+                pxSrc.PriceUpdate += this.PriceUpdate;
+                pxSrc.PriceUpdateStatus += this.PriceUpdateStatus;
+                pxSrc.Interval = interval;
+                pxSrc.RunRealTime = runRealTime;
+                pxSrc.RepeatOnEnd = repeatOnEnd;
+                pxSrc.FilePath = filePath;
+                if (!playOnSubscribe)
+                {
+                    pxSrc.Start(filePath);
+                }
+                else
+                {
+                    pxSrc.SetUpProductNoRun(filePath);
+                }
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("AddPriceFile", myE);
+            }
+        }
+
+        public void RunPxRealTime()
+        {
+            try
+            {
+                foreach (FilePriceSource pxSrc in m_FilePrices.Values)
+                {
+
+                    pxSrc.RunRealTime = true;
+                }
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("RunPxRealTime", myE);
+            }
+        }
+
+        public void RunPxInterval(int interval)
+        {
+            try
+            {
+                foreach (FilePriceSource pxSrc in m_FilePrices.Values)
+                {
+                    pxSrc.Interval = interval;
+                    pxSrc.RunRealTime = false;
+                }
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("RunPxRealTime", myE);
+            }
+        }
+
+
+
+        public void PriceUpdateStatus(FilePriceSource source, SrcStatus status)
+        {
+            try
+            {
+                if (status == SrcStatus.ended)
+                {
+                    if (source.RepeatOnEnd)
+                    {
+                        // just reopen
+                        source.Stop();
+                        source.Start(source.FilePath);
+                    }
+                    else
+                    {
+                        // we are done
+                    }
+                }
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("PriceUpdateStatus", myE);
+            }
+        }
+
+        public void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate)
+        {
+            lock (m_PriceUpdateLock)
+            {
+                try
+                {
+                    if (m_Markets.ContainsKey(pxUpdate.Mnemonic))
+                    {
+                        m_Markets[pxUpdate.Mnemonic].ApplyPxUpdate(pxUpdate);
+                    }
+                    ApplyPriceUpdate(pxUpdate);
+                    if (pxUpdate.Mnemonic == "KTSIM:ZZ:DELL:ESXXXX")
+                    {
+                        ApplyDOMUpdate(pxUpdate.Mnemonic, pxUpdate);
+                    }
+                }
+                catch (Exception myE)
+                {
+                    m_Log.Error("PriceUpdate", myE);
+                }
+            }
+        }
+
+        private void generatePrices()
+        {
+            while (m_GenPrices)
+            {
+                KAI.kaitns.SimulatorProduct myProd;
+                foreach (string myMnemonic in m_Products.Keys)
+                {
+                    myProd = m_Products[myMnemonic];
+                    generateProductPrices(myMnemonic, myProd);
+                    Thread.Sleep(50);
+                }
+                Thread.Sleep(100);
+
+            }
+        }
+
+        private void generateProductPrices(SimulatorProduct product)
+        {
+            try
+            {
+                K2DataObjects.PXUpdateBase pxupdate = new K2DataObjects.PXUpdateBase(m_ID);
+                pxupdate.Mnemonic = product.Mnemonic;
+
+                pxupdate.BidSize = m_RNGen.Next(100);
+                pxupdate.OfferSize = m_RNGen.Next(100);
+                pxupdate.BidPrice = product.LowPrice;
+                pxupdate.OfferPrice = pxupdate.BidPrice + 1;
+                pxupdate.TradePrice = ((pxupdate.BidPrice + pxupdate.OfferPrice) / 2);
+                pxupdate.TradeVolume = (pxupdate.BidSize + pxupdate.OfferSize) / 2;
+                pxupdate.DayHigh = product.HighPrice;
+                pxupdate.DayLow = product.LowPrice;
+                if (product.LowPrice != product.HighPrice)
+                {
+                    pxupdate.BidPrice = (int)product.LowPrice + m_RNGen.Next(10);
+                    pxupdate.OfferPrice = pxupdate.BidPrice + 1;
+                    pxupdate.TradePrice = ((pxupdate.BidPrice + pxupdate.OfferPrice) / 2);
+                }
+
+                pxupdate.Ticks = DateTime.Now.Ticks;
+
+                PriceUpdate(pxupdate);
+
+
+            }
+            catch (Exception myE)
+            {
+
+            }
+        }
+
+        private double getTradePx(string myMnemonic)
+        {
+            double myPx = 0.0;
+            try
+            {
+                // try to get a PXPublisher
+
+                K2DataObjects.PXPublisher myPXPublisher = m_PublisherRegister[myMnemonic] as K2DataObjects.PXPublisher;
+                //KaiTrade.Interfaces.IPublisher myPublisher = m_PublisherRegister[myMnemonic] as KaiTrade.Interfaces.IPublisher;
+
+                if (myPXPublisher != null)
+                {
+                    myPx = double.Parse( myPXPublisher.GetField(KaiTrade.Interfaces.MDConstants.TRADE_PRICE));
+                    
+
+                }
+            }
+            catch (Exception myE)
+            {
+            }
+            return myPx;
+        }
+
+
+        /// <summary>
+        /// FIX loop back order 
+        /// </summary>
+        /// <param name="msg"></param>
+        public void submitOrder(KaiTrade.Interfaces.IMessage myMsg)
+        {
+            KaiTrade.Interfaces.ISubmitRequest nos = null;
+            try
+            {
+                nos = JsonConvert.DeserializeObject<K2DataObjects.SubmitRequest>(myMsg.Data);
+                // Use QuickFix to handle the message - you can 
+                // use the FIX parser of your own choice 
+                
+                m_Log.Error("SUBTEST:" + myMsg.Data);
+                
+                long quantity = nos.OrderQty;
+                decimal myOrdPrice = nos.Price.Value;
+                
+
+
+                // Get the CQG product/intrument we want to order
+                string myMnemonic = nos.Mnemonic;
+
+                
+                if (nos.SecurityID.Length > 0)
+                {
+                    // is this new market processing?
+                    if (m_Markets.ContainsKey(nos.SecurityID))
+                    {
+                        m_Markets[nos.SecurityID].submitOrder(myMsg);
+                        return;
+                    }
+                }
+
+
+
+                SimulatorProduct myProd = getProduct( myMnemonic);
+
+                if (myProd == null)
+                {
+                    // we dont simulate this so reject it
+                    string myError = "Product not available";
+                    Exception myE = new Exception(myError);
+                    throw myE;
+                }
+
+                // simulate rejecting certail accounts
+                if (nos.Account.Length>0)
+                {
+                    if (nos.Account == "TestBadAccount")
+                    {
+                        // we dont simulate this so reject it
+                        string myError = "Account not valid:" + nos.Account;
+                        Exception myE = new Exception(myError);
+                        throw myE;
+                    }
+                }
+
+                // put this into the internal book
+                // send order in book exec report
+                KaiTrade.Interfaces.IFill fill = new K2DataObjects.Fill();
+                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.NEW;
+                fill.ExecType = KaiTrade.Interfaces.ExecType.ORDER_STATUS;
+                fill.OrderID = DriverBase.Identities.Instance.getNextOrderID();
+                //sendExecReport(string orderID, string status, string execType, double lastQty, int leavesQty,int cumQty, double lastPx, double avePx, string text, string ordRejReason)
+
+
+                if (myProd.IsAutoFill)
+                {
+
+
+                    DriverBase.OrderContext myContext = new DriverBase.OrderContext();
+                    //myContext.QFOrder = myOrder;
+                    myContext.ClOrdID = nos.ClOrdID;
+                    myContext.OrderID = fill.OrderID;
+                    myContext.OrderQty =(int) quantity;
+                    //myContext.LeavesQty = quantity;
+                    myContext.CumQty = 0;
+
+                    // record the order in the context maps
+                    RecordOrderContext(myContext.ClOrdID, myContext);
+                    //m_OrderContextClOrdID.Add(myContext.ClOrdID, myContext);
+                    m_OrderContextOrdID.Add(myContext.OrderID, myContext);
+
+                    sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, 0.0, (int)quantity, 0, (double)myOrdPrice, (double)myOrdPrice, "", "");
+                    if ((nos.OrdType == KaiTrade.Interfaces.OrderType.STOP) || (nos.OrdType == KaiTrade.Interfaces.OrderType.STOPLIMIT))
+                    {
+                        // Just do the default
+                    }
+                    else
+                    {
+
+                        // is this for auto fill over time?
+                        if (nos.Mnemonic == "HPQ")
+                        {
+                            myContext.FillPattern = DriverBase.fillPattern.gradual;
+                            myContext.UpdatePeriod = 1;
+                            m_FillList.Add(myContext);
+                        }
+                        // is this for auto fill over time?
+                        if (nos.Mnemonic == "VOD")
+                        {
+                            myContext.FillPattern = DriverBase.fillPattern.fixedAmount;
+                            int fillAmount =(int) ( (double)quantity * 0.5);
+                            if (fillAmount > 0)
+                            {
+                                myContext.TargetFillAmount = fillAmount;
+                            }
+                            else
+                            {
+                                myContext.TargetFillAmount = 1;
+                            }
+                            
+                            myContext.UpdatePeriod = 12;
+                            myContext.TimerCount = 1;
+                            m_FillList.Add(myContext);
+                        }
+                    }
+                }
+                else
+                {
+                    // put this into the internal book
+                    // send order in book exec report
+                    if (myOrdPrice == (decimal)0.0)
+                    {
+                        myOrdPrice = (decimal) this.getTradePx(myMnemonic);
+                    }
+                    
+
+                    // do nothing for now just let is stay working
+                    DriverBase.OrderContext myContext = new DriverBase.OrderContext();
+                    //myContext.QFOrder = myOrder;
+                    myContext.ClOrdID = nos.ClOrdID;
+                    myContext.OrderID = fill.OrderID;
+                    myContext.OrderQty = (int)nos.OrderQty;
+                    //myContext.LeavesQty = quantity;
+                    myContext.CumQty = 0;
+
+                    // record the order in the context maps
+                    RecordOrderContext(myContext.ClOrdID, myContext);
+                    //m_OrderContextClOrdID.Add(myContext.ClOrdID, myContext);
+                    m_OrderContextOrdID.Add(myContext.OrderID, myContext);
+
+                    sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, 0.0, (int)nos.OrderQty, 0, 0.0, 0.0,"","");
+
+                   
+                    // do some simple STOP processing
+                    if ((nos.OrdType == KaiTrade.Interfaces.OrderType.STOP) || (nos.OrdType == KaiTrade.Interfaces.OrderType.STOPLIMIT))
+                    {
+                        
+                    }
+                    else
+                    {
+
+                        // is this for auto fill over time?
+                        if (nos.Mnemonic == "MRK")
+                        {
+                            // partial fill
+                            int lastQty = 1;
+
+                            int leavesQty = 0;
+                            if (quantity > 1)
+                            {
+                                lastQty = (int)(quantity / 2);
+
+                                leavesQty = (int)quantity - lastQty;
+                                quantity = (int)(quantity / 2);
+                            }
+
+                            fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.PARTIALLY_FILLED;
+                            fill.ExecType = KaiTrade.Interfaces.ExecType.PARTIAL_FILL;
+                            sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, (double)lastQty, leavesQty, lastQty, (double)myOrdPrice, (double)myOrdPrice,"", "");
+
+
+                            myContext.OrderQty = (int)nos.OrderQty;
+                           // myContext.LeavesQty = quantity;
+                            myContext.CumQty = 0;
+
+                            // record the order in the context maps
+                            RecordOrderContext(myContext.ClOrdID, myContext);
+                            //m_OrderContextClOrdID.Add(myContext.ClOrdID, myContext);
+                            m_OrderContextOrdID.Add(myContext.OrderID, myContext);
+
+                        }
+                        else if (nos.Mnemonic == "ZSELL")
+                        {
+                            int lastQty = 1;
+
+                            int leavesQty = 0;
+                            if (!m_ZSELLTrigger)
+                            {
+                                m_ZSELLTrigger = true;
+                                // partial fill
+
+                                if (quantity > 1)
+                                {
+                                    lastQty = (int)(quantity / 2);
+
+                                    leavesQty = (int)quantity - lastQty;
+                                    quantity = (int)(quantity / 2);
+                                }
+
+                                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.PARTIALLY_FILLED;
+                                fill.ExecType = KaiTrade.Interfaces.ExecType.PARTIAL_FILL;
+                                
+                            }
+                            else
+                            {
+                                m_ZSELLTrigger = false;
+                                lastQty = (int)(quantity);
+
+                                leavesQty = 0;
+                                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.PARTIALLY_FILLED;
+                                fill.ExecType = KaiTrade.Interfaces.ExecType.PARTIAL_FILL;
+                                
+                            }
+                            sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, (double)lastQty, leavesQty, lastQty, (double)myOrdPrice, (double)myOrdPrice, "", "");
+
+                            
+                            myContext.OrderQty = (int)quantity;
+                            //myContext.LeavesQty = quantity;
+                            myContext.CumQty = 0;
+
+                            // record the order in the context maps
+                            RecordOrderContext(myContext.ClOrdID, myContext);
+                            //m_OrderContextClOrdID.Add(myContext.ClOrdID, myContext);
+                            m_OrderContextOrdID.Add(myContext.OrderID, myContext);
+                        }
+                        else if ((nos.Mnemonic == "ZBUY") && (nos.Side == KaiTrade.Interfaces.Side.SELL))
+                        {
+                            int lastQty = 1;
+
+                            int leavesQty = 0;
+                            if (!m_ZBUYTrigger)
+                            {
+                                m_ZBUYTrigger = true;
+                                // partial fill
+
+                                if (quantity > 1)
+                                {
+                                    lastQty = (int)(quantity / 2);
+
+                                    leavesQty = (int)quantity - lastQty;
+                                    quantity = (int)(quantity / 2);
+                                }
+
+                                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.PARTIALLY_FILLED;
+                                fill.ExecType = KaiTrade.Interfaces.ExecType.PARTIAL_FILL;
+                            }
+                            else
+                            {
+                                m_ZBUYTrigger = false;
+                                lastQty = (int)(quantity);
+
+                                leavesQty = 0;
+                                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.FILLED;
+                                fill.ExecType = KaiTrade.Interfaces.ExecType.FILL;
+
+                            }
+
+                            sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, (double)lastQty, leavesQty, lastQty, (double)myOrdPrice, (double)myOrdPrice, "", "");
+
+                            
+                            myContext.OrderQty = (int) quantity;
+                            //myContext.LeavesQty = quantity;
+                            myContext.CumQty = 0;
+
+                            // record the order in the context maps
+                            RecordOrderContext(myContext.ClOrdID, myContext);
+                            //m_OrderContextClOrdID.Add(myContext.ClOrdID, myContext);
+                            m_OrderContextOrdID.Add(myContext.OrderID, myContext);
+                        }
+                        else
+                        {
+                            // fully fill
+                             fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.FILLED;
+                             fill.ExecType = KaiTrade.Interfaces.ExecType.FILL;
+                            sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, (double)quantity, 0, (int)quantity, (double)myOrdPrice, (double)myOrdPrice, "", "");
+
+                        }
+                    }
+                    
+                }
+    
+                
+
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("submitOrder", myE);
+                // To provide the end user with more information
+                // send an advisory message, again this is optional
+                // and depends on the adpater
+                SendAdvisoryMessage("KTA Simulator:submitOrder: problem submitting order:" + myE.ToString());
+
+                if (nos != null)
+                {
+                    sendExecReport(nos, KaiTrade.Interfaces.OrderStatus.REJECTED, KaiTrade.Interfaces.ExecType.REJECTED, myE.ToString(), "OTHER");
+                    
+                }
+
+            }
+        }
+
+        public void gradualFill(DriverBase.OrderContext myContext)
+        {
+            try
+            {
+                int qtyToFill = 0;
+                if (myContext.LeavesQty > 2)
+                {
+                    qtyToFill = myContext.LeavesQty / 2;
+                }
+                else
+                {
+                    qtyToFill = myContext.LeavesQty;
+                }
+                fixedAmountFill(myContext, qtyToFill,null);
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("gradualFill", myE);
+            }
+        }
+
+        public void fixedAmountFill(DriverBase.OrderContext myContext, int qtyToFill, decimal? fillPx)
+        {
+            try
+            {
+                // send order in book exec report
+                // fully fill
+                KaiTrade.Interfaces.IFill fill = new K2DataObjects.Fill();
+
+                fill.OrderID = myContext.OrderID;
+                if (fillPx.HasValue)
+                {
+                    fill.LastPx = (double)fillPx.Value;
+                }
+                else
+                {
+                    fill.LastPx = (double)myContext.Price;
+                }
+                fill.AvgPx = 0;
+
+                if (myContext.LeavesQty > 0)
+                {
+                   
+
+                    if (myContext.LeavesQty > qtyToFill)
+                    {
+                        fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.PARTIALLY_FILLED;
+                        fill.ExecType = KaiTrade.Interfaces.ExecType.PARTIAL_FILL;
+                        fill.FillQty = qtyToFill;
+                        myContext.CumQty += qtyToFill;
+                        fill.CumQty = myContext.CumQty;
+                        
+                    }
+                    else
+                    {
+                        fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.FILLED;
+                        fill.ExecType = KaiTrade.Interfaces.ExecType.FILL;
+
+                        double myQty = myContext.LeavesQty;
+                        myContext.CumQty += (int)myQty;
+                        fill.FillQty = myContext.LeavesQty;
+                        fill.CumQty = myContext.CumQty;
+                        
+                    }
+
+                    sendExecReport(fill);
+                }
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("gradualFill", myE);
+            }
+        }
+        private void doFillList()
+        {
+            try
+            {
+                foreach (DriverBase.OrderContext myContext in m_FillList)
+                {
+                    if ((myContext.TimerCount % myContext.UpdatePeriod) == 0)
+                    {
+                        switch(myContext.FillPattern)
+                        {
+                            case DriverBase.fillPattern.gradual:
+                                gradualFill(myContext);
+                                break;
+                            case DriverBase.fillPattern.fixedAmount:
+                                fixedAmountFill(myContext, myContext.TargetFillAmount,null);
+                                break;
+                            default:
+                                break;
+                        }
+                       
+                    }
+                    myContext.TimerCount++;
+                }
+            }
+            catch (Exception myE)
+            {
+                m_Log.Warn("doFillList", myE);
+            }
+        }
+
+
+        /// <summary>
+        /// Example code of pulling an order - used for testing 
+        /// </summary>
+        /// <param name="msg"></param>
+        public void pullOrder(KaiTrade.Interfaces.IMessage msg)
+        {
+            QuickFix.Message myQFPullOrder = null;
+            try
+            {
+                // Extract the raw FIX Message from the inbound message
+                string strOrder = msg.Data;
+
+                // Use QuickFix to handle the message
+                myQFPullOrder = new QuickFix.Message(strOrder);
+
+                // Get the FIX id's these are mandatory
+                QuickFix.ClOrdID clOrdID = new QuickFix.ClOrdID();
+                QuickFix.OrigClOrdID origClOrdID = new QuickFix.OrigClOrdID();
+
+                if (myQFPullOrder.isSetField(clOrdID))
+                {
+                    myQFPullOrder.getField(clOrdID);
+                }
+                else
+                {
+                    sendCancelRej(myQFPullOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a clordid must be specified on a cancel order");
+                    Exception myE = new Exception("a clordid must be specified on a cancel order");
+                    throw myE;
+                }
+
+                if (myQFPullOrder.isSetField(origClOrdID))
+                {
+                    myQFPullOrder.getField(origClOrdID);
+                }
+                else
+                {
+                    sendCancelRej(myQFPullOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a original clordid must be specified on a cancel order");
+                    Exception myE = new Exception("an original clordid must be specified on a cancel order");
+                    throw myE;
+                }
+
+                // Get the   product/intrument we want to order
+                string myMnemonic = KaiUtil.QFUtils.GetProductMnemonic(m_ID, "", myQFPullOrder);
+
+                // is this new market processing?
+                QuickFix.SecurityID securityID = new QuickFix.SecurityID();
+                if (myQFPullOrder.isSetField(securityID))
+                {
+                    myQFPullOrder.getField(securityID);
+                    // is this new market processing?
+                    if (m_Markets.ContainsKey(securityID.ToString()))
+                    {
+                        m_Markets[securityID.ToString()].pullOrder(msg);
+                        return;
+                    }
+                }
+
+                // Get the context - we must have this to access the CQG order
+                DriverBase.OrderContext myContext = null;
+                if (m_ClOrdIDOrderMap.ContainsKey(origClOrdID.getValue()))
+                {
+                    myContext = m_ClOrdIDOrderMap[origClOrdID.getValue()];
+                }
+                if (myContext == null)
+                {
+                    sendCancelRej(myQFPullOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "an order does not exist for the cancel requested");
+                    Exception myE = new Exception("an order does not exist for the cancel requested");
+                    throw myE;
+                }
+
+                double myLastFillPrice = 0.0;
+                double myAveFillPrice = 0.0;
+                double myLastFillQty = 0.0;
+
+
+                // update the ClOrdID's on our order in the context
+                QuickFix.ClOrdID newClordID = new QuickFix.ClOrdID(clOrdID.getValue());
+
+                QuickFix.OrigClOrdID newOrigClOrdID = new QuickFix.OrigClOrdID(origClOrdID.getValue());
+                myContext.QFOrder.setField(newClordID);
+                myContext.QFOrder.setField(newOrigClOrdID);
+
+
+
+
+                // send order canceled exec report
+                QuickFix.OrdStatus myOrdStatus = new QuickFix.OrdStatus(QuickFix.OrdStatus.CANCELED);
+                QuickFix.ExecType myExecType = new QuickFix.ExecType(QuickFix.ExecType.ORDER_STATUS);
+
+
+                sendExecReport(myContext.QFOrder, new QuickFix.OrderID(myContext.OrderID), myOrdStatus, myExecType,
+                                 0, myContext.LeavesQty, myContext.CumQty, 0, 0);
+
+
+
+
+            }
+            catch (Exception myE)
+            {
+
+                m_Log.Error("pullOrder", myE);
+                // To provide the end user with more information
+                // send an advisory message, again this is optional
+                // and depends on the adpater
+                SendAdvisoryMessage("pullOrder: problem pulling order:" + myE.ToString());
+
+            }
+        }
+
+        /// <summary>
+        /// Example code of pulling an order - used for testing 
+        /// </summary>
+        /// <param name="msg"></param>
+        public void pullOrder(DriverBase.CancelRequestData cancelData)
+        {
+            /*
+            QuickFix.Message myQFPullOrder = null;
+            try
+            {
+                           
+                 // is this new market processing?
+                QuickFix.SecurityID securityID = new QuickFix.SecurityID();
+                if (myQFPullOrder.isSetField(securityID))
+                {
+                    myQFPullOrder.getField(securityID);
+                    // is this new market processing?
+                    if (m_Markets.ContainsKey(securityID.ToString()))
+                    {
+                        m_Markets[securityID.ToString()].pullOrder(msg);
+                        return;
+                    }
+                }
+               
+
+                // send order canceled exec report
+                QuickFix.OrdStatus myOrdStatus = new QuickFix.OrdStatus(QuickFix.OrdStatus.CANCELED);
+                QuickFix.ExecType myExecType = new QuickFix.ExecType(QuickFix.ExecType.ORDER_STATUS);
+
+
+                sendExecReport(cancelData.OrderContext.QFOrder, new QuickFix.OrderID(cancelData.OrderContext.OrderID), myOrdStatus, myExecType,
+                                 0, cancelData.OrderContext.LeavesQty, cancelData.OrderContext.CumQty, 0, 0);
+
+
+
+
+            }
+            catch (Exception myE)
+            {
+
+                m_Log.Error("pullOrder", myE);
+                // To provide the end user with more information
+                // send an advisory message, again this is optional
+                // and depends on the adpater
+                SendAdvisoryMessage("pullOrder: problem pulling order:" + myE.ToString());
+
+            }
+             */
+        }
+
+        /// <summary>
+        /// Modify an order 
+        /// </summary>
+        /// <param name="msg"></param>
+        public override DriverBase.OrderReplaceResult modifyOrder(DriverBase.ModifyRequestData replaceData)
+        {
+            try
+            {
+               
+                // Get the context - we must have this to access the  order            
+                if (replaceData.Price.HasValue)
+                {
+                    replaceData.OrderContext.Price = (decimal)replaceData.Price.Value;
+                }
+
+                if (replaceData.StopPrice.HasValue)
+                {
+                    replaceData.OrderContext.StopPrice = (decimal)replaceData.StopPrice.Value;
+                }
+
+
+
+                // modify the qty 
+                if (replaceData.qty.HasValue)
+                {
+                    replaceData.OrderContext.OrderQty = (int)replaceData.qty.Value;
+                    // force the leaves qty for the purpose of a simple simulation
+                    //myContext.LeavesQty = (int)newOrderQty.getValue();
+                }
+
+
+
+              
+
+                // record the context against the new clordid
+                //RecordOrderContext(replaceData.ClOrdID, replaceData.OrderContext);
+                //m_OrderContextClOrdID.Add(replaceData.ClOrdID, replaceData.OrderContext);
+
+                // send order in book exec report
+                // fully fill
+                KaiTrade.Interfaces.IFill fill = new K2DataObjects.Fill();
+                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.REPLACED;
+                fill.ExecType = KaiTrade.Interfaces.ExecType.ORDER_STATUS;
+                fill.OrderID = replaceData.OrderContext.OrderID;
+                fill.LastPx = 0;
+                fill.AvgPx = 0;
+
+                sendExecReport(replaceData.OrderContext, fill.OrderID, fill.OrderStatus, fill.ExecType, 0.0, replaceData.OrderContext.LeavesQty, replaceData.OrderContext.CumQty,fill.LastPx,fill.AvgPx ,"", "");
+
+
+                if (replaceData.Price.HasValue)
+                {
+                    if (replaceData.Price.Value == 100)
+                    {
+                        m_FillList.Add(replaceData.OrderContext);
+                    }
+                }
+
+                return DriverBase.OrderReplaceResult.success;
+            }
+            catch (Exception myE)
+            {
+
+                m_Log.Error("modifyOrderRD", myE);
+                // To provide the end user with more information
+                // send an advisory message, again this is optional
+                // and depends on the adpater
+                SendAdvisoryMessage("SIM:modifyOrderRD: problem modify order:" + myE.ToString());
+                return DriverBase.OrderReplaceResult.error;
+            }
+        }
+
+        /// <summary>
+        /// Modify an order 
+        /// </summary>
+        /// <param name="msg"></param>
+        public void modifyOrder(KaiTrade.Interfaces.IMessage msg)
+        {
+            QuickFix.Message myQFModOrder = null;
+            try
+            {
+                if (m_QueueReplaceRequests)
+                {
+                    base.ApplyReplaceRequest(msg);
+                    return;
+                }
+                // Extract the raw FIX Message from the inbound message
+                string strOrder = msg.Data;
+
+                // Use QuickFix to handle the message
+                myQFModOrder = new QuickFix.Message(strOrder);
+
+                // Get the FIX id's these are mandatory
+                QuickFix.ClOrdID clOrdID = new QuickFix.ClOrdID();
+                QuickFix.OrigClOrdID origClOrdID = new QuickFix.OrigClOrdID();
+
+                if (myQFModOrder.isSetField(clOrdID))
+                {
+                    myQFModOrder.getField(clOrdID);
+                }
+                else
+                {
+                    sendCancelReplaceRej(myQFModOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a clordid must be specified on a modify order");
+                    Exception myE = new Exception("a clordid must be specified on a modify order");
+                    throw myE;
+                }
+
+                if (myQFModOrder.isSetField(origClOrdID))
+                {
+                    myQFModOrder.getField(origClOrdID);
+                }
+                else
+                {
+                    sendCancelReplaceRej(myQFModOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "a original clordid must be specified on a modify order");
+                    Exception myE = new Exception("an original clordid must be specified on a modify order");
+                    throw myE;
+                }
+
+                // Get the   product/intrument we want to order
+                string myMnemonic = KaiUtil.QFUtils.GetProductMnemonic(m_ID, "", myQFModOrder);
+
+                // is this new market processing?
+                QuickFix.SecurityID securityID = new QuickFix.SecurityID();
+                if (myQFModOrder.isSetField(securityID))
+                {
+                    myQFModOrder.getField(securityID);
+                    // is this new market processing?
+                    if (m_Markets.ContainsKey(securityID.ToString()))
+                    {
+                        m_Markets[securityID.ToString()].modifyOrder(msg);
+                        return;
+                    }
+                }
+                // Get the context - we must have this to access the CQG order
+                DriverBase.OrderContext myContext = null;
+                if (m_ClOrdIDOrderMap.ContainsKey(origClOrdID.getValue()))
+                {
+                    myContext = m_ClOrdIDOrderMap[origClOrdID.getValue()];
+                }
+                if (myContext == null)
+                {
+                    sendCancelReplaceRej(myQFModOrder, QuickFix.CxlRejReason.UNKNOWN_ORDER, "an order does not exist for the modify requested");
+                    Exception myE = new Exception("an order does not exist for the modify requested");
+                    throw myE;
+                }
+
+
+                // modify the limit price
+                QuickFix.Price newPrice = new QuickFix.Price();
+                if (myQFModOrder.isSetField(newPrice))
+                {
+                    myQFModOrder.getField(newPrice);
+                    myContext.QFOrder.setField(newPrice);
+
+
+                }
+
+                // modify the stop price
+                QuickFix.StopPx newStopPx = new QuickFix.StopPx();
+                if (myQFModOrder.isSetField(newStopPx))
+                {
+                    myQFModOrder.getField(newStopPx);
+                    myContext.QFOrder.setField(newStopPx);
+
+
+                }
+
+
+                // modify the qtyqty
+                QuickFix.OrderQty newOrderQty = new QuickFix.OrderQty();
+                if (myQFModOrder.isSetField(newOrderQty))
+                {
+                    myQFModOrder.getField(newOrderQty);
+                    myContext.OrderQty = (int)newOrderQty.getValue();
+                    myContext.QFOrder.setField(newOrderQty);
+                    // force the leaves qty for the purpose of a simple simulation
+                    //myContext.LeavesQty = (int)newOrderQty.getValue();
+
+                }
+
+
+
+                // update the ClOrdID's on our order in the context
+                QuickFix.ClOrdID newClordID = new QuickFix.ClOrdID(clOrdID.getValue());
+
+                QuickFix.OrigClOrdID newOrigClOrdID = new QuickFix.OrigClOrdID(origClOrdID.getValue());
+                myContext.QFOrder.setField(newClordID);
+                myContext.QFOrder.setField(newOrigClOrdID);
+
+                // record the context against the new clordid
+                RecordOrderContext(clOrdID.getValue(), myContext);
+                //m_OrderContextClOrdID.Add(clOrdID.getValue(), myContext);
+
+                // send order in book exec report
+                QuickFix.OrdStatus myOrdStatus = new QuickFix.OrdStatus(QuickFix.OrdStatus.REPLACED);
+                QuickFix.ExecType myExecType = new QuickFix.ExecType(QuickFix.ExecType.ORDER_STATUS);
+
+                sendExecReport(myContext.QFOrder, new QuickFix.OrderID(myContext.OrderID), myOrdStatus, myExecType,
+                                 0, myContext.LeavesQty, myContext.CumQty, 0, 0);
+
+                if (newPrice.getValue() == 100)
+                {
+                    m_FillList.Add(myContext);
+                }
+
+
+            }
+            catch (Exception myE)
+            {
+
+                m_Log.Error("modifyOrder", myE);
+                // To provide the end user with more information
+                // send an advisory message, again this is optional
+                // and depends on the adpater
+                SendAdvisoryMessage("SIM:modifyOrder: problem modify order:" + myE.ToString());
+
+            }
+        }
+
+        
+        
+
+        private void SRCallback(IAsyncResult ar)
+        {
+        }
+        /// <summary>
+        /// Send the resposnse async
+        /// </summary>
+        /// <param name="myMsgType"></param>
+        /// <param name="myMsg"></param>
+        private void handleResponse(string myMsgType, string myMsg)
+        {
+            m_Log.Error("TEST:" + myMsg);
+            sendResponse(myMsgType, myMsg);
+        }
+
+        /// <summary>
+        /// Override the base driver DoSend - this is where we process 
+        /// incomming requests from the system as a whole
+        /// </summary>
+        /// <param name="myMsg"></param>
+        protected override void DoSend(KaiTrade.Interfaces.IMessage myMsg)
+        {
+            try
+            {
+                lock (this)
+                {
+                    // Here are the typical FIX Messages you will receive to
+                    // Support Order Routing
+                    switch (myMsg.Label)
+                    {
+                        case "D":
+                            submitOrder(myMsg);
+                            break;
+                        case "F":
+                            // Pull or Cancel and Order
+                            pullOrder(myMsg);
+                            break;
+                        case "G":
+                            modifyOrder(myMsg);
+                            break;
+                        case "c":
+                            //securityDefRequest(myMsg);
+                            break;
+                        case "x":
+                            //securityListRequest(myMsg);
+                            break;
+                        case "V":
+                            //marketDataRequest(myMsg);
+                            break;
+                        case "S":
+                            //quote(myMsg);
+                            break;
+                        case "Z":
+                            //quoteCancel(myMsg);
+                            break;
+
+
+
+                        default:
+                            // No Action - Discard Message
+                            break;
+                    }
+                }
+
+
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("Driver.Send", myE);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Override the base driver DoStop method
+        /// </summary>
+        protected override void DoStop()
+        {
+            try
+            {
+                this.StopTimer();
+                m_GenPrices = false;
+                m_PriceThread.Abort();
+                
+                
+                // Report that we are stopped - this will show in the Driver view
+                // in the dashboard 
+                SendStatusMessage(KaiTrade.Interfaces.Status.closed, "TDA Driver is closed");
+
+                m_ClOrdIDOrderMap.Clear();
+                m_OrderContextOrdID.Clear();
+                
+                m_Products.Clear();
+
+                foreach (K2DataObjects.PXPublisher myPub in m_PublisherRegister.Values)
+                {
+                    (myPub as KaiTrade.Interfaces.IPublisher).Status = KaiTrade.Interfaces.Status.closed;
+                }
+
+                m_PublisherRegister.Clear();
+                m_RunningState = new K2DataObjects.DriverStatus(DriverBase.StatusConditon.none, DriverBase.StatusConditon.none);
+                
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("Kaitrade.Interfaces.Driver.Stop:", myE);
+            }
+        }
+
+
+        /// <summary>
+        /// Override the base driver's un register publisher method
+        /// </summary>
+        /// <param name="myPublisher"></param>
+        protected override void DoUnRegister(KaiTrade.Interfaces.IPublisher myPublisher)
+        {
+            try
+            {
+                if (m_PublisherRegister.ContainsKey(myPublisher.TopicID()))
+                {
+                    m_PublisherRegister.Remove(myPublisher.TopicID());
+                }
+
+                //UnSubscribeMD(myPublisher);
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("Driver.UnRegister:publisher", myE);
+            }
+        }
+
+         
+
+    }
+}

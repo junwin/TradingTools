@@ -51,6 +51,13 @@ namespace KaiTrade.Interfaces
         public const string SELL = "SELL";
         public const string SHORT = "SHORT";
     }
+    public struct ExecType
+    {
+        public const string ORDER_STATUS = "ORDER_STATUS";
+        public const string REJECTED = "REJECTED ";
+        public const string PARTIAL_FILL = "Partial Fill";
+        public const string FILL = "Fill";
+    }
     public struct OrderType
     {
         public const string LIMIT = "LIMIT";
