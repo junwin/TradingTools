@@ -101,11 +101,11 @@ namespace KTASimulator
         public KTASimulator()
         {
             
-            m_Name = "KTSIM";
+            Name = "KTSIM";
             m_ID = "KTSIM";
             m_Tag = "";
 
-            m_Log.Info(m_Name + " Created");
+            m_Log.Info(Name + " Created");
 
             m_SRDelegate = new SendResponseDelegate(this.handleResponse);
 
@@ -115,7 +115,7 @@ namespace KTASimulator
             m_FillList = new List<DriverBase.OrderContext>();
             genSampleConfig();
 
-            m_Products = new Dictionary<string, KAI.kaitns.SimulatorProduct>();
+            m_Products = new Dictionary<string, SimulatorProduct>();
 
             m_RNGen = new Random();
 
@@ -192,23 +192,24 @@ namespace KTASimulator
 
         private void genSampleConfig()
         {
-            _config = new KAI.kaitns.KTSimConfig();
-            KAI.kaitns.SimulatorProduct mySimProduct = new KAI.kaitns.SimulatorProduct();
-            KAI.kaitns.InstrDef myProduct = new KAI.kaitns.InstrDef();
-            KAI.kaitns.CannedData cannedData = new KAI.kaitns.CannedData();
+            SimulatorConfig config = new SimulatorConfig();
+            SimulatorProduct mySimProduct = new SimulatorProduct();
+            CannedData cannedData = new CannedData();
+            K2DataObjects.Product myProduct = new K2DataObjects.Product();
+            
 
-            myProduct.Sym = "EPZ8";
-            myProduct.CFI = "FXXXXX";
+            myProduct.Symbol = "EPZ8";
+            myProduct.CFICode = "FXXXXX";
             myProduct.MMY = "20081219";
-            myProduct.Exch = "CME";
+            myProduct.Exchange = "CME";
             myProduct.TradeVenue = "CQG";
             myProduct.Mnemonic = "EMINI";
             myProduct.LongName = "CME eMini SP500";
-            myProduct.Src = "ZPZ8";
+            myProduct.SecurityID = "ZPZ8";
 
-            mySimProduct.InstrDef = myProduct;
-            mySimProduct.HighPrice = 99.99;
-            mySimProduct.LowPrice = 98.99;
+            //mySimProduct.InstrDef = myProduct;
+            mySimProduct.HighPrice = 99.99M;
+            mySimProduct.LowPrice = 98.99M;
             mySimProduct.IsAutoFill = true;
             mySimProduct.IsCannedData = true;
             mySimProduct.RunAsMarket = true;
@@ -221,11 +222,13 @@ namespace KTASimulator
             
             mySimProduct.CannedData = cannedData;
              
-            _config.SimulatorProduct.Add(mySimProduct);
+            config.SimulatorProduct.Add(mySimProduct);
+
+            string configData = JsonConvert.SerializeObject(config);
             
 
             //m_Config.
-            _config.ToXmlFile("KTSimConfigTEMP.xml");
+           // _config.ToXmlFile("KTSimConfigTEMP.xml");
         }
 
         /// <summary>
@@ -270,17 +273,16 @@ namespace KTASimulator
                 catch (Exception myE)
                 {
                 }
+                
                 setStatus(KaiTrade.Interfaces.Status.open);
                 StartTimer();
                 m_RunningState = new DriverBase.DriverStatus(DriverBase.StatusConditon.good, DriverBase.StatusConditon.good);
-                if (m_State.IsValidHideDriverUI)
-                {
-                    if (!m_State.HideDriverUI)
+               
+                    if (!_state.HideDriverUI)
                     {
                         m_MainForm.Show();
                     }
-                }
-
+                
             }
             catch (Exception myE)
             {
@@ -309,40 +311,33 @@ namespace KTASimulator
         {
             try
             {
-                _config = new KAI.kaitns.KTSimConfig();
-                _config.FromXmlFile(myPath);
+                using (StreamReader sr = new StreamReader(myPath))
+                {
+                    _config = JsonConvert.DeserializeObject<SimulatorConfig>(sr.ReadToEnd());
+                }
+
+                if (_config.ProductFilePath.Length > 0)
+                {
+                    AddProductDirect(_config.ProductFilePath);
+                }
 
                 // process the config file products these are the things we will simulate
-                foreach (KAI.kaitns.SimulatorProduct myProd in _config.SimulatorProduct)
+                foreach (SimulatorProduct myProd in _config.SimulatorProduct)
                 {
                     try
                     {
                         if (myProd.CannedData == null)
                         {
-                            m_Products.Add(myProd.InstrDef.Mnemonic, myProd);
+                            m_Products.Add(myProd.Mnemonic, myProd);
+                        }
+                        if (myProd.RunAsMarket)
+                        {
+                            CreateMarket(myProd.Mnemonic);
                         }
 
-                        if (myProd.InstrDef.Mnemonic.IndexOf(':') >= 0)
+                        if (myProd.CannedData != null)
                         {
-                            sendSecurityDefinition(myProd);
-                        }
-
-                        else
-                        {
-                            AddProductDirect(myProd.InstrDef.Mnemonic,myProd.InstrDef.CFI, myProd.InstrDef.Exch, "", "", myProd.InstrDef.Sym, "", "",myProd.InstrDef.Currency,null, true);
-                            if (myProd.IsValidRunAsMarket)
-                            {
-                                if (myProd.RunAsMarket)
-                                {  
-                                    CreateMarket(myProd.InstrDef.Mnemonic);                                  
-                                }
-                            }
-                            if (myProd.CannedData != null)
-                            {
-                                this.AddPriceFile(myProd.InstrDef.Mnemonic, myProd.CannedData.CannedDataFile, myProd.CannedData.RunInterval.IntValue(), myProd.CannedData.RunRealTime, myProd.CannedData.RepeatOnEnd, myProd.CannedData.PlayOnSubscribe);
-                            }
-                            
-
+                            this.AddPriceFile(myProd.Mnemonic, myProd.CannedData.CannedDataFile, myProd.CannedData.RunInterval, myProd.CannedData.RunRealTime, myProd.CannedData.RepeatOnEnd, myProd.CannedData.PlayOnSubscribe);
                         }
                     }
                     catch (Exception myE)
@@ -363,7 +358,7 @@ namespace KTASimulator
             throw new Exception("Not implimented");
             
             /*
-            KAI.kaitns.SimulatorProduct myProd = null;
+            SimulatorProduct myProd = null;
             if (m_Products.ContainsKey(myMnemonic))
             {
                 myProd = m_Products[myMnemonic];
@@ -430,12 +425,15 @@ namespace KTASimulator
                 }
                 else
                 {
+                    m_Log.Error("Bar data not supported");
+                    /*
                     string fileName = myTSSet.Mnemonic + "_tsset.xml";
                     KAI.kaitns.TSDataSet myDB = new KAI.kaitns.TSDataSet();
                     //fileName.Replace(':','');
                     myDB.FromXmlFile(fileName);
                     myTSSet.From(myDB);
                     myTSSet.Added = true;
+                     */
                 }
             }
             catch(Exception myE)
@@ -639,11 +637,11 @@ namespace KTASimulator
         {
             while (m_GenPrices)
             {
-                KAI.kaitns.SimulatorProduct myProd;
+                SimulatorProduct myProd;
                 foreach (string myMnemonic in m_Products.Keys)
                 {
                     myProd = m_Products[myMnemonic];
-                    generateProductPrices(myMnemonic, myProd);
+                    generateProductPrices( myProd);
                     Thread.Sleep(50);
                 }
                 Thread.Sleep(100);
@@ -692,7 +690,7 @@ namespace KTASimulator
             {
                 // try to get a PXPublisher
 
-                K2DataObjects.PXPublisher myPXPublisher = m_PublisherRegister[myMnemonic] as K2DataObjects.PXPublisher;
+                L1PriceSupport.PXPublisher myPXPublisher = m_PublisherRegister[myMnemonic] as L1PriceSupport.PXPublisher;
                 //KaiTrade.Interfaces.IPublisher myPublisher = m_PublisherRegister[myMnemonic] as KaiTrade.Interfaces.IPublisher;
 
                 if (myPXPublisher != null)
@@ -1518,13 +1516,13 @@ namespace KTASimulator
                 
                 m_Products.Clear();
 
-                foreach (K2DataObjects.PXPublisher myPub in m_PublisherRegister.Values)
+                foreach (L1PriceSupport.PXPublisher myPub in m_PublisherRegister.Values)
                 {
                     (myPub as KaiTrade.Interfaces.IPublisher).Status = KaiTrade.Interfaces.Status.closed;
                 }
 
                 m_PublisherRegister.Clear();
-                m_RunningState = new K2DataObjects.DriverStatus(DriverBase.StatusConditon.none, DriverBase.StatusConditon.none);
+                m_RunningState = new DriverBase.DriverStatus(DriverBase.StatusConditon.none, DriverBase.StatusConditon.none);
                 
             }
             catch (Exception myE)

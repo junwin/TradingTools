@@ -232,7 +232,7 @@ namespace KTASimulator
             }
         }
 
-
+        /*
         private void setupProduct(string line)
         {
             try
@@ -267,6 +267,7 @@ namespace KTASimulator
                 m_Log.Error("runPlayBack", myE);
             }
         }
+         */
 
         public void SetUpProductNoRun(string filePath)
         {
@@ -282,7 +283,7 @@ namespace KTASimulator
                     m_Log.Info(myLine);
                     if (myLine.IndexOf("#XML") >= 0)
                     {
-                        setupProduct(myLine);
+                        //setupProduct(myLine);
                     }
                 }
 
@@ -315,7 +316,7 @@ namespace KTASimulator
                         m_Log.Info(myLine);
                         if (myLine.IndexOf("#XML") >= 0)
                         {
-                            setupProduct(myLine);
+                            //setupProduct(myLine);
                         }
                     }
                     else

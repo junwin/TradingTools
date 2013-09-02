@@ -12,6 +12,13 @@ namespace DriverBase
         private string _configPath = "";
         private bool _asyncPrices = true;
         private bool _queueReplaceRequests = true;
+        private bool _hideDriverUI = true;
+
+        public bool HideDriverUI
+        {
+            get { return _hideDriverUI; }
+            set { _hideDriverUI = value; }
+        }
 
         public bool AsyncPrices
         {

@@ -16,6 +16,28 @@ namespace KTASimulator
         decimal _lowPrice = 0M;
         decimal _highPrice = 0M;
         bool _isAutoFill;
+        bool _isCannedData = false;
+        bool _runAsMarket = false;
+
+        CannedData _cannedData;
+
+        public CannedData CannedData
+        {
+            get { return _cannedData; }
+            set { _cannedData = value; }
+        }
+
+        public bool RunAsMarket
+        {
+            get { return _runAsMarket; }
+            set { _runAsMarket = value; }
+        }
+
+        public bool IsCannedData
+        {
+            get { return _isCannedData; }
+            set { _isCannedData = value; }
+        }
 
         [JsonProperty]
         public decimal LowPrice

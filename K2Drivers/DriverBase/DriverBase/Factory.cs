@@ -49,6 +49,10 @@ namespace DriverBase
 
         Dictionary<string, K2Depth.K2DOM> _mnemonicDOM;
 
+        Dictionary<string, L1PriceSupport.PXPublisher> _L1Publisher;
+
+        
+
         public static Factory Instance()
         {
             // Uses "Lazy initialization" and double-checked locking
@@ -124,6 +128,18 @@ namespace DriverBase
             return null;
 
         }
+
+
+        public L1PriceSupport.PXPublisher  GetPXPublisher(string mnmonic)
+        {
+            if (!_L1Publisher.ContainsKey(mnmonic))
+            {          
+                _L1Publisher.Add(mnmonic, new L1PriceSupport.PXPublisher());
+                
+            }
+            return _L1Publisher[mnmonic];
+        }
+       
 
         public void ApplyUpdate(KaiTrade.Interfaces.IPXUpdate update)
         {

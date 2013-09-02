@@ -1785,6 +1785,18 @@ namespace DriverBase
         {
         }
 
+        public void AddProductDirect(string filePath)
+        {
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                while (!sr.EndOfStream)
+                {
+                    K2DataObjects.Product product = JsonConvert.DeserializeObject<K2DataObjects.Product>(sr.ReadLine());
+                    AddProductDirect(product);
+                }               
+            }           
+        }
+
         /// <summary>
         /// Add product to the product manager - no events are raised
         /// </summary>

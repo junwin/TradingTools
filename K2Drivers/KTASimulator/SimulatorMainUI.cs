@@ -141,13 +141,14 @@ namespace KTASimulator
         {
             try
             {
-                KaiTrade.Interfaces.Facade myFacade = m_Simulator.Facade;
+                //KaiTrade.Interfaces.Facade myFacade = m_Simulator.Facade;
 
                 // try get the product and create one if needed - this wont work for all Venues
-                myFacade.CheckCreateMnemonic(myMnemonic);
+                //myFacade.CheckCreateMnemonic(myMnemonic);
 
                 // get a PX publisher for the mnemonic
-                K2DataObjects.PXPublisher myPub = myFacade.GetPXPublisher(myMnemonic,0) as K2DataObjects.PXPublisher;
+                
+                L1PriceSupport.PXPublisher myPub = m_Simulator.Facade.Factory.GetPXPublisher(myMnemonic) as L1PriceSupport.PXPublisher;
                 if (myPub != null)
                 {
                     myPub.SetField(KaiTrade.Interfaces.MDConstants.BID1_PRICE, myBidPx);

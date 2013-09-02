@@ -10,5 +10,6 @@ namespace DriverBase
         string ConfigPath { get; set; }
         bool AsyncPrices { get; set; }
         bool QueueReplaceRequests { get; set; }
+        bool HideDriverUI { get; set; }
     }
 }
