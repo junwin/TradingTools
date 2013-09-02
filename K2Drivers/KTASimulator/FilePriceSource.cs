@@ -232,6 +232,92 @@ namespace KTASimulator
             }
         }
 
+
+        KaiTrade.Interfaces.IProduct GetProductFromXML(string xmlData)
+        {
+            K2DataObjects.Product product = null;
+            try
+            {
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(xmlData);
+
+                product = new K2DataObjects.Product();
+
+                foreach (System.Xml.XmlAttribute attribute in doc.Attributes)
+                {
+                    SetProductValue(product, attribute);
+
+                }
+                
+            }
+            catch (Exception myE)
+            {
+                m_Log.Error("runPlayBack", myE);
+            }
+            return product;
+        }
+
+        private void SetProductValue(KaiTrade.Interfaces.IProduct product, System.Xml.XmlAttribute attribute)
+        {
+            switch (attribute.Name)
+            {
+                case "Src":
+                    product.SecurityID = attribute.Value;
+                    break;
+                case "IDSrc":
+                    product.IDSource = attribute.Value;
+                    break;
+                case "Exch":
+                    product.Exchange = attribute.Value;
+                    break;
+                case "CFI":
+                    product.CFICode = attribute.Value;
+                    break;
+                case "TradeVenue":
+                    product.TradeVenue = attribute.Value;
+                    break;
+                case "LongName":
+                    product.LongName = attribute.Value;
+                    break;
+                case "Mnemonic":
+                    product.Mnemonic = attribute.Value;
+                    break;
+                case "ExDestination":
+                    product.ExDestination = attribute.Value;
+                    break;
+                case "Currency":
+                    product.Currency = attribute.Value;
+                    break;
+                case "TickSize":
+                    product.TickSize = decimal.Parse(attribute.Value.ToString());
+                    break;
+                case "ContractSize":
+                    product.ContractSize = decimal.Parse(attribute.Value.ToString());
+                    break;
+                case "NumberDecimalPlaces":
+                    product.NumberDecimalPlaces = int.Parse(attribute.Value.ToString());
+                    break;
+                case "Sym":
+                    product.Symbol = attribute.Value;
+                    break;
+                case "PriceFeedQuantityMultiplier":
+                    product.PriceFeedQuantityMultiplier = int.Parse(attribute.Value.ToString());
+                    break;
+                case "TickValue":
+                    product.TickValue = decimal.Parse(attribute.Value.ToString());
+                    break;
+                case "Commodity":
+                    product.Commodity = attribute.Value;
+                    break;
+                case "GenericName":
+                    product.GenericName = attribute.Value;
+                    break;
+                default:
+                    break;
+
+            }
+        }
+
         /*
         private void setupProduct(string line)
         {
