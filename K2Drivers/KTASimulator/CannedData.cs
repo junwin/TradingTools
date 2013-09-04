@@ -21,29 +21,31 @@ namespace KTASimulator
             get { return _cannedDataFile; }
             set { _cannedDataFile = value; }
         }
-         
 
+
+        [JsonProperty]
          public bool RepeatOnEnd
          {
              get { return _repeatOnEnd; }
              set { _repeatOnEnd = value; }
          }
-         
 
+        [JsonProperty]
          public int RunInterval
          {
              get { return _runInterval; }
              set { _runInterval = value; }
          }
-         
 
+        [JsonProperty]
          public bool RunRealTime
          {
              get { return _runRealTime; }
              set { _runRealTime = value; }
          }
-         
 
+
+        [JsonProperty]
          public bool PlayOnSubscribe
          {
              get { return _playOnSubscribe; }

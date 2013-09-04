@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2Depth", "..\..\K2Depth\K2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "L1PriceSupport", "..\..\L1PriceSupport\L1PriceSupport.csproj", "{FE202E2C-AF66-4986-9FDD-ACD9B5CE3EA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulatorTest", "..\..\KTASimulator\SimulatorTest\SimulatorTest.csproj", "{27F52B8B-4270-481C-999C-44DF17D1134F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriverBaseTest", "..\DriverBaseTest\DriverBaseTest.csproj", "{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,14 @@ Global
 		{FE202E2C-AF66-4986-9FDD-ACD9B5CE3EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE202E2C-AF66-4986-9FDD-ACD9B5CE3EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE202E2C-AF66-4986-9FDD-ACD9B5CE3EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27F52B8B-4270-481C-999C-44DF17D1134F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27F52B8B-4270-481C-999C-44DF17D1134F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27F52B8B-4270-481C-999C-44DF17D1134F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27F52B8B-4270-481C-999C-44DF17D1134F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

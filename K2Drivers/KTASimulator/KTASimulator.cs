@@ -213,6 +213,7 @@ namespace KTASimulator
             mySimProduct.IsAutoFill = true;
             mySimProduct.IsCannedData = true;
             mySimProduct.RunAsMarket = true;
+            mySimProduct.Mnemonic = "EPZ8";
 
             cannedData.CannedDataFile = "filepath";
             cannedData.RepeatOnEnd = true;
@@ -243,7 +244,7 @@ namespace KTASimulator
                 m_Log.Info("KTA Simulator Driver Started");
 
                 // try load our config file
-                processConfigFile(m_ConfigPath + "KTSimConfig.xml");
+                processConfigFile(m_ConfigPath + "SimulatorConfig.txt");
  
                 m_GenPrices = true;
                 m_PriceThread = new Thread(new ThreadStart(this.generatePrices));

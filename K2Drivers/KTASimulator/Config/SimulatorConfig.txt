@@ -1,0 +1,1 @@
+{"ProductFilePath":"","SimulatorProduct":[{"CannedData":{"RepeatOnEnd":true,"RunInterval":100,"RunRealTime":true,"PlayOnSubscribe":true},"RunAsMarket":true,"IsCannedData":true,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":null,"IsAutoFill":true}]}

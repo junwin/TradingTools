@@ -1421,7 +1421,7 @@ namespace DriverBase
 
         }
 
-        void Start(string myState)
+        public void Start(string myState)
         {
             try
             {

@@ -21,18 +21,21 @@ namespace KTASimulator
 
         CannedData _cannedData;
 
+        [JsonProperty]
         public CannedData CannedData
         {
             get { return _cannedData; }
             set { _cannedData = value; }
         }
 
+        [JsonProperty]
         public bool RunAsMarket
         {
             get { return _runAsMarket; }
             set { _runAsMarket = value; }
         }
 
+        [JsonProperty]
         public bool IsCannedData
         {
             get { return _isCannedData; }

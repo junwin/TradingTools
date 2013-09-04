@@ -20,12 +20,14 @@ namespace KTASimulator
             _SimulatorProduct = new List<SimulatorProduct>();
         }
 
+        [JsonProperty]
         public string ProductFilePath
         {
             get { return _ProductFilePath; }
             set { _ProductFilePath = value; }
         }
 
+        [JsonProperty]
         public List<SimulatorProduct> SimulatorProduct
         {
             get { return _SimulatorProduct; }

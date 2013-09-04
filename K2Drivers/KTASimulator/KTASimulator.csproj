@@ -147,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\KTSimConfig.xml" />
+    <Content Include="Config\SimulatorConfig.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\DELL_tsset.xml">
       <SubType>Designer</SubType>
     </Content>
