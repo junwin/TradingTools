@@ -23,6 +23,7 @@ using System.Threading;
 
 using System.Reflection;
 using Newtonsoft.Json;
+using K2ServiceInterface;
 
 
 namespace DriverBase
@@ -921,7 +922,7 @@ namespace DriverBase
             {
                 if (slots.Length > 0)
                 {
-                    K2Depth.K2DOM DOM = Factory.Instance().GetProductDOM(mnemonic,slots[0].Price);
+                    KaiTrade.Interfaces.IDOM  DOM = AppFactory.Instance().GetProductDOM(mnemonic,slots[0].Price);
                    
                     DOM.Update(slots);
                     
@@ -937,7 +938,7 @@ namespace DriverBase
             try
             {
 
-                K2Depth.K2DOM dom = Factory.Instance().GetProductDOM(mnemonic);
+                KaiTrade.Interfaces.IDOM dom = AppFactory.Instance().GetProductDOM(mnemonic);
                 if (dom == null)
                 {
                     // must have a least a price
@@ -956,7 +957,7 @@ namespace DriverBase
                     }
                     if (initPx.HasValue)
                     {
-                        dom = Factory.Instance().GetProductDOM(mnemonic, initPx.Value);
+                        dom = AppFactory.Instance().GetProductDOM(mnemonic, initPx.Value);
 
                     }
                 }
@@ -1015,7 +1016,7 @@ namespace DriverBase
                 KaiTrade.Interfaces.IProduct product =  AppFacade.Instance().GetProductManager().GetProductMnemonic(update.Mnemonic);
                 if (product != null)
                 {
-                    Factory.Instance().ApplyUpdate(update);
+                    AppFactory.Instance().ApplyUpdate(update);
                 }
 
 
@@ -1731,7 +1732,7 @@ namespace DriverBase
             {
 
                 // try get an agregator
-                IPriceAgregator priceAgregator = Factory.Instance().GetPriceAgregator("K2PriceAggregatorBase");
+                IPriceAgregator priceAgregator = AppFactory.Instance().GetPriceAgregator("K2PriceAggregatorBase");
                 if (priceAgregator != null)
                 {
                     priceAgregator.TSSet = myTSSet;
@@ -1841,7 +1842,7 @@ namespace DriverBase
             KaiTrade.Interfaces.IProduct product = null;
             try
             {
-                product = Factory.Instance().AppFacade.AddProduct(mnemonic, Name, mySecID, myExchangeID, ExDestination, myCFICode, myMMY, myCurrency,strikePx,doEvent);
+                product = AppFactory.Instance().Facade.AddProduct(mnemonic, Name, mySecID, myExchangeID, ExDestination, myCFICode, myMMY, myCurrency,strikePx,doEvent);
   
             }
             catch (Exception myE)

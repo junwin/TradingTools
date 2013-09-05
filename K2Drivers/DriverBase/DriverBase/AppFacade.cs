@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using K2ServiceInterface;
 
 namespace DriverBase
 {
     public class AppFacade : IFacade
     {
         private string _appPath = "";
-        private Dictionary<string, L1PriceSupport.IL1PX> _l1Prices;
+        private Dictionary<string, IL1PX> _l1Prices;
         private Dictionary<string, KaiTrade.Interfaces.IDOM> _DOM;
         /// <summary>
         /// Singleton OrderManager
@@ -43,7 +44,7 @@ namespace DriverBase
 
         protected AppFacade()
         {
-            _l1Prices = new Dictionary<string,L1PriceSupport.IL1PX>();
+            _l1Prices = new Dictionary<string,IL1PX>();
             _DOM = new Dictionary<string, KaiTrade.Interfaces.IDOM>();
         }
 
@@ -53,7 +54,7 @@ namespace DriverBase
             set { _appPath = value; }
         }
 
-        public ProductManager GetProductManager()
+        public IProductManager GetProductManager()
         {
             return ProductManager.Instance();
         }
@@ -71,16 +72,16 @@ namespace DriverBase
             return null;
         }
 
-        public Factory Factory
+        public IFactory Factory
         {
             get
             {
-                return Factory.Instance();
+                return AppFactory.Instance();
             }
         }
 
 
-        public L1PriceSupport.IL1PX GetL1Prices(KaiTrade.Interfaces.IProduct product)
+        public IL1PX GetL1Prices(KaiTrade.Interfaces.IProduct product)
         {
             if(_l1Prices.ContainsKey(product.Mnemonic))
             {
@@ -89,7 +90,7 @@ namespace DriverBase
             return null;
 
         }
-        public void SetL1Prices(KaiTrade.Interfaces.IProduct product, L1PriceSupport.IL1PX L1Price)
+        public void SetL1Prices(KaiTrade.Interfaces.IProduct product, IL1PX L1Price)
         {
             if (_l1Prices.ContainsKey(product.Mnemonic))
             {

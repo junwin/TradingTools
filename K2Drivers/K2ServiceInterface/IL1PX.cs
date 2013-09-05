@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace L1PriceSupport
+namespace K2ServiceInterface
 {
     /// <summary>
     /// Level one price interface - this always shows an image of prices

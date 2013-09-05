@@ -14,18 +14,19 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using K2ServiceInterface;
 
 namespace DriverBase
 {
     /// <summary>
     /// Provide access to external objects and the kaitrade facade
     /// </summary>
-    public class Factory
+    public class AppFactory : IFactory
     {
         /// <summary>
         /// Singleton OrderManager
         /// </summary>
-        private static volatile Factory s_instance;
+        private static volatile AppFactory s_instance;
 
         /// <summary>
         /// used to lock the class during instantiation
@@ -40,7 +41,7 @@ namespace DriverBase
         /// <summary>
         /// Main facade used by the app
         /// </summary>
-        private AppFacade m_AppFacade = null;
+        private IFacade m_AppFacade = null;
 
         /// <summary>
         /// K2ServiceClient - if used
@@ -53,7 +54,7 @@ namespace DriverBase
 
         
 
-        public static Factory Instance()
+        public static IFactory Instance()
         {
             // Uses "Lazy initialization" and double-checked locking
             if (s_instance == null)
@@ -62,20 +63,20 @@ namespace DriverBase
                 {
                     if (s_instance == null)
                     {
-                        s_instance = new Factory();
+                        s_instance = new AppFactory();
                     }
                 }
             }
             return s_instance;
         }
 
-        protected Factory()
+        protected AppFactory()
         {
             m_AppFacade = AppFacade.Instance();
             _mnemonicDOM = new Dictionary<string, K2Depth.K2DOM>();
         }
 
-        public AppFacade AppFacade
+        public IFacade Facade
         {
             get
             {
@@ -99,10 +100,10 @@ namespace DriverBase
             }
         }
 
-       
 
-        
-        public K2Depth.K2DOM GetProductDOM(string mnemonic, decimal startPx)
+
+
+        public KaiTrade.Interfaces.IDOM GetProductDOM(string mnemonic, decimal startPx)
         {
             KaiTrade.Interfaces.IProduct product = AppFacade.Instance().GetProductManager().GetProductMnemonic(mnemonic);
             if (!_mnemonicDOM.ContainsKey(mnemonic))
@@ -115,7 +116,7 @@ namespace DriverBase
             return _mnemonicDOM[mnemonic];
 
         }
-        public K2Depth.K2DOM GetProductDOM(string mnemonic)
+        public KaiTrade.Interfaces.IDOM GetProductDOM(string mnemonic)
         {
             if (_mnemonicDOM.ContainsKey(mnemonic))
             {
@@ -127,7 +128,7 @@ namespace DriverBase
         }
 
 
-        public L1PriceSupport.PXPublisher  GetPXPublisher(string mnmonic)
+        public KaiTrade.Interfaces.IPublisher  GetPXPublisher(string mnmonic)
         {
             if (!_L1Publisher.ContainsKey(mnmonic))
             {          

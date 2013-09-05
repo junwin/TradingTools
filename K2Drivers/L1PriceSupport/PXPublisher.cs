@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using K2ServiceInterface;
 
 namespace L1PriceSupport
 {

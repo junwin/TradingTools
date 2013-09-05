@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 using Newtonsoft.Json;
+using K2ServiceInterface;
 
 namespace KTASimulator
 {
@@ -137,7 +138,7 @@ namespace KTASimulator
                     }
                 }
 
-                L1PriceSupport.IL1PX L1PX = m_Parent.Facade.GetL1Prices(m_Product);
+                IL1PX L1PX = m_Parent.Facade.GetL1Prices(m_Product);
 
                 if (cntx.OrderType == KaiTrade.Interfaces.OrderType.MARKET)
                 {

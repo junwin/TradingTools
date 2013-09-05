@@ -22,12 +22,13 @@ using System.Timers;
 using System.Threading;
 
 using System.Reflection;
+using K2ServiceInterface;
 
 namespace DriverBase
 {
     public class DriverStatus : IDriverStatus
     {
-        StatusConditon m_HistoricData = StatusConditon.none;
+        K2ServiceInterface.StatusConditon m_HistoricData = K2ServiceInterface.StatusConditon.none;
         StatusConditon m_OrderRouting = StatusConditon.none;
         StatusConditon m_Prices  = StatusConditon.none;
 

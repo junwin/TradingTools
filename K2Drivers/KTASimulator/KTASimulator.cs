@@ -19,6 +19,7 @@ using System.Threading;
 using System.Timers;
 using System.IO;
 using Newtonsoft.Json;
+using K2ServiceInterface;
 
 namespace KTASimulator
 {
@@ -277,7 +278,7 @@ namespace KTASimulator
                 
                 setStatus(KaiTrade.Interfaces.Status.open);
                 StartTimer();
-                m_RunningState = new DriverBase.DriverStatus(DriverBase.StatusConditon.good, DriverBase.StatusConditon.good);
+                m_RunningState = new DriverBase.DriverStatus(StatusConditon.good, StatusConditon.good);
                
                     if (!_state.HideDriverUI)
                     {
@@ -1249,7 +1250,7 @@ namespace KTASimulator
         /// Modify an order 
         /// </summary>
         /// <param name="msg"></param>
-        public override DriverBase.OrderReplaceResult modifyOrder(DriverBase.ModifyRequestData replaceData)
+        public override OrderReplaceResult modifyOrder(DriverBase.ModifyRequestData replaceData)
         {
             try
             {
@@ -1303,7 +1304,7 @@ namespace KTASimulator
                     }
                 }
 
-                return DriverBase.OrderReplaceResult.success;
+                return OrderReplaceResult.success;
             }
             catch (Exception myE)
             {
@@ -1313,7 +1314,7 @@ namespace KTASimulator
                 // send an advisory message, again this is optional
                 // and depends on the adpater
                 SendAdvisoryMessage("SIM:modifyOrderRD: problem modify order:" + myE.ToString());
-                return DriverBase.OrderReplaceResult.error;
+                return OrderReplaceResult.error;
             }
         }
 
@@ -1523,7 +1524,7 @@ namespace KTASimulator
                 }
 
                 m_PublisherRegister.Clear();
-                m_RunningState = new DriverBase.DriverStatus(DriverBase.StatusConditon.none, DriverBase.StatusConditon.none);
+                m_RunningState = new DriverBase.DriverStatus(StatusConditon.none, StatusConditon.none);
                 
             }
             catch (Exception myE)

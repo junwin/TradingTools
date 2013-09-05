@@ -17,7 +17,7 @@ using System.Text;
 using System.Threading;
 using System.Collections;
 using System.Linq;
-
+using K2ServiceInterface;
 namespace DriverBase
 {
     /// <summary>

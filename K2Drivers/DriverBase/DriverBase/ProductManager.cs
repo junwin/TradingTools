@@ -19,12 +19,13 @@ using System.IO;
 
 using System.Net;
 using Newtonsoft.Json;
+using K2ServiceInterface;
 
 
 
 namespace DriverBase
 {
-    public class ProductManager 
+    public class ProductManager : IProductManager 
     {
         /// <summary>
         /// Singleton instance of the AdapterManager class
@@ -333,7 +334,7 @@ namespace DriverBase
                     // If the driver supports this - then calling request product details
                     // will get the driver to fill in additional information
                     // regarding the product
-                    Factory.Instance().AppFacade.RequestProductDetails(myProd);
+                    AppFactory.Instance().Facade.RequestProductDetails(myProd);
                 }
                 catch (Exception myE)
                 {

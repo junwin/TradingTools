@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulatorTest", "..\..\KTAS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriverBaseTest", "..\DriverBaseTest\DriverBaseTest.csproj", "{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2Managers", "..\..\K2Managers\K2Managers.csproj", "{FC2FBEC4-45BA-43BB-842E-9838DA0FF527}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2ServiceInterface", "..\..\K2ServiceInterface\K2ServiceInterface.csproj", "{BC199337-73E0-4705-BF8C-51E0387D4575}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,14 @@ Global
 		{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C6EEAF9-93FE-4C96-9705-0BBEE45374A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC2FBEC4-45BA-43BB-842E-9838DA0FF527}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC2FBEC4-45BA-43BB-842E-9838DA0FF527}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC2FBEC4-45BA-43BB-842E-9838DA0FF527}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC2FBEC4-45BA-43BB-842E-9838DA0FF527}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC199337-73E0-4705-BF8C-51E0387D4575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC199337-73E0-4705-BF8C-51E0387D4575}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC199337-73E0-4705-BF8C-51E0387D4575}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC199337-73E0-4705-BF8C-51E0387D4575}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

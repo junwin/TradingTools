@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DriverBase
+namespace K2ServiceInterface
 {
 
     /// <summary>
@@ -130,7 +130,7 @@ namespace DriverBase
         /// by KaiTrade using the KaiTrade Facade
         /// </summary>
         /// <param name="myFacade"></param>
-        void SetFacade(AppFacade myFacade);
+        void SetFacade(IFacade myFacade);
 
         /// <summary>
         /// Start an adapter passing in any state needed - in this release
@@ -217,7 +217,7 @@ namespace DriverBase
         /// <summary>
         /// Get a list of sessions supported by the driver
         /// </summary>
-        System.Collections.Generic.List<DriverSession> Sessions
+        System.Collections.Generic.List<IDriverSession> Sessions
         {
             get;
         }
