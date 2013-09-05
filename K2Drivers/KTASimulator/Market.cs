@@ -71,7 +71,7 @@ namespace KTASimulator
         {
             m_Parent = parent;
             m_Mnemonic = mnemonic;
-            m_Product = parent.Facade.Factory.GetProductManager().GetProductMnemonic(mnemonic);
+            m_Product = parent.Facade.GetProductManager().GetProductMnemonic(mnemonic);
 
             m_OrderContextOrdID = new Dictionary<string, DriverBase.OrderContext>();
             m_OrderContextClOrdID = new Dictionary<string, DriverBase.OrderContext>();
@@ -130,7 +130,7 @@ namespace KTASimulator
             {
                 if (m_Product == null)
                 {
-                    m_Product = m_Parent.Facade.Factory.GetProductManager().GetProductMnemonic(m_Mnemonic);
+                    m_Product = m_Parent.Facade.GetProductManager().GetProductMnemonic(m_Mnemonic);
                     if (m_Product == null)
                     {
                         return;

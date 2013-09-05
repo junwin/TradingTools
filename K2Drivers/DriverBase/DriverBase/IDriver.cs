@@ -130,7 +130,7 @@ namespace DriverBase
         /// by KaiTrade using the KaiTrade Facade
         /// </summary>
         /// <param name="myFacade"></param>
-        void SetFacade(Facade myFacade);
+        void SetFacade(AppFacade myFacade);
 
         /// <summary>
         /// Start an adapter passing in any state needed - in this release

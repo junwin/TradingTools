@@ -5,13 +5,43 @@ using System.Text;
 
 namespace DriverBase
 {
-    public class Facade : IFacade
+    public class AppFacade : IFacade
     {
         private string _appPath = "";
         private Dictionary<string, L1PriceSupport.IL1PX> _l1Prices;
         private Dictionary<string, KaiTrade.Interfaces.IDOM> _DOM;
+        /// <summary>
+        /// Singleton OrderManager
+        /// </summary>
+        private static volatile AppFacade s_instance;
 
-        public Facade()
+        /// <summary>
+        /// used to lock the class during instantiation
+        /// </summary>
+        private static object s_Token = new object();
+
+        /// <summary>
+        /// Logger
+        /// </summary>
+        public log4net.ILog m_Log = log4net.LogManager.GetLogger("Kaitrade");
+
+        public static AppFacade Instance()
+        {
+            // Uses "Lazy initialization" and double-checked locking
+            if (s_instance == null)
+            {
+                lock (s_Token)
+                {
+                    if (s_instance == null)
+                    {
+                        s_instance = new AppFacade();
+                    }
+                }
+            }
+            return s_instance;
+        }
+
+        protected AppFacade()
         {
             _l1Prices = new Dictionary<string,L1PriceSupport.IL1PX>();
             _DOM = new Dictionary<string, KaiTrade.Interfaces.IDOM>();
@@ -22,6 +52,12 @@ namespace DriverBase
             get { return _appPath; }
             set { _appPath = value; }
         }
+
+        public ProductManager GetProductManager()
+        {
+            return ProductManager.Instance();
+        }
+
         public void AddProduct(string genericName, string tradeVenue)
         {
         }

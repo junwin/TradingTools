@@ -317,42 +317,31 @@ namespace DriverBase
             {
                 KaiTrade.Interfaces.IProduct myProd;
 
-                
-                    if (product.GenericName.Length > 0)
-                    {
-                        // a generic product uses a name like "ES" where the driver
-                        // can then rsolve that to the current S&P eMini contracr
-                        // only CQG currently supports this function
-                        Factory.Instance().AppFacade.AddProduct(product.GenericName, product.TradeVenue);
-                    }
-                
+                if (m_MnemonicProduct.ContainsKey(product.Mnemonic))
+                {
+                    myProd = GetProductMnemonic(product.Mnemonic);
+                }
                 else
                 {
-                    if (m_MnemonicProduct.ContainsKey(product.Mnemonic))
-                    {
-                        myProd = GetProductMnemonic(product.Mnemonic);
-                    }
-                    else
-                    {
-                        myProd = CreateProduct(product.Mnemonic);
-                    }
-                    // we dont load the underlyings here since we expect they have been perisisted in
-                    // the file save
-                    myProd.From(product);
-                    try
-                    {
-                        // If the driver supports this - then calling request product details
-                        // will get the driver to fill in additional information
-                        // regarding the product
-                        Factory.Instance().AppFacade.RequestProductDetails(myProd);
-                    }
-                    catch (Exception myE)
-                    {
-                        m_Log.Error("FromFile:RequestProductDetails", myE);
-                    }
-                    DoUpdate("ADD", myProd.Identity);
-                    return  myProd.Identity;
+                    myProd = CreateProduct(product.Mnemonic);
                 }
+                // we dont load the underlyings here since we expect they have been perisisted in
+                // the file save
+                myProd.From(product);
+                try
+                {
+                    // If the driver supports this - then calling request product details
+                    // will get the driver to fill in additional information
+                    // regarding the product
+                    Factory.Instance().AppFacade.RequestProductDetails(myProd);
+                }
+                catch (Exception myE)
+                {
+                    m_Log.Error("FromFile:RequestProductDetails", myE);
+                }
+                DoUpdate("ADD", myProd.Identity);
+                return myProd.Identity;
+
             }
             catch (Exception myE)
             {

@@ -40,7 +40,7 @@ namespace DriverBase
         /// <summary>
         /// Main facade used by the app
         /// </summary>
-        private Facade m_AppFacade = null;
+        private AppFacade m_AppFacade = null;
 
         /// <summary>
         /// K2ServiceClient - if used
@@ -71,11 +71,11 @@ namespace DriverBase
 
         protected Factory()
         {
-            m_AppFacade = new Facade();
+            m_AppFacade = AppFacade.Instance();
             _mnemonicDOM = new Dictionary<string, K2Depth.K2DOM>();
         }
 
-        public Facade AppFacade
+        public AppFacade AppFacade
         {
             get
             {
@@ -99,15 +99,12 @@ namespace DriverBase
             }
         }
 
-        public ProductManager GetProductManager()
-        {
-            return ProductManager.Instance();
-        }
+       
 
         
         public K2Depth.K2DOM GetProductDOM(string mnemonic, decimal startPx)
         {
-            KaiTrade.Interfaces.IProduct product = Factory.Instance().GetProductManager().GetProductMnemonic(mnemonic);
+            KaiTrade.Interfaces.IProduct product = AppFacade.Instance().GetProductManager().GetProductMnemonic(mnemonic);
             if (!_mnemonicDOM.ContainsKey(mnemonic))
             {
                 K2Depth.K2DOM dom = new K2Depth.K2DOM();
@@ -143,6 +140,7 @@ namespace DriverBase
 
         public void ApplyUpdate(KaiTrade.Interfaces.IPXUpdate update)
         {
+            throw new Exception("Not implimented");
         }
 
         public IPriceAgregator GetPriceAgregator(string name)

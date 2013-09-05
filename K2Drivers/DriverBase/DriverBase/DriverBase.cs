@@ -248,6 +248,7 @@ namespace DriverBase
             m_DriverLog = log4net.LogManager.GetLogger("KaiDriverLog");
 
             _state = new DriverState();
+            m_Facade = AppFacade.Instance();
 
             m_ClOrdIDOrderMap = new Dictionary<string, OrderContext>();
             m_ApiIDOrderMap = new Dictionary<string, OrderContext>();
@@ -1011,7 +1012,7 @@ namespace DriverBase
                     return;
                 }
 
-                KaiTrade.Interfaces.IProduct product = Factory.Instance().GetProductManager().GetProductMnemonic(update.Mnemonic);
+                KaiTrade.Interfaces.IProduct product =  AppFacade.Instance().GetProductManager().GetProductMnemonic(update.Mnemonic);
                 if (product != null)
                 {
                     Factory.Instance().ApplyUpdate(update);
@@ -1807,7 +1808,7 @@ namespace DriverBase
             string productId = "";
             try
             {
-                productId =  Factory.Instance().GetProductManager().AddProduct(productdata);
+                productId =  AppFacade.Instance().GetProductManager().AddProduct(productdata);
             }
             catch (Exception myE)
             {

@@ -104,7 +104,7 @@
     <Compile Include="DriverState.cs" />
     <Compile Include="DriverStatus.cs" />
     <Compile Include="DriverStatusMessage.cs" />
-    <Compile Include="Facade.cs" />
+    <Compile Include="AppFacade.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="IDriverManager.cs" />
     <Compile Include="IDriverSession.cs" />

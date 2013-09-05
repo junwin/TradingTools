@@ -243,7 +243,9 @@ namespace KTASimulator
 
                 product = new K2DataObjects.Product();
 
-                foreach (System.Xml.XmlAttribute attribute in doc.Attributes)
+                System.Xml.XmlElement productElem = doc.GetElementById("Product");
+
+                foreach (System.Xml.XmlAttribute attribute in doc.DocumentElement.Attributes)
                 {
                     SetProductValue(product, attribute);
 
@@ -318,33 +320,23 @@ namespace KTASimulator
             }
         }
 
-        /*
+ 
         private void setupProduct(string line)
         {
             try
             {
                 string xmlData = line.Substring(5);
+                KaiTrade.Interfaces.IProduct product = GetProductFromXML(xmlData);
 
-                KAI.kaitns.Product prodDB = new KAI.kaitns.Product();
-                prodDB.FromXml(xmlData);
+                product.TradeVenue = "KTSIM";
+                product.Mnemonic = "S." + product.Mnemonic;
+                
 
-                prodDB.TradeVenue = "KTSIM";
-                prodDB.Mnemonic = "S." + prodDB.Mnemonic;
-                if (prodDB.IsValidSym)
-                {
-                    prodDB.Sym = "S." + prodDB.Sym;
-                }
-                if (prodDB.IsValidSrc)
-                {
-                    prodDB.Src = "S." + prodDB.Src;
-                }
-
-                KaiTrade.Interfaces.IProduct prod = m_Simulator.Facade.Factory.GetProductManager().GetProductMnemonic(prodDB.Mnemonic);
+                KaiTrade.Interfaces.IProduct prod = m_Simulator.Facade.GetProductManager().GetProductMnemonic(product.Mnemonic);
                 if (prod == null)
                 {
-                    prod = m_Simulator.Facade.Factory.GetProductManager().CreateProduct(prodDB.Mnemonic);
-                    prod.From(prodDB, false);
-                    m_Simulator.CreateMarket(prodDB.Mnemonic);
+                    m_Simulator.AddProductDirect(product as K2DataObjects.Product);
+                    m_Simulator.CreateMarket(product.Mnemonic);
                 }
                 
             }
@@ -353,7 +345,7 @@ namespace KTASimulator
                 m_Log.Error("runPlayBack", myE);
             }
         }
-         */
+
 
         public void SetUpProductNoRun(string filePath)
         {
@@ -369,7 +361,8 @@ namespace KTASimulator
                     m_Log.Info(myLine);
                     if (myLine.IndexOf("#XML") >= 0)
                     {
-                        //setupProduct(myLine);
+                        
+                        setupProduct(myLine);
                     }
                 }
 
@@ -402,7 +395,7 @@ namespace KTASimulator
                         m_Log.Info(myLine);
                         if (myLine.IndexOf("#XML") >= 0)
                         {
-                            //setupProduct(myLine);
+                            setupProduct(myLine);
                         }
                     }
                     else
