@@ -47,7 +47,7 @@ namespace K2ServiceInterface
     /// Defines the interface a drive(broker connection) must impliment to be loaded and used from
     /// KaiTrade
     /// </summary>
-    public interface Driver
+    public interface IDriver
     {
         /// <summary>
         /// Process a set of order - this is driver specific and used to provide

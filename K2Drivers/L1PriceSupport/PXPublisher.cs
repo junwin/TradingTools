@@ -559,8 +559,8 @@ namespace L1PriceSupport
 
         private void addField2List(ref System.Collections.Generic.List<KaiTrade.Interfaces.IField> myFields, string myID, int myIdent)
         {
-            Field myField;
-            myField = new Field(myID);
+            K2DataObjects.Field myField;
+            myField = new K2DataObjects.Field(myID);
             myFields.Add(myField);
         }
         private void initFields()
@@ -789,8 +789,8 @@ namespace L1PriceSupport
                     addIntrinsicFields(ref myFieldList);
 
                     // add the current time as the update time to the list
-                    Field myUpdTimeField;
-                    myUpdTimeField = new Field("UPDTIME", System.Environment.TickCount.ToString());
+                    K2DataObjects.Field myUpdTimeField;
+                    myUpdTimeField = new K2DataObjects.Field("UPDTIME", System.Environment.TickCount.ToString());
 
                     myFieldList.Add(myUpdTimeField);
 
@@ -829,8 +829,8 @@ namespace L1PriceSupport
                     addChangedIntrinsicFields(ref myFieldList);
 
                     // add the current time as the update time to the list
-                    Field myUpdTimeField;
-                    myUpdTimeField = new Field("UPDTIME", System.Environment.TickCount.ToString());
+                    K2DataObjects.Field myUpdTimeField;
+                    myUpdTimeField = new K2DataObjects.Field("UPDTIME", System.Environment.TickCount.ToString());
 
                     myFieldList.Add(myUpdTimeField);
 
@@ -889,7 +889,7 @@ namespace L1PriceSupport
                 if (m_PubStatus != myStatus)
                 {
                     m_PubStatus = myStatus;
-                    m_Status = new Field("STATUS", myStatus.ToString());
+                    m_Status = new K2DataObjects.Field("STATUS", myStatus.ToString());
                     m_StatusInfo = new System.Collections.Generic.List<KaiTrade.Interfaces.IField>();
                     m_StatusInfo.Add(m_Status);
                     applyStatus(m_StatusInfo);

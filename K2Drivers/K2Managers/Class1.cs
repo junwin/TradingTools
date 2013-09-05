@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace K2Managers
 {
-    public class Class1
+    class Class1
     {
     }
 }

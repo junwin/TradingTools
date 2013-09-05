@@ -80,6 +80,7 @@
     <Compile Include="ICancelOrderRequest.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="IDriverDef.cs" />
     <Compile Include="IField.cs" />
     <Compile Include="IFill.cs" />
     <Compile Include="IClearingHouse.cs" />

@@ -50,7 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="IDriver.cs" />
     <Compile Include="IDriverManager.cs" />
     <Compile Include="IDriverSession.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="IModuleDef.cs" />
     <Compile Include="IPriceAgregator.cs" />
     <Compile Include="IProductManager.cs" />
+    <Compile Include="OrderManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

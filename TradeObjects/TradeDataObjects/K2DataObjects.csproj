@@ -68,7 +68,9 @@
     <Compile Include="CancelOrderRequest.cs" />
     <Compile Include="ClearingHouse.cs" />
     <Compile Include="DataContext.cs" />
+    <Compile Include="DriverDef.cs" />
     <Compile Include="Exchange.cs" />
+    <Compile Include="Field.cs" />
     <Compile Include="Fill.cs" />
     <Compile Include="Firm.cs" />
     <Compile Include="Group.cs" />

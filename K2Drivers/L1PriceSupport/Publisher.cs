@@ -145,7 +145,7 @@ namespace L1PriceSupport
                 else
                 {
                     
-                    myField = new Field(myID, myValue);
+                    myField = new K2DataObjects.Field(myID, myValue);
                     m_Fields.Add(myID, myField);
                 }
             }
@@ -177,7 +177,7 @@ namespace L1PriceSupport
                 }
                 else
                 {
-                    myField = new Field(myID, myValue);
+                    myField = new K2DataObjects.Field(myID, myValue);
                     m_UpdateFields.Add(myID, myField);
                 }
             }
@@ -242,8 +242,8 @@ namespace L1PriceSupport
                 {
                     // add the current time as the update time to the list
                     this.updateField("UPDTIME", System.Environment.TickCount.ToString());
-                    Field myUpdTimeField;
-                    myUpdTimeField = new Field("UPDTIME", System.Environment.TickCount.ToString());
+                    K2DataObjects.Field myUpdTimeField;
+                    myUpdTimeField = new K2DataObjects.Field("UPDTIME", System.Environment.TickCount.ToString());
 
                     // create a list of changed fields with their current values
                     System.Collections.Generic.List<KaiTrade.Interfaces.IField> myFieldList;
@@ -285,7 +285,7 @@ namespace L1PriceSupport
                 if (m_PubStatus != myStatus)
                 {
                     m_PubStatus = myStatus;
-                    m_Status = new Field("STATUS", myStatus.ToString());
+                    m_Status = new K2DataObjects.Field("STATUS", myStatus.ToString());
                     m_StatusInfo = new System.Collections.Generic.List<KaiTrade.Interfaces.IField>();
                     m_StatusInfo.Add(m_Status);
                     applyStatus(m_StatusInfo);

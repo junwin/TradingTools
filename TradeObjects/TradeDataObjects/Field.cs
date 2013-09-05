@@ -1,25 +1,13 @@
-/***************************************************************************
- *
- *      Copyright (c) 2009,2010,2011 KaiTrade LLC (registered in Delaware)
- *                     All Rights Reserved Worldwide
- *
- * STRICTLY PROPRIETARY and CONFIDENTIAL
- *
- * WARNING:  This file is the confidential property of KaiTrade LLC For
- * use only by those with the express written permission and license from
- * KaiTrade LLC.  Unauthorized reproduction, distribution, use or disclosure
- * of this file or any program (or document) is prohibited.
- *
- ***************************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
 using System.Text;
+using System.ServiceModel;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
-namespace L1PriceSupport
+namespace K2DataObjects
 {
+
     /// <summary>
     /// Represents a simple data field used
     /// </summary>
@@ -104,40 +92,6 @@ namespace L1PriceSupport
         }
 
         #endregion
-    }
-    public class KTGNField<T>
-    {
-        private T m_Value;
-        private string m_ID;
-        public KTGNField(string myID, T myValue)
-        {
-            m_Value = myValue;
-            m_ID = myID;
-        }
-
-        string ID
-        {
-            get
-            {
-                return m_ID;
-            }
-            set
-            {
-                m_ID = value;
-            }
-        }
-
-        T Value
-        {
-            get
-            {
-                return m_Value;
-            }
-            set
-            {
-                m_Value = value;
-            }
-        }
     }
 
 }

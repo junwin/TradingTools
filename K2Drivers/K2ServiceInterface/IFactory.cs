@@ -10,5 +10,6 @@ namespace K2ServiceInterface
         KaiTrade.Interfaces.IDOM GetProductDOM(string mnemonic, decimal startPx);
         KaiTrade.Interfaces.IPublisher GetPXPublisher(string mnmonic);
         object K2ServiceClient { get; set; }
+        KaiTrade.Interfaces.IClient GetMainMessageHandler();
     }
 }

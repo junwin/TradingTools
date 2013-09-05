@@ -51,6 +51,11 @@
       <HintPath>..\build\bin\K2Depth.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="K2ServiceInterface, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\build\bin\K2ServiceInterface.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="KTInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\build\bin\KTInterfaces.dll</HintPath>
@@ -81,7 +86,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="DriverManager.cs" />
+    <Compile Include="Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublisherManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="KaiKey.snk" />
