@@ -9,7 +9,7 @@ namespace SimulatorTest
     [TestClass]
     public class OrderTest
     {
-        KTASimulator.KTASimulator _driver = null;
+        static KTASimulator.KTASimulator _driver = null;
         static int s_Count = 0;
 
         [TestMethod]
@@ -21,6 +21,7 @@ namespace SimulatorTest
         [TestMethod]
         public void SubmitOrder()
         {
+            _driver = new KTASimulator.KTASimulator();
             _driver.Start("");
 
             K2DataObjects.SubmitRequest nos = new K2DataObjects.SubmitRequest();
@@ -35,9 +36,11 @@ namespace SimulatorTest
             nos.Side = KaiTrade.Interfaces.Side.BUY;
 
             K2DataObjects.Message msg = new K2DataObjects.Message();
+            msg.Label = "D";
             msg.Data = JsonConvert.SerializeObject(nos);
 
             _driver.SendMessage(msg);
+            System.Threading.Thread.Sleep(60000);
             
         }
     }
