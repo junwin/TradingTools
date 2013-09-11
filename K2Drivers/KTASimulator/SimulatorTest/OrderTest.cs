@@ -29,7 +29,7 @@ namespace SimulatorTest
             nos.ClOrdID = "TEST" + s_Count.ToString();
             s_Count++;
 
-            nos.Mnemonic = "DELL";
+            nos.Mnemonic = "EAS";
             nos.OrderQty = 100;
             nos.OrdType = KaiTrade.Interfaces.OrderType.LIMIT;
             nos.Price = 11.99M;
@@ -39,8 +39,8 @@ namespace SimulatorTest
             msg.Label = "D";
             msg.Data = JsonConvert.SerializeObject(nos);
 
-            _driver.SendMessage(msg);
-            System.Threading.Thread.Sleep(60000);
+            _driver.OnMessage(msg);
+            
             
         }
     }

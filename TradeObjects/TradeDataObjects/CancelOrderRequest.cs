@@ -19,6 +19,7 @@ namespace K2DataObjects
         private int? _retryCount;
 
         [DataMember]
+        [JsonProperty]
         [System.Data.Linq.Mapping.Column]
         public string Mnemonic
         {
@@ -27,6 +28,7 @@ namespace K2DataObjects
         }
 
         [DataMember]
+        [JsonProperty]
         [System.Data.Linq.Mapping.Column]
         public string ClOrdID
         {
@@ -35,6 +37,7 @@ namespace K2DataObjects
         }
 
         [DataMember]
+        [JsonProperty]
         [System.Data.Linq.Mapping.Column]
         public string OrigClOrdID
         {
@@ -43,6 +46,7 @@ namespace K2DataObjects
         }
 
         [DataMember]
+        [JsonProperty]
         [System.Data.Linq.Mapping.Column]
         public int? RetryCount
         {

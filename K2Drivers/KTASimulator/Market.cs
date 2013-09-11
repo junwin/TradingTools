@@ -269,7 +269,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Parent.m_Log.Error("submitOrder", myE);
+                m_Parent._log.Error("submitOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater

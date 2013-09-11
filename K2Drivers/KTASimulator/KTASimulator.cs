@@ -37,7 +37,7 @@ namespace KTASimulator
         /// <summary>
         /// Map to the products that we can simulate indexes by Mnemonic
         /// </summary>
-        private Dictionary<string, SimulatorProduct> m_Products;
+        private Dictionary<string, SimulatorProduct> _products;
 
         /// <summary>
         /// Map of order contectxs to Order ID
@@ -106,7 +106,7 @@ namespace KTASimulator
             m_ID = "KTSIM";
             m_Tag = "";
 
-            m_Log.Info(Name + " Created");
+            _log.Info(Name + " Created");
 
             m_SRDelegate = new SendResponseDelegate(this.handleResponse);
 
@@ -116,7 +116,7 @@ namespace KTASimulator
             m_FillList = new List<DriverBase.OrderContext>();
             genSampleConfig();
 
-            m_Products = new Dictionary<string, SimulatorProduct>();
+            _products = new Dictionary<string, SimulatorProduct>();
 
             m_RNGen = new Random();
 
@@ -155,7 +155,7 @@ namespace KTASimulator
 
         public log4net.ILog Log
         {
-            get { return m_Log; }
+            get { return _log; }
         }
 
         public void StartTimer()
@@ -186,7 +186,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("OnTimer", myE);
+                _log.Error("OnTimer", myE);
             }
         }
 
@@ -240,12 +240,12 @@ namespace KTASimulator
         {
             try
             {
-                m_Log = log4net.LogManager.GetLogger("Kaitrade");
+                _log = log4net.LogManager.GetLogger("Kaitrade");
 
-                m_Log.Info("KTA Simulator Driver Started");
+                _log.Info("KTA Simulator Driver Started");
 
                 // try load our config file
-                processConfigFile(m_ConfigPath + "SimulatorConfig.txt");
+                processConfigFile(_configPath + "SimulatorConfig.txt");
  
                 m_GenPrices = true;
                 m_PriceThread = new Thread(new ThreadStart(this.generatePrices));
@@ -278,7 +278,7 @@ namespace KTASimulator
                 
                 setStatus(KaiTrade.Interfaces.Status.open);
                 StartTimer();
-                m_RunningState = new DriverBase.DriverStatus(StatusConditon.good, StatusConditon.good);
+                _runningState = new DriverBase.DriverStatus(StatusConditon.good, StatusConditon.good);
                
                     if (!_state.HideDriverUI)
                     {
@@ -288,7 +288,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("doStart", myE);
+                _log.Error("doStart", myE);
             }
 
 
@@ -301,7 +301,7 @@ namespace KTASimulator
         public override DriverBase.DriverStatus GetRunningStatus()
         {
             // returns none on all states - unless overridden
-            return m_RunningState;
+            return _runningState;
             
         }
 
@@ -328,46 +328,43 @@ namespace KTASimulator
                 {
                     try
                     {
-                        if (myProd.CannedData == null)
+                        if (!myProd.IsCannedData)
                         {
-                            m_Products.Add(myProd.Mnemonic, myProd);
+                            _products.Add(myProd.Mnemonic, myProd);
                         }
-                        if (myProd.RunAsMarket)
+                        else if (myProd.RunAsMarket)
                         {
                             CreateMarket(myProd.Mnemonic);
                         }
 
-                        if (myProd.CannedData != null)
+                        if (myProd.CannedData != null && myProd.IsCannedData)
                         {
                             this.AddPriceFile(myProd.Mnemonic, myProd.CannedData.CannedDataFile, myProd.CannedData.RunInterval, myProd.CannedData.RunRealTime, myProd.CannedData.RepeatOnEnd, myProd.CannedData.PlayOnSubscribe);
                         }
                     }
                     catch (Exception myE)
                     {
-                        m_Log.Error("processConfigFile:loop", myE);
+                        _log.Error("processConfigFile:loop", myE);
                     }
                 }
 
             }
             catch (Exception myE)
             {
-                m_Log.Error("processConfigFile", myE);
+                _log.Error("processConfigFile", myE);
             }
         }
 
         private SimulatorProduct getProduct(string myMnemonic)
         {
-            throw new Exception("Not implimented");
-            
-            /*
+
             SimulatorProduct myProd = null;
-            if (m_Products.ContainsKey(myMnemonic))
+            if (_products.ContainsKey(myMnemonic))
             {
-                myProd = m_Products[myMnemonic];
+                myProd = _products[myMnemonic];
             }
             return myProd;
-             */
-
+            
         }
 
        
@@ -405,7 +402,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("SubscribeMD", myE);
+                _log.Error("SubscribeMD", myE);
             }
         }
 
@@ -427,7 +424,7 @@ namespace KTASimulator
                 }
                 else
                 {
-                    m_Log.Error("Bar data not supported");
+                    _log.Error("Bar data not supported");
                     /*
                     string fileName = myTSSet.Mnemonic + "_tsset.xml";
                     KAI.kaitns.TSDataSet myDB = new KAI.kaitns.TSDataSet();
@@ -471,7 +468,7 @@ namespace KTASimulator
                             break;
 
                         default:
-                            m_DriverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
+                            _driverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
                             break;
                     }
 
@@ -479,7 +476,7 @@ namespace KTASimulator
                 }
                 catch (Exception myE)
                 {
-                    m_Log.Error("RequestTSData", myE);
+                    _log.Error("RequestTSData", myE);
                     this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "DoGetTSData" + myE.Message);
 
                 }
@@ -496,7 +493,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("CreateMarket", myE);
+                _log.Error("CreateMarket", myE);
             }
         }
 
@@ -523,7 +520,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("GetPriceFiles", myE);
+                _log.Error("GetPriceFiles", myE);
             }
         }
 
@@ -550,7 +547,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("AddPriceFile", myE);
+                _log.Error("AddPriceFile", myE);
             }
         }
 
@@ -566,7 +563,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("RunPxRealTime", myE);
+                _log.Error("RunPxRealTime", myE);
             }
         }
 
@@ -582,7 +579,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("RunPxRealTime", myE);
+                _log.Error("RunPxRealTime", myE);
             }
         }
 
@@ -608,7 +605,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("PriceUpdateStatus", myE);
+                _log.Error("PriceUpdateStatus", myE);
             }
         }
 
@@ -630,7 +627,7 @@ namespace KTASimulator
                 }
                 catch (Exception myE)
                 {
-                    m_Log.Error("PriceUpdate", myE);
+                    _log.Error("PriceUpdate", myE);
                 }
             }
         }
@@ -640,9 +637,9 @@ namespace KTASimulator
             while (m_GenPrices)
             {
                 SimulatorProduct myProd;
-                foreach (string myMnemonic in m_Products.Keys)
+                foreach (string myMnemonic in _products.Keys)
                 {
-                    myProd = m_Products[myMnemonic];
+                    myProd = _products[myMnemonic];
                     generateProductPrices( myProd);
                     Thread.Sleep(50);
                 }
@@ -692,8 +689,8 @@ namespace KTASimulator
             {
                 // try to get a PXPublisher
 
-                L1PriceSupport.PXPublisher myPXPublisher = m_PublisherRegister[myMnemonic] as L1PriceSupport.PXPublisher;
-                //KaiTrade.Interfaces.IPublisher myPublisher = m_PublisherRegister[myMnemonic] as KaiTrade.Interfaces.IPublisher;
+                L1PriceSupport.PXPublisher myPXPublisher = _publisherRegister[myMnemonic] as L1PriceSupport.PXPublisher;
+                //KaiTrade.Interfaces.IPublisher myPublisher = _publisherRegister[myMnemonic] as KaiTrade.Interfaces.IPublisher;
 
                 if (myPXPublisher != null)
                 {
@@ -722,7 +719,7 @@ namespace KTASimulator
                 // Use QuickFix to handle the message - you can 
                 // use the FIX parser of your own choice 
                 
-                m_Log.Error("SUBTEST:" + myMsg.Data);
+                _log.Error("SUBTEST:" + myMsg.Data);
                 
                 long quantity = nos.OrderQty;
                 decimal myOrdPrice = nos.Price.Value;
@@ -732,14 +729,16 @@ namespace KTASimulator
                 // Get the CQG product/intrument we want to order
                 string myMnemonic = nos.Mnemonic;
 
-                
-                if (nos.SecurityID.Length > 0)
+                if (nos.SecurityID != null)
                 {
-                    // is this new market processing?
-                    if (m_Markets.ContainsKey(nos.SecurityID))
+                    if (nos.SecurityID.Length > 0)
                     {
-                        m_Markets[nos.SecurityID].submitOrder(myMsg);
-                        return;
+                        // is this new market processing?
+                        if (m_Markets.ContainsKey(nos.SecurityID))
+                        {
+                            m_Markets[nos.SecurityID].submitOrder(myMsg);
+                            return;
+                        }
                     }
                 }
 
@@ -998,7 +997,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("submitOrder", myE);
+                _log.Error("submitOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -1030,7 +1029,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("gradualFill", myE);
+                _log.Error("gradualFill", myE);
             }
         }
 
@@ -1083,7 +1082,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("gradualFill", myE);
+                _log.Error("gradualFill", myE);
             }
         }
         private void doFillList()
@@ -1112,7 +1111,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Warn("doFillList", myE);
+                _log.Warn("doFillList", myE);
             }
         }
 
@@ -1160,9 +1159,9 @@ namespace KTASimulator
 
                 // Get the context - we must have this to access the CQG order
                 DriverBase.OrderContext myContext = null;
-                if (m_ClOrdIDOrderMap.ContainsKey(cancel.OrigClOrdID))
+                if (_clOrdIDOrderMap.ContainsKey(cancel.OrigClOrdID))
                 {
-                    myContext = m_ClOrdIDOrderMap[cancel.OrigClOrdID];
+                    myContext = _clOrdIDOrderMap[cancel.OrigClOrdID];
                 }
                 if (myContext == null)
                 {
@@ -1236,7 +1235,7 @@ namespace KTASimulator
             catch (Exception myE)
             {
 
-                m_Log.Error("pullOrder", myE);
+                _log.Error("pullOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -1309,7 +1308,7 @@ namespace KTASimulator
             catch (Exception myE)
             {
 
-                m_Log.Error("modifyOrderRD", myE);
+                _log.Error("modifyOrderRD", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -1365,9 +1364,9 @@ namespace KTASimulator
 
                 // Get the context - we must have this to access the CQG order
                 DriverBase.OrderContext myContext = null;
-                if (m_ClOrdIDOrderMap.ContainsKey(mod.OrigClOrdID))
+                if (_clOrdIDOrderMap.ContainsKey(mod.OrigClOrdID))
                 {
-                    myContext = m_ClOrdIDOrderMap[mod.OrigClOrdID];
+                    myContext = _clOrdIDOrderMap[mod.OrigClOrdID];
                 }
                 if (myContext == null)
                 {
@@ -1402,7 +1401,7 @@ namespace KTASimulator
                 myContext.OrigClOrdID = mod.OrigClOrdID;
 
                 // record the context against the new clordid
-                m_ClOrdIDOrderMap.Add(mod.ClOrdID, myContext);
+                _clOrdIDOrderMap.Add(mod.ClOrdID, myContext);
 
                 // send order in book exec report
                 sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, 0.0, (int)myContext.LeavesQty, myContext.CumQty, 0.0, 0.0, "", "");
@@ -1434,7 +1433,7 @@ namespace KTASimulator
         /// <param name="myMsg"></param>
         private void handleResponse(string myMsgType, string myMsg)
         {
-            m_Log.Error("TEST:" + myMsg);
+            _log.Error("TEST:" + myMsg);
             sendResponse(myMsgType, myMsg);
         }
 
@@ -1491,7 +1490,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                m_Log.Error("Driver.Send", myE);
+                _log.Error("Driver.Send", myE);
             }
         }
 
@@ -1513,23 +1512,23 @@ namespace KTASimulator
                 // in the dashboard 
                 SendStatusMessage(KaiTrade.Interfaces.Status.closed, "TDA Driver is closed");
 
-                m_ClOrdIDOrderMap.Clear();
+                _clOrdIDOrderMap.Clear();
                 m_OrderContextOrdID.Clear();
                 
-                m_Products.Clear();
+                _products.Clear();
 
-                foreach (L1PriceSupport.PXPublisher myPub in m_PublisherRegister.Values)
+                foreach (L1PriceSupport.PXPublisher myPub in _publisherRegister.Values)
                 {
                     (myPub as KaiTrade.Interfaces.IPublisher).Status = KaiTrade.Interfaces.Status.closed;
                 }
 
-                m_PublisherRegister.Clear();
-                m_RunningState = new DriverBase.DriverStatus(StatusConditon.none, StatusConditon.none);
+                _publisherRegister.Clear();
+                _runningState = new DriverBase.DriverStatus(StatusConditon.none, StatusConditon.none);
                 
             }
             catch (Exception myE)
             {
-                m_Log.Error("Kaitrade.Interfaces.Driver.Stop:", myE);
+                _log.Error("Kaitrade.Interfaces.Driver.Stop:", myE);
             }
         }
 
@@ -1542,16 +1541,16 @@ namespace KTASimulator
         {
             try
             {
-                if (m_PublisherRegister.ContainsKey(myPublisher.TopicID()))
+                if (_publisherRegister.ContainsKey(myPublisher.TopicID()))
                 {
-                    m_PublisherRegister.Remove(myPublisher.TopicID());
+                    _publisherRegister.Remove(myPublisher.TopicID());
                 }
 
                 //UnSubscribeMD(myPublisher);
             }
             catch (Exception myE)
             {
-                m_Log.Error("Driver.UnRegister:publisher", myE);
+                _log.Error("Driver.UnRegister:publisher", myE);
             }
         }
 

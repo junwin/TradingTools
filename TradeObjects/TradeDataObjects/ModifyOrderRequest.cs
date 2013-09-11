@@ -27,6 +27,7 @@ namespace K2DataObjects
 
         [DataMember]
         [System.Data.Linq.Mapping.Column]
+        [JsonProperty]
         public double? Price
         {
             get { return _price; }
@@ -35,6 +36,7 @@ namespace K2DataObjects
 
         [DataMember]
         [System.Data.Linq.Mapping.Column]
+        [JsonProperty]
         public double? StopPrice
         {
             get { return _stopPrice; }
@@ -43,6 +45,7 @@ namespace K2DataObjects
 
         [DataMember]
         [System.Data.Linq.Mapping.Column]
+        [JsonProperty]
         public long? Qty
         {
             get { return _qty; }
@@ -51,6 +54,7 @@ namespace K2DataObjects
 
         [DataMember]
         [System.Data.Linq.Mapping.Column]
+        [JsonProperty]
         public string Mnemonic
         {
             get { return _mnemonic; }
@@ -59,6 +63,7 @@ namespace K2DataObjects
 
         [DataMember]
         [System.Data.Linq.Mapping.Column]
+        [JsonProperty]
         public string ClOrdID
         {
             get { return _clOrdID; }
@@ -67,6 +72,7 @@ namespace K2DataObjects
 
         [DataMember]
         [System.Data.Linq.Mapping.Column]
+        [JsonProperty]
         public string OrigClOrdID
         {
             get { return _origClOrdID; }
@@ -75,6 +81,7 @@ namespace K2DataObjects
 
         [DataMember]
         [System.Data.Linq.Mapping.Column]
+        [JsonProperty]
         public int? RetryCount
         {
             get { return _retryCount; }
