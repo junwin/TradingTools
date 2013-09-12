@@ -445,6 +445,15 @@ namespace KaiTrade.Interfaces
         }
 
         /// <summary>
+        /// The last commad processed for this order
+        /// </summary>
+        KaiTrade.Interfaces.LastOrderCommand LastOrderCommand
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Get/Set freeform text associated with the order
         /// </summary>
         string Text

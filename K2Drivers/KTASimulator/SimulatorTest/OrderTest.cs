@@ -10,7 +10,6 @@ namespace SimulatorTest
     public class OrderTest
     {
         static KTASimulator.KTASimulator _driver = null;
-        static int s_Count = 0;
 
         [TestMethod]
         public void CreateDriverInstance()
@@ -19,16 +18,17 @@ namespace SimulatorTest
             Assert.IsNotNull(_driver);
         }
         [TestMethod]
-        public void SubmitOrder()
+        public void SubmitOrderSimInBook()
         {
+            // EAS will just go into the simulators order book - you can
+            // Delete or modify it
             _driver = new KTASimulator.KTASimulator();
             _driver.Start("");
 
             K2DataObjects.SubmitRequest nos = new K2DataObjects.SubmitRequest();
             nos.Account = "TEST";
-            nos.ClOrdID = "TEST" + s_Count.ToString();
-            s_Count++;
-
+            nos.ClOrdID = DriverBase.Identities.Instance.getNextOrderID();
+            
             nos.Mnemonic = "EAS";
             nos.OrderQty = 100;
             nos.OrdType = KaiTrade.Interfaces.OrderType.LIMIT;
@@ -40,6 +40,21 @@ namespace SimulatorTest
             msg.Data = JsonConvert.SerializeObject(nos);
 
             _driver.OnMessage(msg);
+
+
+            K2DataObjects.CancelOrderRequest cancel = new K2DataObjects.CancelOrderRequest();
+            cancel.OrigClOrdID = nos.ClOrdID;
+            cancel.ClOrdID = DriverBase.Identities.Instance.getNextOrderID();
+            cancel.Mnemonic = nos.Mnemonic;
+
+            msg = new K2DataObjects.Message();
+            msg.Label = "F";
+            msg.Data = JsonConvert.SerializeObject(cancel);
+
+            _driver.OnMessage(msg);
+            
+            
+
             
             
         }

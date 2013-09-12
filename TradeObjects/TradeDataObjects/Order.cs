@@ -81,6 +81,8 @@ namespace K2DataObjects
         private string m_TransactTime = "";
         private long m_Expiration = 0;
 
+        private KaiTrade.Interfaces.LastOrderCommand _lastOrderCommand = KaiTrade.Interfaces.LastOrderCommand.none;
+
         //private List<KaiTrade.Interfaces.Fill> m_FillsList = new List<KaiTrade.Interfaces.Fill>();
 
         private string m_Description;
@@ -609,6 +611,23 @@ namespace K2DataObjects
                 m_OrdStatus = value;
             }
         }
+
+        [DataMember]
+        [JsonProperty]
+        [System.Data.Linq.Mapping.Column]
+        public KaiTrade.Interfaces.LastOrderCommand LastOrderCommand
+        {
+            get
+            {
+                return _lastOrderCommand;
+            }
+            set
+            {
+                _lastOrderCommand = value;
+            }
+        }
+
+
         [DataMember]
         [JsonProperty]
         [System.Data.Linq.Mapping.Column(DbType = "NVarChar(32)")]

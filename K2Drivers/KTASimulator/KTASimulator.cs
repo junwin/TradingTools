@@ -1128,7 +1128,7 @@ namespace KTASimulator
                 cancel = JsonConvert.DeserializeObject<K2DataObjects.CancelOrderRequest>(msg.Data);
 
                 KaiTrade.Interfaces.IFill fill = new K2DataObjects.Fill();
-                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.REPLACED;
+                fill.OrderStatus = KaiTrade.Interfaces.OrderStatus.CANCELED;
                 fill.ExecType = KaiTrade.Interfaces.ExecType.ORDER_STATUS;
                 fill.OrderID = DriverBase.Identities.Instance.getNextOrderID();
 
@@ -1147,7 +1147,7 @@ namespace KTASimulator
                     throw myE;
                 }
 
-                // Extract the raw FIX Message from the inbound message
+                
                 string strOrder = msg.Data;
 
                 if (m_Markets.ContainsKey(cancel.Mnemonic))
@@ -1177,10 +1177,12 @@ namespace KTASimulator
                 myContext.ClOrdID = cancel.ClOrdID;
                 myContext.OrigClOrdID = cancel.OrigClOrdID;
 
-                // send order in book exec report
+                // send order cancelled exec report
                 sendExecReport(myContext, fill.OrderID, fill.OrderStatus, fill.ExecType, 0.0, (int)myContext.LeavesQty, myContext.CumQty, 0.0, 0.0, "", "");
 
                 myContext.OrdStatus = fill.OrderStatus;
+
+                throw new Exception("Delete the order from the simulator");
 
             }
             catch (Exception myE)
