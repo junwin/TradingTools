@@ -38,4 +38,9 @@ namespace KaiTrade.Interfaces
         /// <param name="myMessage">KTA Message to process</param>
         void OnMessage(IMessage myMessage);
     }
+
+    public delegate void StatusMessage(IMessage myMessage);
+    public delegate void Message(IMessage myMessage);
 }
+
+

@@ -1,5 +1,6 @@
 {"ProductFilePath":"","SimulatorProduct":[{"CannedData":{"RepeatOnEnd":true,"RunInterval":100,"RunRealTime":true,"PlayOnSubscribe":true},"RunAsMarket":true,"IsCannedData":true,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":null,"IsAutoFill":true},
 {"CannedData":{},"RunAsMarket":false,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"EAS","IsAutoFill":true},
 {"CannedData":{},"RunAsMarket":false,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"HPQ","IsAutoFill":true},
-{"CannedData":{},"RunAsMarket":false,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"VOD","IsAutoFill":true}
+{"CannedData":{},"RunAsMarket":false,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"VOD","IsAutoFill":true},
+{"CannedData":{},"RunAsMarket":true,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"AAB","IsAutoFill":false}
 ]}

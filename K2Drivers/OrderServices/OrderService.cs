@@ -285,7 +285,7 @@ namespace OrderServices
                 if (myOrder.ParentIdentity != null)
                 {
                     // get the strategy concerned
-                    KaiTrade.Interfaces.Strategy myStrat = KTAFacade.Instance().Factory.GetStrategyManager().GetStrategy(myOrder.ParentIdentity);
+                    KaiTrade.Interfaces.IStrategy myStrat = KTAFacade.Instance().Factory.GetStrategyManager().GetStrategy(myOrder.ParentIdentity);
                     if (myStrat != null)
                     {
                         myStrat.HandleExecReport(myFixMsg, myOrder);
@@ -317,12 +317,12 @@ namespace OrderServices
         /// <param name="myOrder"></param>
         /// <param name="myExec"></param>
         private void processFill(ref KaiTrade.Interfaces.Order myOrder, QuickFix.Message myExec)
-        {
-            KaiTrade.Interfaces.Transaction myTrn = null;
+        {           
+            K2ServiceInterface.ITransaction myTrn = null;
             try
             {
                 // if the object supports transactions do the update as a trn
-                myTrn = myOrder as KaiTrade.Interfaces.Transaction;
+                myTrn = myOrder as K2ServiceInterface.ITransaction;
                 if (myTrn != null)
                 {
                     myTrn.StartUpdate();

@@ -37,6 +37,9 @@ namespace DriverBase
     public class DriverBase  : KaiTrade.Interfaces.IClient
     {
 
+        KaiTrade.Interfaces.Message _message = null;
+        KaiTrade.Interfaces.StatusMessage _statusMessage = null;
+
         /// <summary>
         /// Module information based on the drivers assembly
         /// </summary>
@@ -309,6 +312,20 @@ namespace DriverBase
 
         }
 
+
+        public KaiTrade.Interfaces.Message Message
+        {
+            get { return _message; }
+            set { _message = value; }
+        }
+
+        public KaiTrade.Interfaces.StatusMessage StatusMessage
+        {
+            get { return _statusMessage; }
+            set { _statusMessage = value; }
+        }
+
+
         public string[] Currencies
         {
             get { return _currencies; }
@@ -518,16 +535,22 @@ namespace DriverBase
         /// Send some message back to our clients
         /// </summary>
         /// <param name="myMessage"></param>
-        public void SendMessage(KaiTrade.Interfaces.IMessage myMessage)
+        public async void SendMessage(KaiTrade.Interfaces.IMessage myMessage)
         {
             try
             {
+                if (_message != null)
+                {
+                     _message(myMessage);
+                }
+                /*
                 // do the update assync
                 lock (((ICollection)_outboundProcessorQueue).SyncRoot)
                 {
                     _outboundProcessorQueue.Enqueue(myMessage);
                     _outboundProcessorSyncEvents.NewItemEvent.Set();
                 }
+                 */
             }
             catch (Exception myE)
             {
@@ -1236,17 +1259,17 @@ namespace DriverBase
 
         #region Driver Members
 
-        List<KaiTrade.Interfaces.IClient> Clients
+        public List<KaiTrade.Interfaces.IClient> Clients
         {
             get { return _clients; }
         }
 
-        IDriverState GetState()
+        public IDriverState GetState()
         {
             throw new Exception("The method or operation is not implemented.");
         }
 
-        string ID
+        public string ID
         {
             get
             {
@@ -1261,7 +1284,7 @@ namespace DriverBase
        
 
 
-        void Register(KaiTrade.Interfaces.IPublisher publisher, int depthLevels, string requestID)
+        public void Register(KaiTrade.Interfaces.IPublisher publisher, int depthLevels, string requestID)
         {
             try
             {
@@ -1385,6 +1408,10 @@ namespace DriverBase
         {
             try
             {
+                if (_message != null)
+                {
+                    _message(myMsg);
+                }
                 // do the update assync
                 lock (((ICollection)_inboundProcessorQueue).SyncRoot)
                 {

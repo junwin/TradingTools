@@ -332,7 +332,7 @@ namespace KTASimulator
                         {
                             _products.Add(myProd.Mnemonic, myProd);
                         }
-                        else if (myProd.RunAsMarket)
+                        if (myProd.RunAsMarket)
                         {
                             CreateMarket(myProd.Mnemonic);
                         }
@@ -716,8 +716,6 @@ namespace KTASimulator
             try
             {
                 nos = JsonConvert.DeserializeObject<K2DataObjects.SubmitRequest>(myMsg.Data);
-                // Use QuickFix to handle the message - you can 
-                // use the FIX parser of your own choice 
                 
                 _log.Error("SUBTEST:" + myMsg.Data);
                 
@@ -726,7 +724,7 @@ namespace KTASimulator
                 
 
 
-                // Get the CQG product/intrument we want to order
+                // Get the we want to order
                 string myMnemonic = nos.Mnemonic;
 
                 if (nos.SecurityID != null)
@@ -741,8 +739,6 @@ namespace KTASimulator
                         }
                     }
                 }
-
-
 
                 SimulatorProduct myProd = getProduct( myMnemonic);
 
@@ -777,8 +773,6 @@ namespace KTASimulator
 
                 if (myProd.IsAutoFill)
                 {
-
-
                     DriverBase.OrderContext myContext = new DriverBase.OrderContext();
                     //myContext.QFOrder = myOrder;
                     myContext.ClOrdID = nos.ClOrdID;
@@ -786,7 +780,6 @@ namespace KTASimulator
                     myContext.OrderQty =(int) quantity;
                     //myContext.LeavesQty = quantity;
                     myContext.CumQty = 0;
-
                     // record the order in the context maps
                     RecordOrderContext(myContext.ClOrdID, myContext);
                     //m_OrderContextClOrdID.Add(myContext.ClOrdID, myContext);
@@ -1040,6 +1033,7 @@ namespace KTASimulator
                 // send order in book exec report
                 // fully fill
                 KaiTrade.Interfaces.IFill fill = new K2DataObjects.Fill();
+                fill.ClOrdID = myContext.ClOrdID;
 
                 fill.OrderID = myContext.OrderID;
                 if (fillPx.HasValue)
@@ -1076,7 +1070,7 @@ namespace KTASimulator
                         fill.CumQty = myContext.CumQty;
                         
                     }
-
+                    fill.LeavesQty = myContext.LeavesQty;
                     sendExecReport(fill);
                 }
             }

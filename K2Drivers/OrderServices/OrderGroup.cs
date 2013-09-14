@@ -20,7 +20,7 @@ namespace OrderServices
     /// <summary>
     /// provides an arbitary grouping of orders
     /// </summary>
-    public class OrderGroup : KaiTrade.TradeObjects.Publisher, KaiTrade.Interfaces.OrderGroup
+    public class OrderGroup : Publisher, KaiTrade.Interfaces.OrderGroup
     {
         /// <summary>
         /// Used to lock
