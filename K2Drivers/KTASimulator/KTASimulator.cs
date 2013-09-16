@@ -65,7 +65,7 @@ namespace KTASimulator
         /// </summary>
         private bool m_GenPrices = false;
 
-        private Dictionary<string, FilePriceSource> m_FilePrices;
+        private Dictionary<string, FilePriceSource> _filePrices;
 
         private Random m_RNGen;
 
@@ -120,7 +120,7 @@ namespace KTASimulator
 
             m_RNGen = new Random();
 
-            m_FilePrices = new Dictionary<string, FilePriceSource>();
+            _filePrices = new Dictionary<string, FilePriceSource>();
 
             m_MainForm = new SimulatorMainUI();
 
@@ -328,10 +328,8 @@ namespace KTASimulator
                 {
                     try
                     {
-                        if (!myProd.IsCannedData)
-                        {
-                            _products.Add(myProd.Mnemonic, myProd);
-                        }
+
+                        _products.Add(myProd.Mnemonic, myProd);
                         if (myProd.RunAsMarket)
                         {
                             CreateMarket(myProd.Mnemonic);
@@ -341,6 +339,11 @@ namespace KTASimulator
                         {
                             this.AddPriceFile(myProd.Mnemonic, myProd.CannedData.CannedDataFile, myProd.CannedData.RunInterval, myProd.CannedData.RunRealTime, myProd.CannedData.RepeatOnEnd, myProd.CannedData.PlayOnSubscribe);
                         }
+                        else
+                        {
+                            _products.Add(myProd.Mnemonic, myProd);
+                        }
+
                     }
                     catch (Exception myE)
                     {
@@ -376,24 +379,24 @@ namespace KTASimulator
                 string topic = pub.TopicID();
                 topic = topic.Substring(2, topic.Length - 2);
                
-                if(m_FilePrices.ContainsKey(pub.TopicID()))
+                if(_filePrices.ContainsKey(pub.TopicID()))
                 {
-                    if (m_FilePrices[pub.TopicID()].PlayOnSubscribe)
+                    if (_filePrices[pub.TopicID()].PlayOnSubscribe)
                     {
                         // note file source may not support depth
-                        m_FilePrices[pub.TopicID()].DepthLevels = depthLevels;
+                        _filePrices[pub.TopicID()].DepthLevels = depthLevels;
 
-                        m_FilePrices[pub.TopicID()].Start(m_FilePrices[pub.TopicID()].FilePath);
+                        _filePrices[pub.TopicID()].Start(_filePrices[pub.TopicID()].FilePath);
                     }
                 }
-                else if (m_FilePrices.ContainsKey(topic))
+                else if (_filePrices.ContainsKey(topic))
                 {
                     // note file source may not support depth
-                    m_FilePrices[topic].DepthLevels = depthLevels;
+                    _filePrices[topic].DepthLevels = depthLevels;
 
-                    if (m_FilePrices[topic].PlayOnSubscribe)
+                    if (_filePrices[topic].PlayOnSubscribe)
                     {
-                        m_FilePrices[topic].Start(m_FilePrices[topic].FilePath);
+                        _filePrices[topic].Start(_filePrices[topic].FilePath);
                     }
                 }
                 
@@ -529,7 +532,7 @@ namespace KTASimulator
             try
             {
                 FilePriceSource pxSrc = new FilePriceSource(this);
-                m_FilePrices.Add(mnemonic, pxSrc);
+                _filePrices.Add(mnemonic, pxSrc);
                 pxSrc.PriceUpdate += this.PriceUpdate;
                 pxSrc.PriceUpdateStatus += this.PriceUpdateStatus;
                 pxSrc.Interval = interval;
@@ -555,7 +558,7 @@ namespace KTASimulator
         {
             try
             {
-                foreach (FilePriceSource pxSrc in m_FilePrices.Values)
+                foreach (FilePriceSource pxSrc in _filePrices.Values)
                 {
 
                     pxSrc.RunRealTime = true;
@@ -571,7 +574,7 @@ namespace KTASimulator
         {
             try
             {
-                foreach (FilePriceSource pxSrc in m_FilePrices.Values)
+                foreach (FilePriceSource pxSrc in _filePrices.Values)
                 {
                     pxSrc.Interval = interval;
                     pxSrc.RunRealTime = false;

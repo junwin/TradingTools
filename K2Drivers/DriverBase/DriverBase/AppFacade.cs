@@ -90,6 +90,20 @@ namespace DriverBase
             return null;
 
         }
+
+        public KaiTrade.Interfaces.IPublisher CreatePxPub(KaiTrade.Interfaces.IProduct product)
+        {
+            L1PriceSupport.PXPublisher pxPub = null;
+            if (!_l1Prices.ContainsKey(product.Mnemonic))
+            {
+                pxPub = new L1PriceSupport.PXPublisher();               
+                pxPub.Product = product;
+                _l1Prices.Add(product.Mnemonic, pxPub);
+                (pxPub as KaiTrade.Interfaces.IPublisher).Open(product.Mnemonic);
+            }
+            return pxPub;
+        }
+
         public void SetL1Prices(KaiTrade.Interfaces.IProduct product, IL1PX L1Price)
         {
             if (_l1Prices.ContainsKey(product.Mnemonic))

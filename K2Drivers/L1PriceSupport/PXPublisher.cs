@@ -1129,7 +1129,7 @@ namespace L1PriceSupport
         /// <param name="pxUpdate"></param>
         public void OnUpdate(string mnemonic, KaiTrade.Interfaces.IPXUpdate pxUpdate)
         {
-            // No action
+            ApplyUpdate(pxUpdate);
         }
 
         string KaiTrade.Interfaces.IPublisher.Open(string myData)

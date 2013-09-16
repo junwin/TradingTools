@@ -1039,7 +1039,15 @@ namespace DriverBase
                 KaiTrade.Interfaces.IProduct product =  AppFacade.Instance().GetProductManager().GetProductMnemonic(update.Mnemonic);
                 if (product != null)
                 {
-                    AppFactory.Instance().ApplyUpdate(update);
+                    try
+                    {
+                        _publisherRegister[product.Mnemonic].OnUpdate(product.Mnemonic, update);
+                    }
+                    catch
+                    {
+                        // silent because we dont want some publisher error stopping
+                        // the rest of the update
+                    }
                 }
 
 

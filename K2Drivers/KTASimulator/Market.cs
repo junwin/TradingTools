@@ -201,16 +201,6 @@ namespace KTASimulator
             try
             {
                 m_IsChanged = true;
-                /*
-                if (pxUpdate == null)
-                {
-                    m_LastUpdate = pxUpdate;
-                }
-                else
-                {
-                    m_LastUpdate.From(pxUpdate);
-                }
-                 * */
 
             }
             catch (Exception myE)

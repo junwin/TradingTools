@@ -214,6 +214,24 @@ namespace SimulatorTest
 
             Assert.AreEqual(products.Count, 3);
 
+            foreach (IProduct product in products)
+            {
+                IPublisher pub = _driver.Facade.CreatePxPub(product);
+                if (pub != null)
+                {
+                    _driver.Register(pub,0,DateTime.Now.Ticks.ToString());
+                }
+
+            }
+
+            System.Threading.Thread.Sleep(10000);
+
+            K2ServiceInterface.IL1PX pxPub = _driver.Facade.GetL1Prices(products[1]);
+            Assert.IsNotNull(pxPub);
+            Assert.IsNotNull(pxPub.BidPrice);
+
+
+
 
 
             K2DataObjects.SubmitRequest nos = new K2DataObjects.SubmitRequest();
@@ -254,7 +272,7 @@ namespace SimulatorTest
 
 
 
-            System.Threading.Thread.Sleep(1200000);
+            System.Threading.Thread.Sleep(30000);
 
             if (_messages.Count > 0)
             {

@@ -2,5 +2,5 @@
 {"CannedData":{},"RunAsMarket":false,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"EAS","IsAutoFill":true},
 {"CannedData":{},"RunAsMarket":false,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"HPQ","IsAutoFill":true},
 {"CannedData":{},"RunAsMarket":false,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"VOD","IsAutoFill":true},
-{"CannedData":{},"RunAsMarket":true,"IsCannedData":false,"LowPrice":98.99,"HighPrice":99.99,"Mnemonic":"AAB","IsAutoFill":false}
+{"CannedData":{},"RunAsMarket":true,"IsCannedData":false,"LowPrice":10.0,"HighPrice":13.5,"Mnemonic":"AAB","IsAutoFill":false}
 ]}
