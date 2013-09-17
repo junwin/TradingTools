@@ -7,7 +7,12 @@ using KaiTrade.Interfaces;
 
 namespace SimulatorTest
 {
-    
+    public struct ReceivedfillStates
+    {
+        public bool osNew;
+        public bool osPartFill;
+        public bool odFilled;      
+    }
 
     [TestClass]
     public class OrderTest
@@ -214,8 +219,13 @@ namespace SimulatorTest
 
             Assert.AreEqual(products.Count, 3);
 
+            KaiTrade.Interfaces.IProduct aabProduct = null;
             foreach (IProduct product in products)
             {
+                if (product.Mnemonic == "AAB")
+                {
+                    aabProduct = product;
+                }
                 IPublisher pub = _driver.Facade.CreatePxPub(product);
                 if (pub != null)
                 {
@@ -224,9 +234,11 @@ namespace SimulatorTest
 
             }
 
+            
+
             System.Threading.Thread.Sleep(10000);
 
-            K2ServiceInterface.IL1PX pxPub = _driver.Facade.GetL1Prices(products[1]);
+            K2ServiceInterface.IL1PX pxPub = _driver.Facade.GetL1Prices(aabProduct);
             Assert.IsNotNull(pxPub);
             Assert.IsNotNull(pxPub.BidPrice);
 
@@ -240,7 +252,7 @@ namespace SimulatorTest
 
             nos.Mnemonic = "AAB";
             nos.SecurityID = "AAB";
-            nos.OrderQty = 5;
+            nos.OrderQty = 2;
             nos.OrdType = KaiTrade.Interfaces.OrderType.LIMIT;
             nos.Price = 11.99M;
             nos.Side = KaiTrade.Interfaces.Side.BUY;
@@ -259,7 +271,7 @@ namespace SimulatorTest
 
             nos1.Mnemonic = "AAB";
             nos1.SecurityID = "AAB";
-            nos1.OrderQty = 5;
+            nos1.OrderQty = 2;
             nos1.OrdType = KaiTrade.Interfaces.OrderType.LIMIT;
             nos1.Price = 11.99M;
             nos1.Side = KaiTrade.Interfaces.Side.SELL;
@@ -272,38 +284,64 @@ namespace SimulatorTest
 
 
 
-            System.Threading.Thread.Sleep(30000);
+            System.Threading.Thread.Sleep(120000);
 
             if (_messages.Count > 0)
             {
-                Assert.AreEqual(_messages["8"].Count, 4);
+                Assert.AreEqual(_messages["8"].Count, 6);
 
-                Fill fillNew = JsonConvert.DeserializeObject<Fill>(_messages["8"][0].Data);
-                Fill fillPF1 = JsonConvert.DeserializeObject<Fill>(_messages["8"][1].Data);
-                Fill fillPF2 = JsonConvert.DeserializeObject<Fill>(_messages["8"][2].Data);
-                Fill fillFilled = JsonConvert.DeserializeObject<Fill>(_messages["8"][3].Data);
-                Assert.AreEqual(fillNew.ClOrdID, nos.ClOrdID);
-                Assert.AreEqual(fillNew.OrderStatus, OrderStatus.NEW);
-                Assert.AreEqual(fillNew.ExecType, ExecType.ORDER_STATUS);
+                ReceivedfillStates ord1States = new ReceivedfillStates();
+                ord1States.osNew = false;
+                ord1States.osPartFill = false;
+                ord1States.odFilled = false;
+                ReceivedfillStates ord2States;
+                ord2States.osNew = false;
+                ord2States.osPartFill = false;
+                ord2States.odFilled = false;
 
-                Assert.AreEqual(fillPF1.ClOrdID, nos.ClOrdID);
-                Assert.AreEqual(fillPF1.OrderStatus, OrderStatus.PARTIALLY_FILLED);
-                Assert.AreEqual(fillPF1.ExecType, ExecType.PARTIAL_FILL);
-                Assert.AreEqual(fillPF1.LeavesQty, 3);
-                Assert.AreEqual(fillPF1.FillQty, 2);
-                Assert.AreEqual(fillPF1.CumQty, 2);
+                // Both orders should be fully filled 3 reports each
+                // New, Partial, Fill
+                foreach (IMessage recvMsg in _messages["8"])
+                {
+                    Fill fill = JsonConvert.DeserializeObject<Fill>(recvMsg.Data);
+                    if (fill.ClOrdID == nos.ClOrdID)
+                    {
+                        // check we have new, partfill, filled
+                        switch (fill.OrderStatus)
+                        {
+                            case OrderStatus.NEW:
+                                ord1States.osNew = true;
+                                break;
+                            case OrderStatus.PARTIALLY_FILLED:
+                                ord1States.osPartFill = true;
+                                break;
+                            case OrderStatus.FILLED:
+                                ord1States.odFilled = true;
+                                break;
+                        }
+                    }
+                    if (fill.ClOrdID == nos1.ClOrdID)
+                    {
+                        // check we have new, partfill, filled
+                        switch (fill.OrderStatus)
+                        {
+                            case OrderStatus.NEW:
+                                ord2States.osNew = true;
+                                break;
+                            case OrderStatus.PARTIALLY_FILLED:
+                                ord2States.osPartFill = true;
+                                break;
+                            case OrderStatus.FILLED:
+                                ord2States.odFilled = true;
+                                break;
+                        }
+                    }
 
-                Assert.AreEqual(fillPF2.ClOrdID, nos.ClOrdID);
-                Assert.AreEqual(fillPF2.OrderStatus, OrderStatus.PARTIALLY_FILLED);
-                Assert.AreEqual(fillPF2.ExecType, ExecType.PARTIAL_FILL);
-                Assert.AreEqual(fillPF2.LeavesQty, 2);
-                Assert.AreEqual(fillPF2.FillQty, 1);
-                Assert.AreEqual(fillPF2.CumQty, 3);
+                }
 
-                Assert.AreEqual(fillFilled.ClOrdID, nos.ClOrdID);
-                Assert.AreEqual(fillFilled.OrderStatus, OrderStatus.FILLED);
-                Assert.AreEqual(fillFilled.ExecType, ExecType.FILL);
-                Assert.AreEqual(fillFilled.CumQty, 5);
+                Assert.IsTrue(ord1States.osNew && ord1States.osPartFill && ord1States.odFilled);
+                Assert.IsTrue(ord2States.osNew && ord2States.osPartFill && ord2States.odFilled);
+               
 
             }
         }
