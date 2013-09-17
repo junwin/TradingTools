@@ -2158,6 +2158,10 @@ namespace DriverBase
         {
 
             K2DataObjects.Fill fill = new K2DataObjects.Fill();
+            if (nos.ClOrdID != null)
+            {
+                fill.ClOrdID = nos.ClOrdID;
+            }      
             fill.OrderID = "";
             fill.OrderStatus = status;
             fill.ExecType = execType;

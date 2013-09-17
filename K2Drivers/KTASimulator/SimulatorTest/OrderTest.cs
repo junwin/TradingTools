@@ -189,18 +189,45 @@ namespace SimulatorTest
                 Assert.AreEqual(fillFilled.ExecType, ExecType.FILL);
                 Assert.AreEqual(fillFilled.CumQty, 5);
 
+            }
+        }
 
-/*
-                Assert.AreEqual(fillMod.OrigClOrdID, nos.ClOrdID);
-                Assert.AreEqual(fillMod.ClOrdID, mod.ClOrdID);
-                Assert.AreEqual(fillMod.OrderStatus, OrderStatus.REPLACED);
-                Assert.AreEqual(fillMod.ExecType, ExecType.ORDER_STATUS);
+        [TestMethod]
+        public void SubmitOrderBadAccountReject()
+        {
+            // HPQ will just fill over time an order of 5 will fill 2,1,2
+            _driver = new KTASimulator.KTASimulator();
+            _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
+            _driver.Start("");
 
-                Assert.AreEqual(fillCancel.ClOrdID, cancel.ClOrdID);
-                Assert.AreEqual(fillCancel.OrigClOrdID, mod.ClOrdID);
-                Assert.AreEqual(fillCancel.OrderStatus, OrderStatus.CANCELED);
-                Assert.AreEqual(fillCancel.ExecType, ExecType.ORDER_STATUS);
- */
+            K2DataObjects.SubmitRequest nos = new K2DataObjects.SubmitRequest();
+            nos.Account = "TestBadAccount";
+            nos.ClOrdID = DriverBase.Identities.Instance.getNextOrderID();
+
+            nos.Mnemonic = "HPQ";
+            nos.OrderQty = 5;
+            nos.OrdType = KaiTrade.Interfaces.OrderType.LIMIT;
+            nos.Price = 11.99M;
+            nos.Side = KaiTrade.Interfaces.Side.BUY;
+
+            K2DataObjects.Message msg = new K2DataObjects.Message();
+            msg.Label = "D";
+            msg.Data = JsonConvert.SerializeObject(nos);
+
+            _driver.OnMessage(msg);
+
+
+
+            System.Threading.Thread.Sleep(5000);
+
+            if (_messages.Count > 0)
+            {
+                Assert.AreEqual(_messages["8"].Count, 1);
+
+                Fill fillNew = JsonConvert.DeserializeObject<Fill>(_messages["8"][0].Data);
+                Assert.AreEqual(fillNew.OrderStatus, OrderStatus.REJECTED);
+                Assert.AreEqual(fillNew.ClOrdID, nos.ClOrdID);
+
             }
         }
 
@@ -210,15 +237,20 @@ namespace SimulatorTest
         {
             // AAB will just be put into the simulators internal book
             _driver = new KTASimulator.KTASimulator();
+
+            // Wire up a message hander for the executin messages
             _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
             _driver.Start("");
 
 
+            // Load a file of products to the simulator
             _driver.AddProductDirect(@"Data\SimProduct.txt");
             List<IProduct> products = _driver.Facade.GetProductManager().GetProducts("KTASIM", "", "");
 
+            // test that these are available as products
             Assert.AreEqual(products.Count, 3);
 
+            // Create and register a price publisher for each product
             KaiTrade.Interfaces.IProduct aabProduct = null;
             foreach (IProduct product in products)
             {
@@ -229,23 +261,23 @@ namespace SimulatorTest
                 IPublisher pub = _driver.Facade.CreatePxPub(product);
                 if (pub != null)
                 {
+                    // register this publisher with the driver - one per product
                     _driver.Register(pub,0,DateTime.Now.Ticks.ToString());
                 }
 
             }
 
-            
-
+            // Wait for prices in the publisher
             System.Threading.Thread.Sleep(10000);
 
+            // test that some prices are there
             K2ServiceInterface.IL1PX pxPub = _driver.Facade.GetL1Prices(aabProduct);
             Assert.IsNotNull(pxPub);
             Assert.IsNotNull(pxPub.BidPrice);
 
 
-
-
-
+            // Test orders in the market - these are filled when the price is
+            // matched and there is enough volume
             K2DataObjects.SubmitRequest nos = new K2DataObjects.SubmitRequest();
             nos.Account = "TEST";
             nos.ClOrdID = DriverBase.Identities.Instance.getNextOrderID();
@@ -282,8 +314,8 @@ namespace SimulatorTest
 
             _driver.OnMessage(msg);
 
-
-
+            // wait for the orders to fill - test that the right fills 
+            // were received
             System.Threading.Thread.Sleep(120000);
 
             if (_messages.Count > 0)
