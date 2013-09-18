@@ -129,6 +129,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="KaiTrade.pfx" />
+    <None Include="PriceData\AAPL_data.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="PriceData\DELL_data.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

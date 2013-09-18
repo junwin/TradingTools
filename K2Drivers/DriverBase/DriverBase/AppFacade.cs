@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using K2ServiceInterface;
+using System.ComponentModel;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace DriverBase
 {
@@ -46,6 +49,7 @@ namespace DriverBase
         {
             _l1Prices = new Dictionary<string,IL1PX>();
             _DOM = new Dictionary<string, KaiTrade.Interfaces.IDOM>();
+            _appPath = Application.StartupPath;
         }
 
         public string AppPath
