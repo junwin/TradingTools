@@ -18,11 +18,12 @@ using System.Text;
 using System.IO;
 using System.Threading;
 using System.Timers;
+using K2ServiceInterface;
 
 namespace KTASimulator
 {
     public enum SrcStatus { open, ended, failed, none };
-    public delegate void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate);
+    //public delegate void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate);
     public delegate void PriceUpdateStatus(FilePriceSource source, SrcStatus status);
 
      

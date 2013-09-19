@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using K2ServiceInterface;
 
 namespace DriverTestApp
 {
@@ -39,7 +40,7 @@ namespace DriverTestApp
         {
             KTASimulator.FilePriceSource priceSrc = new KTASimulator.FilePriceSource(_driver);
 
-            priceSrc.PriceUpdate += new KTASimulator.PriceUpdate(this.PriceUpdate);
+            priceSrc.PriceUpdate += new PriceUpdate(this.PriceUpdate);
 
             priceSrc.Start(@"TestData\AAPL_data.csv");
 

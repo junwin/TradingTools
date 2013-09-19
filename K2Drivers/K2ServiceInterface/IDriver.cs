@@ -41,7 +41,9 @@ namespace K2ServiceInterface
         cancelPending
     };
 
-
+    public delegate void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate);
+   
+    
 
     /// <summary>
     /// Defines the interface a drive(broker connection) must impliment to be loaded and used from
@@ -77,6 +79,13 @@ namespace K2ServiceInterface
         /// </summary>
         /// <param name="myClient">client that will be unregistered</param>
         void UnRegister(KaiTrade.Interfaces.IClient myClient);
+
+        /// <summary>
+        /// Register a delgate to get price updates - this is complementary
+        /// to register a specific publisher
+        /// </summary>
+        PriceUpdate PriceUpdate
+        { get; set; }
 
         /// <summary>
         /// Register some subject to receive images and updates - usually for prices

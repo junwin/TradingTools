@@ -34,7 +34,7 @@ namespace DriverBase
     /// Base class for drivers, provides status message handling and 
     /// session management
     /// </summary>
-    public class DriverBase  : KaiTrade.Interfaces.IClient
+    public class DriverBase  : IDriver, KaiTrade.Interfaces.IClient
     {
 
         KaiTrade.Interfaces.Message _message = null;
@@ -57,7 +57,7 @@ namespace DriverBase
 
         protected string m_ID = "";
         protected string m_Tag = "";
-        protected string Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// unique idenetity for this instance of a driver
@@ -68,6 +68,10 @@ namespace DriverBase
         /// Clients of this driver
         /// </summary>
         protected List<KaiTrade.Interfaces.IClient> _clients;
+
+        private PriceUpdate _priceUpdate;
+
+        
 
         /// <summary>
         /// Parent Driver manager
@@ -991,10 +995,24 @@ namespace DriverBase
             {
             }
         }
+
+
+        /// <summary>
+        /// Do an async update to any registered delegates
+        /// </summary>
+        /// <param name="update"></param>
+        public async void PriceUpdateClients(KaiTrade.Interfaces.IPXUpdate update)
+        {
+            if (PriceUpdate != null)
+            {
+                PriceUpdate(update);
+            }
+        }
         public void ApplyPriceUpdate(KaiTrade.Interfaces.IPXUpdate update)
         {
             try
             {
+                PriceUpdateClients(update);
                 if (_useAsyncPriceUpdates)
                 {
                     // do the update assync
@@ -1305,6 +1323,11 @@ namespace DriverBase
             }
         }
 
+        public PriceUpdate PriceUpdate
+        {
+            get { return _priceUpdate; }
+            set { _priceUpdate = value; }
+        }
         /// <summary>
         /// Will request any trade systems that the driver supports - note that this
         /// is asyncronous the driver will add any trading systems using the Facade
@@ -1387,7 +1410,7 @@ namespace DriverBase
             return new List<KaiTrade.Interfaces.IVenueTradeDestination>();
         }
 
-        void Register(string myTag, KaiTrade.Interfaces.IClient myClient)
+        public void Register(string myTag, KaiTrade.Interfaces.IClient myClient)
         {
             try
             {
@@ -1412,7 +1435,7 @@ namespace DriverBase
             return 0;
         }
 
-        void Send(KaiTrade.Interfaces.IMessage myMsg)
+        public void Send(KaiTrade.Interfaces.IMessage myMsg)
         {
             try
             {
@@ -1452,7 +1475,7 @@ namespace DriverBase
             throw new NotImplementedException();
         }
 
-        void SetParent(IDriverManager myParent)
+        public void SetParent(IDriverManager myParent)
         {
             _parent = myParent;
 
@@ -1569,13 +1592,13 @@ namespace DriverBase
         /// Get the running status of some driver
         /// compliments the StatusRequest();
         /// </summary>
-        public virtual DriverStatus GetRunningStatus()
+        public virtual IDriverStatus GetRunningStatus()
         {
             // returns none on all states - unless overridden
             return new DriverStatus();
         }
 
-        void StatusRequest()
+       public  void StatusRequest()
         {
             try
             {
@@ -1587,7 +1610,7 @@ namespace DriverBase
             }
         }
 
-        void Stop()
+        public void Stop()
         {
             try
             {
@@ -1639,7 +1662,7 @@ namespace DriverBase
             }
         }
          
-        string Tag
+        public string Tag
         {
             get
             {
@@ -1651,7 +1674,7 @@ namespace DriverBase
             }
         }
 
-        void UnRegister(KaiTrade.Interfaces.IPublisher myPublisher)
+        public void UnRegister(KaiTrade.Interfaces.IPublisher myPublisher)
         {
             try
             {
@@ -1664,7 +1687,7 @@ namespace DriverBase
             }
         }
 
-        void UnRegister(KaiTrade.Interfaces.IClient myClient)
+        public void UnRegister(KaiTrade.Interfaces.IClient myClient)
         {
             try
             {
