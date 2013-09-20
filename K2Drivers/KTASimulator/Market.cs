@@ -137,8 +137,8 @@ namespace KTASimulator
                         return;
                     }
                 }
-
-                IL1PX L1PX = m_Parent.Facade.GetL1Prices(m_Product);
+                
+                IL1PX L1PX = m_Parent.Facade.PriceHandler.GetPXPublisher(m_Product) as IL1PX;
 
                 if (cntx.OrderType == KaiTrade.Interfaces.OrderType.MARKET)
                 {

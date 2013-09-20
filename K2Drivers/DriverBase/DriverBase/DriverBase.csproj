@@ -82,11 +82,6 @@
       <Private>False</Private>
       <HintPath>..\..\..\K2\build\bin\KTInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="L1PriceSupport, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\L1PriceSupport.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="log4net, Version=1.2.9.0, Culture=neutral, PublicKeyToken=490413dc1b978c85">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>

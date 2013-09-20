@@ -10,6 +10,9 @@ namespace SimulatorTest
     public class PriceTest
     {
         KTASimulator.KTASimulator _driver = null;
+        private L1PriceSupport.MemoryPriceHandler _priceHandler = null;
+
+
         public PriceTest()
         {
             _driver = new KTASimulator.KTASimulator();
@@ -59,6 +62,9 @@ namespace SimulatorTest
             // HPQ will just fill over time an order of 5 will fill 2,1,2
             _driver = new KTASimulator.KTASimulator();
             _driver.Facade.AppPath = @"C:\Users\John\Documents\GitHub\TradingTools\K2Drivers\build\bin\";
+            
+            _priceHandler = new L1PriceSupport.MemoryPriceHandler();
+            _driver.Facade.PriceHandler = _priceHandler;
 
             // Gets driver messages (fills, Accounts etc)
             _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
@@ -68,18 +74,19 @@ namespace SimulatorTest
 
             // Test that S.DELL is set up as expected
             IProduct product = _driver.Facade.GetProductManager().GetProductMnemonic("S.DELL");
-            IPublisher pub = _driver.Facade.CreatePxPub(product);
-            if (pub != null)
-            {
-                // register this publisher with the driver - one per product
-                _driver.Register(pub, 0, DateTime.Now.Ticks.ToString());
-            }
+            _priceHandler.GetPXPublisher(product);
 
+            _driver.OpenPrices(product, 0, DateTime.Now.Ticks.ToString());
+            
+           
          
             System.Threading.Thread.Sleep(110000);
              
             List<KaiTrade.Interfaces.IProduct> products = _driver.Facade.GetProductManager().GetProducts("KTSIM", "", "");
             Assert.AreEqual(products.Count, 13);
+
+            var pub = _priceHandler.GetPXPublisher(product);
+
         }
 
         void OnMessage(KaiTrade.Interfaces.IMessage message)
@@ -89,6 +96,10 @@ namespace SimulatorTest
 
         public void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate)
         {
+            if (_priceHandler != null)
+            {
+                _priceHandler.ApplyPriceUpdate(pxUpdate);
+            }
         }
         
     }

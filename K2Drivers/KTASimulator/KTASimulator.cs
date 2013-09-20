@@ -298,7 +298,7 @@ namespace KTASimulator
         /// Get the running status of some driver
         /// compliments the StatusRequest();
         /// </summary>
-        public override DriverBase.DriverStatus GetRunningStatus()
+        public override IDriverStatus GetRunningStatus()
         {
             // returns none on all states - unless overridden
             return _runningState;
@@ -372,21 +372,21 @@ namespace KTASimulator
 
        
 
-        protected override void SubscribeMD(KaiTrade.Interfaces.IPublisher pub, int depthLevels, string requestID)
+        protected override void SubscribeMD(KaiTrade.Interfaces.IProduct product, int depthLevels, string requestID)
         {
             try
             {
-                string topic = pub.TopicID();
+                string topic = product.Mnemonic;
                 topic = topic.Substring(2, topic.Length - 2);
                
-                if(_filePrices.ContainsKey(pub.TopicID()))
+                if(_filePrices.ContainsKey(product.Mnemonic))
                 {
-                    if (_filePrices[pub.TopicID()].PlayOnSubscribe)
+                    if (_filePrices[product.Mnemonic].PlayOnSubscribe)
                     {
                         // note file source may not support depth
-                        _filePrices[pub.TopicID()].DepthLevels = depthLevels;
+                        _filePrices[product.Mnemonic].DepthLevels = depthLevels;
 
-                        _filePrices[pub.TopicID()].Start(_filePrices[pub.TopicID()].FilePath);
+                        _filePrices[product.Mnemonic].Start(_filePrices[product.Mnemonic].FilePath);
                     }
                 }
                 else if (_filePrices.ContainsKey(topic))
@@ -625,7 +625,7 @@ namespace KTASimulator
                     ApplyPriceUpdate(pxUpdate);
                     if (pxUpdate.Mnemonic == "KTSIM:ZZ:DELL:ESXXXX")
                     {
-                        ApplyDOMUpdate(pxUpdate.Mnemonic, pxUpdate);
+                        //ApplyDOMUpdate(pxUpdate.Mnemonic, pxUpdate);
                     }
                 }
                 catch (Exception myE)

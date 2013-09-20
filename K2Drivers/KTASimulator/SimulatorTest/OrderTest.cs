@@ -21,6 +21,8 @@ namespace SimulatorTest
 
         static private Dictionary<string, List<KaiTrade.Interfaces.IMessage>> _messages = null;
 
+        private L1PriceSupport.MemoryPriceHandler _priceHandler = null;
+
         private void recordMessage(KaiTrade.Interfaces.IMessage message)
         {
             if (_messages == null)
@@ -231,15 +233,26 @@ namespace SimulatorTest
             }
         }
 
+        public void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate)
+        {
+            if (_priceHandler != null)
+            {
+                _priceHandler.ApplyPriceUpdate(pxUpdate);
+            }
+        }
 
         [TestMethod]
         public void SubmitOrderSimMarket()
         {
             // AAB will just be put into the simulators internal book
             _driver = new KTASimulator.KTASimulator();
+            _priceHandler = new L1PriceSupport.MemoryPriceHandler();
+            _driver.Facade.PriceHandler = _priceHandler;
 
             // Wire up a message hander for the executin messages
             _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
+            (_driver as DriverBase.DriverBase).PriceUpdate += new K2ServiceInterface.PriceUpdate(this.PriceUpdate);
+
             _driver.Start("");
 
 
@@ -257,21 +270,17 @@ namespace SimulatorTest
                 if (product.Mnemonic == "AAB")
                 {
                     aabProduct = product;
+                    _driver.Facade.PriceHandler.CreatePxPub(product);
+                    _driver.OpenPrices(product,0,DateTime.Now.Ticks.ToString());
                 }
-                IPublisher pub = _driver.Facade.CreatePxPub(product);
-                if (pub != null)
-                {
-                    // register this publisher with the driver - one per product
-                    _driver.Register(pub,0,DateTime.Now.Ticks.ToString());
-                }
-
+                
             }
 
             // Wait for prices in the publisher
             System.Threading.Thread.Sleep(10000);
 
             // test that some prices are there
-            K2ServiceInterface.IL1PX pxPub = _driver.Facade.GetL1Prices(aabProduct);
+            K2ServiceInterface.IL1PX pxPub = _driver.Facade.PriceHandler.GetPXPublisher(aabProduct) as K2ServiceInterface.IL1PX;
             Assert.IsNotNull(pxPub);
             Assert.IsNotNull(pxPub.BidPrice);
 

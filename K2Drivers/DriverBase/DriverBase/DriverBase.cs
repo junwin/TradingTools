@@ -943,58 +943,7 @@ namespace DriverBase
             }
         }
 
-        public void ApplyDOMUpdate(string mnemonic, KaiTrade.Interfaces.IDOMSlot[] slots)
-        {
-            try
-            {
-                if (slots.Length > 0)
-                {
-                    KaiTrade.Interfaces.IDOM  DOM = AppFactory.Instance().GetProductDOM(mnemonic,slots[0].Price);
-                   
-                    DOM.Update(slots);
-                    
-                }
-            }
-            catch (Exception myE)
-            {
-            }
-        }
-
-        public void ApplyDOMUpdate(string mnemonic, KaiTrade.Interfaces.IPXUpdate update)
-        {
-            try
-            {
-
-                KaiTrade.Interfaces.IDOM dom = AppFactory.Instance().GetProductDOM(mnemonic);
-                if (dom == null)
-                {
-                    // must have a least a price
-                    decimal? initPx = null;
-                    if (update.BidPrice.HasValue)
-                    {
-                        initPx = update.BidPrice;
-                    }
-                    else if (update.OfferPrice.HasValue)
-                    {
-                        initPx = update.OfferPrice;
-                    }
-                    else if (update.TradePrice.HasValue)
-                    {
-                        initPx = update.TradePrice;
-                    }
-                    if (initPx.HasValue)
-                    {
-                        dom = AppFactory.Instance().GetProductDOM(mnemonic, initPx.Value);
-
-                    }
-                }
-                dom.Update(update);
-
-            }
-            catch (Exception myE)
-            {
-            }
-        }
+       
 
 
         /// <summary>
@@ -1047,67 +996,7 @@ namespace DriverBase
         {
             try
             {
-                // try to get a L1PriceSupport.PXPublisher
-                //L1PriceSupport.PXPublisher myL1PriceSupport.PXPublisher = m_PublisherRegister[myMnemonic] as L1PriceSupport.PXPublisher;
-                if (!_publisherRegister.ContainsKey(update.Mnemonic))
-                {
-                    return;
-                }
-
-                KaiTrade.Interfaces.IProduct product =  AppFacade.Instance().GetProductManager().GetProductMnemonic(update.Mnemonic);
-                if (product != null)
-                {
-                    try
-                    {
-                        _publisherRegister[product.Mnemonic].OnUpdate(product.Mnemonic, update);
-                    }
-                    catch
-                    {
-                        // silent because we dont want some publisher error stopping
-                        // the rest of the update
-                    }
-                }
-
-
-
-                KaiTrade.Interfaces.IPublisher myPublisher = _publisherRegister[update.Mnemonic] as KaiTrade.Interfaces.IPublisher;
-
-                if (myPublisher != null)
-                {
-
-                    L1PriceSupport.PXPublisher myPXPublisher = myPublisher as L1PriceSupport.PXPublisher;
-
-                     if (myPXPublisher != null)
-                     {
-                         myPXPublisher.ApplyUpdate(update);
-                         
-                         myPublisher.OnUpdate(null);
-                         if (myPXPublisher.Status != KaiTrade.Interfaces.Status.open)
-                         {
-                             myPXPublisher.Status = KaiTrade.Interfaces.Status.open;
-                         }
-
-                     }
-                     else
-                     {
-
-                         // to do prices in the new way we expect that the pub impliments the price update interface
-                         KaiTrade.Interfaces.IPXUpdate target = myPublisher as KaiTrade.Interfaces.IPXUpdate;
-                         if (target != null)
-                         {
-                             // this will apply the update to the publisher
-                             target.From(update);
-                         }
-                     }
-                }
-
-                if(_priceAgregators.ContainsKey(update.Mnemonic))
-                {
-                    foreach (IPriceAgregator pa in _priceAgregators[update.Mnemonic])
-                    {
-                        pa.ProcessPrice(update);
-                    }
-                }
+                
             }
             catch (Exception myE)
             {
@@ -1115,7 +1004,7 @@ namespace DriverBase
             }
         }
 
-        protected virtual void SubscribeMD(KaiTrade.Interfaces.IPublisher myPub, int depthLevels, string requestID)
+        protected virtual void SubscribeMD(KaiTrade.Interfaces.IProduct product, int depthLevels, string requestID)
         {
             throw new Exception("The method or operation is not implemented.");
         }
@@ -1125,48 +1014,12 @@ namespace DriverBase
             throw new Exception("The method or operation is not implemented.");
         }
 
-        /// <summary>
-        /// The base implementation records the publisher and then calls
-        /// subscribeMD to the impliemting class so it can then use the
-        /// subject for its owb registration
-        /// </summary>
-        /// <param name="myPublisher"></param>
-        protected virtual void DoRegister(KaiTrade.Interfaces.IPublisher myPublisher, int depthLevels, string requestID)
+        
+        public virtual void OpenPrices(KaiTrade.Interfaces.IProduct product, int depthLevels, string requestID)
         { 
             try
             {
-                // a PXPublisher - we only support these for prices
-                L1PriceSupport.PXPublisher myPXPub = myPublisher as L1PriceSupport.PXPublisher;
-                if (myPXPub == null)
-                {
-                    // we allow publishers (new style) that impliment the PXUpdae to work as well
-                    KaiTrade.Interfaces.IPXUpdate upd = myPublisher as KaiTrade.Interfaces.IPXUpdate;
-                    if (upd == null)
-                    {
-                        throw new Exception("Not a valid publisher type - only L1PriceSupport.PXPublishers allowed here");
-                    }
-
-                }
-
-                // check if the subject is already registered and add or update 
-                // the map of subjects we are keeping - this can be used to 
-                // resubscribe
-
-                string myKey = myPublisher.TopicID();
-
-                // add the publisher to our register
-                if (_publisherRegister.ContainsKey(myKey))
-                {
-                    _publisherRegister[myKey] = myPublisher;
-                }
-                else
-                {
-                    _publisherRegister.Add(myKey, myPublisher);
-                }
-
-                myPublisher.Status = KaiTrade.Interfaces.Status.opening;
-
-                SubscribeMD(myPublisher, depthLevels, requestID);
+                SubscribeMD(product, depthLevels, requestID);
             }
             catch (Exception myE)
             {
@@ -1201,19 +1054,7 @@ namespace DriverBase
         {
             try
             {
-            // a L1PriceSupport.PXPublisher - we only support these for prices
-            L1PriceSupport.PXPublisher myPXPub = myPublisher as L1PriceSupport.PXPublisher;
-            if (myPXPub == null)
-            {
-                throw new Exception("Not a valid publisher type - only L1PriceSupport.PXPublishers allowed here");
-            }
-
-            if (_publisherRegister.ContainsKey(myPublisher.TopicID()))
-            {
-                _publisherRegister.Remove(myPublisher.TopicID());
-            }
-
-            UnSubscribeMD(myPXPub);
+            
             }
             catch (Exception myE)
             {
@@ -1310,18 +1151,6 @@ namespace DriverBase
        
 
 
-        public void Register(KaiTrade.Interfaces.IPublisher publisher, int depthLevels, string requestID)
-        {
-            try
-            {
-                DoRegister(publisher, depthLevels, requestID);
-
-            }
-            catch (Exception myE)
-            {
-                _log.Error("Driver.Register:publisher", myE);
-            }
-        }
 
         public PriceUpdate PriceUpdate
         {

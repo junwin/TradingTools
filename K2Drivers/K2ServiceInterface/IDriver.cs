@@ -87,14 +87,15 @@ namespace K2ServiceInterface
         PriceUpdate PriceUpdate
         { get; set; }
 
+       
         /// <summary>
-        /// Register some subject to receive images and updates - usually for prices
+        /// Open prices and depth for the given product
         /// </summary>
-        /// <param name="myPublisher">a publisher that the driver will use to publish updates for the
-        /// publisher topic</param>
-        /// <param name="depthLevels">How many levels of depth - 0 => none, not all drivers support depth</param>
-        /// <param name="requestID">ID that is associated with the request</param>
-        void Register(KaiTrade.Interfaces.IPublisher myPublisher, int depthLevels, string requestID);
+        /// <param name="product">product to open prices on</param>
+        /// <param name="depthLevels">Depth levels to request</param>
+        /// <param name="requestID">identifier for this request</param>
+        void OpenPrices(KaiTrade.Interfaces.IProduct product, int depthLevels, string requestID);
+       
 
         /// <summary>
         /// Unregister some subject

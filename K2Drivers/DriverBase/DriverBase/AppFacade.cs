@@ -12,8 +12,8 @@ namespace DriverBase
     public class AppFacade : IFacade
     {
         private string _appPath = "";
-        private Dictionary<string, IL1PX> _l1Prices;
-        private Dictionary<string, KaiTrade.Interfaces.IDOM> _DOM;
+        private IPriceHandler _priceHandler = null;
+
         /// <summary>
         /// Singleton OrderManager
         /// </summary>
@@ -47,8 +47,7 @@ namespace DriverBase
 
         protected AppFacade()
         {
-            _l1Prices = new Dictionary<string,IL1PX>();
-            _DOM = new Dictionary<string, KaiTrade.Interfaces.IDOM>();
+
             _appPath = Application.StartupPath;
         }
 
@@ -84,61 +83,16 @@ namespace DriverBase
             }
         }
 
-
-        public IL1PX GetL1Prices(KaiTrade.Interfaces.IProduct product)
+        public IPriceHandler PriceHandler
         {
-            if(_l1Prices.ContainsKey(product.Mnemonic))
-            {
-                return _l1Prices[product.Mnemonic];
-            }
-            return null;
-
+            get { return _priceHandler; }
+            set { _priceHandler = value; }
         }
 
-        public KaiTrade.Interfaces.IPublisher CreatePxPub(KaiTrade.Interfaces.IProduct product)
-        {
-            L1PriceSupport.PXPublisher pxPub = null;
-            if (!_l1Prices.ContainsKey(product.Mnemonic))
-            {
-                pxPub = new L1PriceSupport.PXPublisher();               
-                pxPub.Product = product;
-                _l1Prices.Add(product.Mnemonic, pxPub);
-                (pxPub as KaiTrade.Interfaces.IPublisher).Open(product.Mnemonic);
-            }
-            return pxPub;
-        }
+        
+      
 
-        public void SetL1Prices(KaiTrade.Interfaces.IProduct product, IL1PX L1Price)
-        {
-            if (_l1Prices.ContainsKey(product.Mnemonic))
-            {
-                _l1Prices[product.Mnemonic] = L1Price;
-            }
-            else
-            {
-                _l1Prices.Add(product.Mnemonic, L1Price);
-            }
-        }
-
-        public KaiTrade.Interfaces.IDOM GetDOM(KaiTrade.Interfaces.IProduct product)
-        {
-            if (_DOM.ContainsKey(product.Mnemonic))
-            {
-                return _DOM[product.Mnemonic];
-            }
-            return null;
-        }
-        public void SetDOM(KaiTrade.Interfaces.IProduct product, KaiTrade.Interfaces.IDOM DOM)
-        {
-            if (_DOM.ContainsKey(product.Mnemonic))
-            {
-                _DOM[product.Mnemonic] = DOM;
-            }
-            else
-            {
-                _DOM.Add(product.Mnemonic, DOM);
-            }
-        }
+       
   
         
     }

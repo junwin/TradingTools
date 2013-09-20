@@ -48,10 +48,7 @@ namespace DriverBase
         /// </summary>
         private object m_K2ServiceClient;
 
-        Dictionary<string, K2Depth.K2DOM> _mnemonicDOM;
-
-        Dictionary<string, L1PriceSupport.PXPublisher> _L1Publisher;
-
+       
         
 
         public static IFactory Instance()
@@ -73,7 +70,6 @@ namespace DriverBase
         protected AppFactory()
         {
             m_AppFacade = AppFacade.Instance();
-            _mnemonicDOM = new Dictionary<string, K2Depth.K2DOM>();
         }
 
         public IFacade Facade
@@ -103,40 +99,10 @@ namespace DriverBase
 
 
 
-        public KaiTrade.Interfaces.IDOM GetProductDOM(string mnemonic, decimal startPx)
-        {
-            KaiTrade.Interfaces.IProduct product = AppFacade.Instance().GetProductManager().GetProductMnemonic(mnemonic);
-            if (!_mnemonicDOM.ContainsKey(mnemonic))
-            {
-                K2Depth.K2DOM dom = new K2Depth.K2DOM();
-                dom.Create(startPx, (decimal)200, product.TickSize.Value);
-                _mnemonicDOM.Add(mnemonic, dom);
-                
-            }
-            return _mnemonicDOM[mnemonic];
-
-        }
-        public KaiTrade.Interfaces.IDOM GetProductDOM(string mnemonic)
-        {
-            if (_mnemonicDOM.ContainsKey(mnemonic))
-            {
-                return _mnemonicDOM[mnemonic];
-
-            }
-            return null;
-
-        }
+       
 
 
-        public KaiTrade.Interfaces.IPublisher  GetPXPublisher(string mnmonic)
-        {
-            if (!_L1Publisher.ContainsKey(mnmonic))
-            {          
-                _L1Publisher.Add(mnmonic, new L1PriceSupport.PXPublisher());
-                
-            }
-            return _L1Publisher[mnmonic];
-        }
+       
        
 
         public void ApplyUpdate(KaiTrade.Interfaces.IPXUpdate update)
