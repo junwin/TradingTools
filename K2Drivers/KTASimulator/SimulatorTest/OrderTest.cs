@@ -56,6 +56,8 @@ namespace SimulatorTest
         [TestMethod]
         public void SubmitOrderSimInBook()
         {
+            // reset the message cllection
+            _messages = null;
             // EAS will just go into the simulators order book - you can
             // Delete or modify it
             _driver = new KTASimulator.KTASimulator();
@@ -135,6 +137,9 @@ namespace SimulatorTest
         [TestMethod]
         public void SubmitOrderSimAutoFill()
         {
+            // reset the message cllection
+            _messages = null;
+
             // HPQ will just fill over time an order of 5 will fill 2,1,2
             _driver = new KTASimulator.KTASimulator();
             _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
@@ -158,11 +163,11 @@ namespace SimulatorTest
 
             
 
-            System.Threading.Thread.Sleep(20000);
+            System.Threading.Thread.Sleep(50000);
 
             if (_messages.Count > 0)
             {
-                Assert.AreEqual(_messages["8"].Count, 4);
+                Assert.AreEqual(4, _messages["8"].Count);
 
                 Fill fillNew = JsonConvert.DeserializeObject<Fill>(_messages["8"][0].Data);
                 Fill fillPF1 = JsonConvert.DeserializeObject<Fill>(_messages["8"][1].Data);
@@ -197,6 +202,9 @@ namespace SimulatorTest
         [TestMethod]
         public void SubmitOrderBadAccountReject()
         {
+            // reset the message cllection
+            _messages = null;
+
             // HPQ will just fill over time an order of 5 will fill 2,1,2
             _driver = new KTASimulator.KTASimulator();
             _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
@@ -220,7 +228,7 @@ namespace SimulatorTest
 
 
 
-            System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(10000);
 
             if (_messages.Count > 0)
             {
@@ -244,6 +252,9 @@ namespace SimulatorTest
         [TestMethod]
         public void SubmitOrderSimMarket()
         {
+            // reset the message cllection
+            _messages = null;
+
             // AAB will just be put into the simulators internal book
             _driver = new KTASimulator.KTASimulator();
             _priceHandler = new L1PriceSupport.MemoryPriceHandler();
@@ -277,7 +288,7 @@ namespace SimulatorTest
             }
 
             // Wait for prices in the publisher
-            System.Threading.Thread.Sleep(10000);
+            System.Threading.Thread.Sleep(20000);
 
             // test that some prices are there
             K2ServiceInterface.IL1PX pxPub = _driver.Facade.PriceHandler.GetPXPublisher(aabProduct) as K2ServiceInterface.IL1PX;
@@ -304,7 +315,7 @@ namespace SimulatorTest
 
             _driver.OnMessage(msg);
 
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(5000);
 
             K2DataObjects.SubmitRequest nos1 = new K2DataObjects.SubmitRequest();
             nos1.Account = "TEST";
@@ -325,11 +336,11 @@ namespace SimulatorTest
 
             // wait for the orders to fill - test that the right fills 
             // were received
-            System.Threading.Thread.Sleep(120000);
+            System.Threading.Thread.Sleep(180000);
 
             if (_messages.Count > 0)
             {
-                Assert.AreEqual(_messages["8"].Count, 6);
+                Assert.AreEqual(6, _messages["8"].Count);
 
                 ReceivedfillStates ord1States = new ReceivedfillStates();
                 ord1States.osNew = false;

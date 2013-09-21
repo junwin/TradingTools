@@ -11,9 +11,11 @@ namespace DriverBaseTest
         public void LoadFileTest()
         {
             DriverBase.DriverBase driver = new DriverBase.DriverBase();
-            driver.AddProductDirect("Product.txt");
+            driver.AddProductDirect("SimProduct.txt");
             List<KaiTrade.Interfaces.IProduct> products = driver.Facade.GetProductManager().GetProducts("KTACQG", "", "");
-            Assert.AreEqual(products.Count,1);
+            Assert.AreEqual(products.Count,0);
+            products = driver.Facade.GetProductManager().GetProducts("KTASIM", "", "");
+            Assert.AreEqual(products.Count, 3);
         }
     }
 }
