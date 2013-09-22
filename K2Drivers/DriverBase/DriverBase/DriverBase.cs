@@ -1174,44 +1174,8 @@ namespace DriverBase
         }
 
 
-        /// <summary>
-        /// Request that a driver opens/subscribes to a product - this needs to
-        /// be done by the base class since that knows the API/Broker to
-        /// open or get some product if it exists
-        /// </summary>
-        /// <param name="myProductXml">string of XML that defines the product</param>
-        public virtual void GetProduct(string myProductXml)
-        {
-            try
-            {
-                _log.Error("GetProduct - Driver Base class cannot process");
-
-            }
-            catch (Exception myE)
-            {
-                _log.Error("GetProduct", myE);
-            }
-        }
-
-        /// <summary>
-        /// Request that a driver opens/subscribes to a product 
-        /// </summary>
-        /// <param name="myProduct">Tradable product - to get or request</param>
-        /// <param name="myGenericName">The generic name for the product - i.e. not time sensitive
-        ///  for example the S&P emini can be refered to as EP in CQG, it then may resolve to
-        ///  EPM9, EPZ9  .... depending on which is the active front contract</param>
-        public virtual void GetProduct(KaiTrade.Interfaces.IProduct myProduct, string myGenericName)
-        {
-            try
-            {
-                _log.Error("GetProduct:product i/f - Driver Base class cannot process");
-
-            }
-            catch (Exception myE)
-            {
-                _log.Error("GetProduct", myE);
-            }
-        }
+       
+        
 
         /// <summary>
         /// Request the product details, get the driver to access the product and fill in 

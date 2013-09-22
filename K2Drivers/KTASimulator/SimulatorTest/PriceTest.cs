@@ -61,7 +61,7 @@ namespace SimulatorTest
         {
             // HPQ will just fill over time an order of 5 will fill 2,1,2
             _driver = new KTASimulator.KTASimulator();
-            _driver.Facade.AppPath = @"C:\Users\John\Documents\GitHub\TradingTools\K2Drivers\build\bin\";
+            _driver.Facade.AppPath = @"C:\Users\John\Documents\GitHub\TradingTools\build\bin\";
             
             _priceHandler = new L1PriceSupport.MemoryPriceHandler();
             _driver.Facade.PriceHandler = _priceHandler;
@@ -83,7 +83,7 @@ namespace SimulatorTest
             System.Threading.Thread.Sleep(110000);
              
             List<KaiTrade.Interfaces.IProduct> products = _driver.Facade.GetProductManager().GetProducts("KTSIM", "", "");
-            Assert.AreEqual(products.Count, 13);
+            Assert.AreEqual(13, products.Count);
 
             var pub = _priceHandler.GetPXPublisher(product);
 

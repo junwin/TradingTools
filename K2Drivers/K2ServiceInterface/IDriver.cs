@@ -41,9 +41,12 @@ namespace K2ServiceInterface
         cancelPending
     };
 
+    /// <summary>
+    /// Used to get price updates from the driver
+    /// </summary>
+    /// <param name="pxUpdate"></param>
     public delegate void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate);
-   
-    
+ 
 
     /// <summary>
     /// Defines the interface a drive(broker connection) must impliment to be loaded and used from
@@ -51,19 +54,11 @@ namespace K2ServiceInterface
     /// </summary>
     public interface IDriver
     {
-        /// <summary>
-        /// Process a set of order - this is driver specific and used to provide
-        /// some access to specific driver functions - it should be avoided as it will
-        /// be depricated
-        /// </summary>
-        /// <param name="cmdName"></param>
-        /// <param name="orderIds"></param>
-        /// <returns></returns>
-        int ProcessOrders(string cmdName, string[] orderIds);
-
+       
         /// <summary>
         /// Send a message - the driver needs to process this message
         /// the Message usually wraps a FIX message for trading
+        /// other drivers will use the relevant API
         /// </summary>
         /// <param name="myMsg"></param>
         void Send(KaiTrade.Interfaces.IMessage myMsg);
@@ -103,21 +98,7 @@ namespace K2ServiceInterface
         /// <param name="myClient">subject that will be unregistered</param>
         void UnRegister(KaiTrade.Interfaces.IPublisher myPublisher);
 
-        /// <summary>
-        /// Request that a driver opens/subscribes to a product
-        /// </summary>
-        /// <param name="myProductXml">string of XML that defines the product</param>
-        void GetProduct(string myProductXml);
-
-        /// <summary>
-        /// Request that a driver opens/subscribes to a product
-        /// </summary>
-        /// <param name="myProduct">Tradable product - to get or request</param>
-        /// <param name="myGenericName">The generic name for the product - i.e. not time sensitive
-        ///  for example the  emini can be refered to as EP in CQG, it then may resolve to
-        ///  EPM9, EPZ9  .... depending on which is the active front contract</param>
-        void GetProduct(KaiTrade.Interfaces.IProduct myProduct, string myGenericName);
-
+        
         /// <summary>
         /// Request the product details, get the driver to access the product and fill in
         /// product details in the kaitrade product object.
@@ -169,12 +150,7 @@ namespace K2ServiceInterface
         /// <param name="myParent"></param>
         void SetParent(IDriverManager myParent);
 
-        /// <summary>
-        /// Get current state information - returns the state/config settings (XML) for the
-        /// adapter
-        /// </summary>
-        /// <returns>XML databound driver object</returns>
-        //KAI.kaitns.Driver GetState();
+
 
         /// <summary>
         /// Request that all adapters report their status - the adapter returns the

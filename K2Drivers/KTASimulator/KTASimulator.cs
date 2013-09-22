@@ -1522,6 +1522,7 @@ namespace KTASimulator
                 }
 
                 _publisherRegister.Clear();
+                setStatus(KaiTrade.Interfaces.Status.closed);
                 _runningState = new DriverBase.DriverStatus(StatusConditon.none, StatusConditon.none);
                 
             }
