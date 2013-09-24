@@ -69,9 +69,9 @@ namespace K2ServiceInterface
         /// Dynamically Load a driver from the path specified
         /// </summary>
         /// <param name="myCode">code that will be assigned to the driver - overrides the driver code</param>
-        /// <param name="myPath">path to the assembly</param>
+        /// <param name="myPath">absolute path to the assembly, can be http:\\..</param>
         /// <returns></returns>
-        IDriver DynamicLoad(string myCode, string myPath);
+        IDriver DynamicLoad(string myPath);
 
        
 

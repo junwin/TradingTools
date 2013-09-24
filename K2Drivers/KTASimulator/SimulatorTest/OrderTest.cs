@@ -304,7 +304,7 @@ namespace SimulatorTest
 
             nos.Mnemonic = "AAB";
             nos.SecurityID = "AAB";
-            nos.OrderQty = 2;
+            nos.OrderQty = 5;
             nos.OrdType = KaiTrade.Interfaces.OrderType.LIMIT;
             nos.Price = 11.99M;
             nos.Side = KaiTrade.Interfaces.Side.BUY;
@@ -323,7 +323,7 @@ namespace SimulatorTest
 
             nos1.Mnemonic = "AAB";
             nos1.SecurityID = "AAB";
-            nos1.OrderQty = 2;
+            nos1.OrderQty = 5;
             nos1.OrdType = KaiTrade.Interfaces.OrderType.LIMIT;
             nos1.Price = 11.99M;
             nos1.Side = KaiTrade.Interfaces.Side.SELL;
@@ -340,7 +340,7 @@ namespace SimulatorTest
 
             if (_messages.Count > 0)
             {
-                Assert.AreEqual(6, _messages["8"].Count);
+                Assert.IsTrue(_messages["8"].Count >= 4);
 
                 ReceivedfillStates ord1States = new ReceivedfillStates();
                 ord1States.osNew = false;

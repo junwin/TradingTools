@@ -36,36 +36,26 @@ namespace K2Managers
         /// </summary>
         private static object s_Token = new object();
 
-        private System.Collections.Hashtable m_LoadedDrivers;
+        private System.Collections.Hashtable _loadedDrivers;
 
         /// <summary>
         /// Map of driver definitions
         /// </summary>
-        private Dictionary<string, KaiTrade.Interfaces.IDriverDef> m_DriverDefinition;
-
-        /// <summary>
-        /// Subscribers for updates from the driver manager
-        /// </summary>
-        //NOT USED? private List<KaiTrade.Interfaces.Subscriber> m_Subscribers;
-
-        /// <summary>
-        /// This publisher name - should be unique
-        /// </summary>
-        //NOT USED? private string m_Name = "KTADriverManager";
+        private Dictionary<string, KaiTrade.Interfaces.IDriverDef> _driverDefinition;
 
         /// <summary>
         /// provides access to the facade
         /// </summary>
-        private IFacade m_Facade;
+        private IFacade _facade;
 
-        private log4net.ILog m_WireLog;
+        private log4net.ILog _wireLog;
 
         protected DriverManager()
 		{
-            m_LoadedDrivers = new System.Collections.Hashtable();
-            m_DriverDefinition = new Dictionary<string, KaiTrade.Interfaces.IDriverDef>();
-            m_WireLog = log4net.LogManager.GetLogger("KaiTradeWireLog");
-            m_WireLog.Info("DriverManager Created");
+            _loadedDrivers = new System.Collections.Hashtable();
+            _driverDefinition = new Dictionary<string, KaiTrade.Interfaces.IDriverDef>();
+            _wireLog = log4net.LogManager.GetLogger("KaiTradeWireLog");
+            _wireLog.Info("DriverManager Created");
 		}
 
         public static DriverManager Instance()
@@ -92,13 +82,13 @@ namespace K2Managers
         {
             try
             {
-                if (m_DriverDefinition.ContainsKey(myDriver.Code))
+                if (_driverDefinition.ContainsKey(myDriver.Code))
                 {
-                    m_DriverDefinition[myDriver.Code] = myDriver;
+                    _driverDefinition[myDriver.Code] = myDriver;
                 }
                 else
                 {
-                    m_DriverDefinition.Add(myDriver.Code,myDriver);
+                    _driverDefinition.Add(myDriver.Code,myDriver);
                 }
             }
             catch (Exception myE)
@@ -117,7 +107,7 @@ namespace K2Managers
             List<KaiTrade.Interfaces.IDriverDef> myDriverDefs = new List<KaiTrade.Interfaces.IDriverDef>();
             try
             {
-                foreach (KaiTrade.Interfaces.IDriverDef myDriverDef in m_DriverDefinition.Values)
+                foreach (KaiTrade.Interfaces.IDriverDef myDriverDef in _driverDefinition.Values)
                 {
                     myDriverDefs.Add(myDriverDef);
                 }
@@ -136,6 +126,7 @@ namespace K2Managers
         /// <returns></returns>
         public IDriver DynamicLoad(string myPath)
         {
+                   
             IDriver myDriver = null;
             try
             {
@@ -181,25 +172,25 @@ namespace K2Managers
 
         private void addDriver(string myCode, IDriver myDriver)
         {
-            if (m_LoadedDrivers.ContainsKey(myCode))
+            if (_loadedDrivers.ContainsKey(myCode))
             {
-                m_LoadedDrivers[myCode] = myDriver;
+                _loadedDrivers[myCode] = myDriver;
             }
             else
             {
-                m_LoadedDrivers.Add(myCode, myDriver);
+                _loadedDrivers.Add(myCode, myDriver);
             }
         }
         private void addDriver( IDriver myDriver)
         {
             myDriver.SetParent(this);
-            if (m_LoadedDrivers.ContainsKey(myDriver.ID))
+            if (_loadedDrivers.ContainsKey(myDriver.ID))
             {
-                m_LoadedDrivers[myDriver.ID] = myDriver;
+                _loadedDrivers[myDriver.ID] = myDriver;
             }
             else
             {
-                m_LoadedDrivers.Add(myDriver.ID, myDriver);
+                _loadedDrivers.Add(myDriver.ID, myDriver);
             }
 
             this.DoUpdate("ADDED", myDriver.ID);
@@ -207,23 +198,7 @@ namespace K2Managers
 
         #region DriverManager Members
 
-        IDriver IDriverManager.DynamicLoad(string myCode, string myPath)
-        {
-            IDriver myDrv = null;
-            try
-            {
-                myDrv = DynamicLoad(myPath);
-                //addDriver(myCode, myDrv);
-
-                // update subscribers that we added a driver
-                DoUpdate("ADDED", myCode);
-            }
-            catch (Exception myE)
-            {
-                m_Log.Error("DriverManager.DynamicLoad", myE);
-            }
-            return myDrv;
-        }
+      
 
         /// <summary>
         /// Get a loaded driver
@@ -234,9 +209,9 @@ namespace K2Managers
         {
             IDriver myDriver = null;
 
-            if (m_LoadedDrivers.ContainsKey(myID))
+            if (_loadedDrivers.ContainsKey(myID))
             {
-                myDriver = m_LoadedDrivers[myID] as IDriver;
+                myDriver = _loadedDrivers[myID] as IDriver;
             }
 
             return myDriver;
@@ -245,7 +220,7 @@ namespace K2Managers
         List<IDriver> IDriverManager.GetDrivers()
         {
             System.Collections.Generic.List<IDriver> myDrivers = new System.Collections.Generic.List<IDriver>();
-            foreach (IDriver myDrv in m_LoadedDrivers.Values)
+            foreach (IDriver myDrv in _loadedDrivers.Values)
             {
                 myDrivers.Add(myDrv);
             }
@@ -258,7 +233,7 @@ namespace K2Managers
         {
             try
             {
-                foreach (IDriver myDrv in m_LoadedDrivers.Values)
+                foreach (IDriver myDrv in _loadedDrivers.Values)
                 {
                     try
                     {
@@ -280,7 +255,7 @@ namespace K2Managers
         {
             try
             {
-                foreach (IDriver myDrv in m_LoadedDrivers.Values)
+                foreach (IDriver myDrv in _loadedDrivers.Values)
                 {
                     myDrv.Send(myMsg);
                 }
@@ -299,7 +274,7 @@ namespace K2Managers
         {
             try
             {
-                foreach (IDriver myDrv in m_LoadedDrivers.Values)
+                foreach (IDriver myDrv in _loadedDrivers.Values)
                 {
                     myDrv.ShowUI(uiVisible);
                 }
@@ -314,11 +289,11 @@ namespace K2Managers
         {
             try
             {
-                foreach (IDriver myDrv in m_LoadedDrivers.Values)
+                foreach (IDriver myDrv in _loadedDrivers.Values)
                 {
-                    m_WireLog.Info("Start driver enter:" + myDrv.ID);
+                    _wireLog.Info("Start driver enter:" + myDrv.ID);
                     Start(myDrv.ID);
-                    m_WireLog.Info("Start driver exit:" + myDrv.ID);
+                    _wireLog.Info("Start driver exit:" + myDrv.ID);
                 }
             }
             catch (Exception myE)
@@ -338,11 +313,11 @@ namespace K2Managers
                 IDriver myDrv = (this as IDriverManager).GetDriver(myID);
 
                 // try get the driver def
-                if (m_DriverDefinition.ContainsKey(myID))
+                if (_driverDefinition.ContainsKey(myID))
                 {
                     // if a vaild driver def exists pass that into the
                     // driver
-                    KaiTrade.Interfaces.IDriverDef myDrvDef = m_DriverDefinition[myID];
+                    KaiTrade.Interfaces.IDriverDef myDrvDef = _driverDefinition[myID];
                     if (myDrvDef.Enabled)
                     {
                         // set the main message handler for the driver
@@ -389,7 +364,7 @@ namespace K2Managers
         {
             try
             {
-                foreach (IDriver myDrv in m_LoadedDrivers.Values)
+                foreach (IDriver myDrv in _loadedDrivers.Values)
                 {
                     myDrv.Stop();
                 }
@@ -449,8 +424,8 @@ namespace K2Managers
         /// </summary>
         public IFacade Facade
         {
-            get { return m_Facade; }
-            set { m_Facade = value; }
+            get { return _facade; }
+            set { _facade = value; }
         }
         #endregion
 
