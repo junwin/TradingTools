@@ -23,13 +23,13 @@ namespace KaiTrade.Interfaces
         bool HideDriverUI { get; set; }
         bool AsyncPrices { get; set; }
         bool QueueReplaceRequests { get; set; }
+        List<KaiTrade.Interfaces.IParameter> UserParameters{ get; set; }
 
         /*
          *<xs:element ref="IPEndpoint" minOccurs="0" maxOccurs="1" />
         <xs:element ref="UserCredential" minOccurs="0" maxOccurs="1" />
         <xs:element ref="MQExchange" minOccurs="0" maxOccurs="unbounded" />
         <xs:element ref="MQRoutingKey" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element ref="UserProperty" minOccurs="0" maxOccurs="unbounded" />
          * 
          * 
          * 

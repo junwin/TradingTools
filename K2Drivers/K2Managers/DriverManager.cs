@@ -36,7 +36,7 @@ namespace K2Managers
         /// </summary>
         private static object s_Token = new object();
 
-        private System.Collections.Hashtable _loadedDrivers;
+        private Dictionary<string, IDriver> _loadedDrivers;
 
         /// <summary>
         /// Map of driver definitions
@@ -52,7 +52,7 @@ namespace K2Managers
 
         protected DriverManager()
 		{
-            _loadedDrivers = new System.Collections.Hashtable();
+            _loadedDrivers = new Dictionary<string, IDriver>();
             _driverDefinition = new Dictionary<string, KaiTrade.Interfaces.IDriverDef>();
             _wireLog = log4net.LogManager.GetLogger("KaiTradeWireLog");
             _wireLog.Info("DriverManager Created");

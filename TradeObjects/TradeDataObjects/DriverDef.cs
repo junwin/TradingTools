@@ -15,6 +15,18 @@ namespace K2DataObjects
         private bool _hideDriverUI = true;
         private bool _asyncPrices = true;
         private bool _queueReplaceRequests = true;
+        private List<KaiTrade.Interfaces.IParameter> _userParameters;
+
+        public List<KaiTrade.Interfaces.IParameter> UserParameters
+        {
+            get { return _userParameters; }
+            set { _userParameters = value; }
+        }
+
+        public DriverDef()
+        {
+            _userParameters = new List<KaiTrade.Interfaces.IParameter>();
+        }
 
         public string RouteCode
         {
