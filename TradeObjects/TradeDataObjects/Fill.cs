@@ -315,7 +315,7 @@ namespace K2DataObjects
         [JsonProperty]
         [System.Data.Linq.Mapping.Column(DbType = "NVarChar(256)")]
         public string Account
-        { get; set; }
+        { get { return m_Account; } set { m_Account = value; } }
 
         /// <summary>
         /// Mnemonic - better to use the product ID where possible
@@ -324,7 +324,7 @@ namespace K2DataObjects
         [JsonProperty]
         [System.Data.Linq.Mapping.Column(DbType = "NVarChar(256)")]
         public string Mnemonic
-        { get; set; }
+        { get { return m_Mnemonic; } set { m_Mnemonic = value; } }
 
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace K2DataObjects
         [JsonProperty]
         [System.Data.Linq.Mapping.Column(DbType = "NVarChar(36)")]
         public string ProductID
-        { get; set; }
+        { get { return m_ProductID; } set { m_ProductID = value; } }
 
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace K2DataObjects
         [JsonProperty]
         [System.Data.Linq.Mapping.Column]
         public DateTime SystemTime
-        { get; set; }
+        { get { return m_SystemTime; } set { m_SystemTime = value; } }
 
 
         [DataMember]

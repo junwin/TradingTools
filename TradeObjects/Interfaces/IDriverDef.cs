@@ -5,6 +5,36 @@ using System.Text;
 
 namespace KaiTrade.Interfaces
 {
+
+   
+    public interface IUserCredential
+    {
+       string UserId {get; set;}
+       string Pwd {get; set;}
+    }
+
+    public interface IIPEndpoint
+    {
+        /// <summary>
+        /// Server address
+        /// </summary>
+        string Server { get; set; }
+
+        /// <summary>
+        /// Port 
+        /// </summary>
+        int Port { get; set; }
+        /// <summary>
+        /// Name of endpoint
+        /// </summary>
+        string Name { get; set; }
+
+        /// <summary>
+        /// Path on the server
+        /// </summary>
+        string Path { get; set; }
+
+    }
     /// <summary>
     /// Provides the data to define a driver/connection we may load
     /// </summary>
@@ -15,73 +45,67 @@ namespace KaiTrade.Interfaces
         string LoadPath { get; set; }
         bool Enabled { get; set; }
 
-
+        /// <summary>
+        /// Second driver code if additional routing is needed
+        /// </summary>
         string RouteCode { get; set; }
+
+        /// <summary>
+        /// path to config files
+        /// </summary>
         string ConfigPath { get; set; }
+
+        /// <summary>
+        /// If false the driver can auto start as opposed to 
+        /// requiring a start message
+        /// </summary>
         bool ManualStart { get; set; }
+
+        /// <summary>
+        /// True if the driver is being used on a live market
+        /// </summary>
         bool LiveMarket { get; set; }
+
+        /// <summary>
+        /// Instruct the drive to hide any UI
+        /// </summary>
         bool HideDriverUI { get; set; }
+
+        /// <summary>
+        /// Use async price handling
+        /// </summary>
         bool AsyncPrices { get; set; }
+
+        /// <summary>
+        /// process replace and cancel messages in a queue
+        /// </summary>
         bool QueueReplaceRequests { get; set; }
+        /// <summary>
+        /// List of additional user defined paramters that can
+        /// be passed to the driver
+        /// </summary>
         List<KaiTrade.Interfaces.IParameter> UserParameters{ get; set; }
 
-        /*
-         *<xs:element ref="IPEndpoint" minOccurs="0" maxOccurs="1" />
-        <xs:element ref="UserCredential" minOccurs="0" maxOccurs="1" />
-        <xs:element ref="MQExchange" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element ref="MQRoutingKey" minOccurs="0" maxOccurs="unbounded" />
-         * 
-         * 
-         * 
-         * <xs:element name="IPEndpoint">
-    <xs:complexType>
-      <xs:sequence />
-      <xs:attribute name="Server" type="xs:string" use="optional" />
-      <xs:attribute name="Port" type="xs:unsignedInt" use="required" />
-      <xs:attribute name="Name" type="xs:string" use="required" />
-      <xs:attribute name="Path" type="xs:string" />
-    </xs:complexType>
-  </xs:element>
+        /// <summary>
+        /// IPEndpoint of a server used by the driver
+        /// </summary>
+        IIPEndpoint IPEndPoint { get; set; }
 
-<xs:element name="UserCredential">
-    <xs:complexType>
-      <xs:sequence />
-      <xs:attribute name="userId" type="xs:string" />
-      <xs:attribute name="pwd" type="xs:string" />
-    </xs:complexType>
-  </xs:element>
+        /// <summary>
+        /// User credential required by the driver
+        /// </summary>
+        IUserCredential UserCredential { get; set; }
 
+        /// <summary>
+        /// Message queue exchanges - used by rabbit MQ for example
+        /// </summary>
+        List<IMQExchange> MQExchanges { get; set; }
 
-<xs:element name="MQExchange">
-    <xs:complexType>
-      <xs:sequence />
-      <xs:attributeGroup ref="MQExchangeAttributes" />
-    </xs:complexType>
-  </xs:element>
+        /// <summary>
+        /// Keys used to route traffic from the driver
+        /// </summary>
+        List<IMQRoutingKey> MQRoutingKeys { get; set; }
 
-  <xs:element name="MQRoutingKey">
-    <xs:complexType>
-      <xs:sequence />
-      <xs:attributeGroup ref="MQRoutingKeyAttributes" />
-    </xs:complexType>
-  </xs:element>
-
-  <xs:attributeGroup name="MQRoutingKeyAttributes">
-    <xs:attribute name="Type" type="xs:string" use="required" />
-    <xs:attribute name="Name" type="xs:string" use="required" />
-    <xs:attribute name="Exchange" type="xs:string" use="required" />
-    <xs:attribute name="Key" type="xs:string" use="required" />
-    <xs:attribute name="Queue" type="xs:string"/>
-    <xs:attribute name="Enabled" type="xs:boolean" use="required" />
-  </xs:attributeGroup>
-
-  <xs:attributeGroup name="MQExchangeAttributes">
-    <xs:attribute name="Name" type="xs:string" use="required" />
-    <xs:attribute name="Exchange" type="xs:string" use="required" />
-    <xs:attribute name="Type" type="xs:string" use="required" />
-    <xs:attribute name="Enabled" type="xs:boolean" use="required" />
-  </xs:attributeGroup>
-
-         */
+        
     }
 }

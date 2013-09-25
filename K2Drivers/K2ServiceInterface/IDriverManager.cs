@@ -73,6 +73,14 @@ namespace K2ServiceInterface
         /// <returns></returns>
         IDriver DynamicLoad(string myPath);
 
+
+        /// <summary>
+        /// Load drivers based on a list of driver defs
+        /// </summary>
+        /// <param name="driverDefs"></param>
+        /// <returns></returns>
+        List<IDriver> Load(List<KaiTrade.Interfaces.IDriverDef> driverDefs);
+
        
 
         /// <summary>

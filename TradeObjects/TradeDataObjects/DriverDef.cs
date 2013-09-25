@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using KaiTrade.Interfaces;
 
 namespace K2DataObjects
 {
@@ -16,6 +17,37 @@ namespace K2DataObjects
         private bool _asyncPrices = true;
         private bool _queueReplaceRequests = true;
         private List<KaiTrade.Interfaces.IParameter> _userParameters;
+        private IPEndpoint _IPEndPoint;
+        private UserCredential _userCredential;
+        private List<IMQExchange> _MQExchanges;
+        private List<IMQRoutingKey> _MQRoutingKeys;
+
+        public IIPEndpoint IPEndPoint
+        {
+            get { return _IPEndPoint; }
+            set { _IPEndPoint = value as IPEndpoint; }
+        }
+
+
+        public IUserCredential UserCredential
+        {
+            get { return _userCredential; }
+            set { _userCredential = value as UserCredential; }
+        }
+
+
+        public List<IMQExchange> MQExchanges
+        {
+            get { return _MQExchanges; }
+            set { _MQExchanges = value; }
+        }
+
+
+        public List<IMQRoutingKey> MQRoutingKeys
+        {
+            get { return _MQRoutingKeys; }
+            set { _MQRoutingKeys = value; }
+        }
 
         public List<KaiTrade.Interfaces.IParameter> UserParameters
         {
@@ -26,6 +58,8 @@ namespace K2DataObjects
         public DriverDef()
         {
             _userParameters = new List<KaiTrade.Interfaces.IParameter>();
+            _MQExchanges = new List<IMQExchange>();
+            _MQRoutingKeys = new List<IMQRoutingKey>();
         }
 
         public string RouteCode
@@ -102,5 +136,63 @@ namespace K2DataObjects
             get { return _enabled; }
             set { _enabled = value; }
         }
+    }
+
+
+    public class UserCredential : IUserCredential
+    {
+        private string _userId = "";
+
+        public string UserId
+        {
+            get { return _userId; }
+            set { _userId = value; }
+        }
+        private string _pwd = "";
+
+        public string Pwd
+        {
+            get { return _pwd; }
+            set { _pwd = value; }
+        }
+    }
+
+    public class IPEndpoint : IIPEndpoint
+    {
+
+        string _server = "";
+
+        public string Server
+        {
+            get { return _server; }
+            set { _server = value; }
+        }
+
+        int _port = 0;
+
+        public int Port
+        {
+            get { return _port; }
+            set { _port = value; }
+        }
+
+
+        string _name = "";
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+
+        string _path = "";
+
+        public string Path
+        {
+            get { return _path; }
+            set { _path = value; }
+        }
+
     }
 }

@@ -48,14 +48,17 @@ namespace K2Managers
         /// </summary>
         private IFacade _facade;
 
+        private string _binPath;
+
         private log4net.ILog _wireLog;
 
         protected DriverManager()
 		{
             _loadedDrivers = new Dictionary<string, IDriver>();
             _driverDefinition = new Dictionary<string, KaiTrade.Interfaces.IDriverDef>();
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(MyResolveEventHandler);
             _wireLog = log4net.LogManager.GetLogger("KaiTradeWireLog");
-            _wireLog.Info("DriverManager Created");
+            _wireLog.Info("DriverManager Created");        
 		}
 
         public static DriverManager Instance()
@@ -119,6 +122,25 @@ namespace K2Managers
             return myDriverDefs;
         }
 
+        public List<IDriver> Load(List<KaiTrade.Interfaces.IDriverDef> driverDefs)
+        {
+            List<IDriver> drivers = new List<IDriver>();
+            try
+            {
+                foreach (KaiTrade.Interfaces.IDriverDef def in driverDefs)
+                {
+                    this.AddDriverDefinition(def);
+                    IDriver driver =  this.DynamicLoad(def.LoadPath);
+                    drivers.Add(driver);
+                }
+            }
+            catch (Exception ex)
+            {
+                m_Log.Error("Load", myE);
+            }
+            return drivers;
+        }
+
         /// <summary>
         /// load a kai driver form the path specified
         /// </summary>
@@ -168,6 +190,40 @@ namespace K2Managers
                 m_Log.Error("DynamicLoad", myE);
                 return myDriver;
             }
+        }
+
+        /// <summary>
+        /// Called if we need to resolve some dependancy
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private System.Reflection.Assembly MyResolveEventHandler(object sender, ResolveEventArgs args)
+        {
+            System.Reflection.Assembly assy4 = null;
+            try
+            {
+                // attempt to load from the binpath or the requesting assmebly path
+                string[] assyDef = args.Name.Split(',');
+                string[] reqAssyDef = args.RequestingAssembly.FullName.Split(',');
+                int reqDllNamePos = args.RequestingAssembly.Location.IndexOf(reqAssyDef[0]);
+                string reqDllPath = args.RequestingAssembly.Location.Substring(0, reqDllNamePos - 1);
+                string DllPath = "";
+                if (_binPath.Length > 0)
+                {
+                    DllPath = _binPath + @"\" + assyDef[0] + ".dll";
+                }
+                else
+                {
+                    DllPath = reqDllPath + @"\" + assyDef[0] + ".dll";
+                }
+
+                assy4 = System.Reflection.Assembly.LoadFrom(DllPath);
+            }
+            catch
+            {
+            }
+            return assy4;
         }
 
         private void addDriver(string myCode, IDriver myDriver)
