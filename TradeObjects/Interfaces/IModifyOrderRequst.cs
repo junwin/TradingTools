@@ -14,5 +14,6 @@ namespace KaiTrade.Interfaces
         string ClOrdID { get; set; }
         string OrigClOrdID { get; set; }
         int? RetryCount { get; set; }
+       
     }
 }

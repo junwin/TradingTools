@@ -1413,7 +1413,7 @@ namespace KTASimulator
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
-                SendAdvisoryMessage("TDA:modifyOrder: problem modify order:" + myE.ToString());
+                SendAdvisoryMessage("modifyOrder: problem modify order:" + myE.ToString());
 
             }
      
