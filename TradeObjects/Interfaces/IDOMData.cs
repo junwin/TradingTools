@@ -31,10 +31,18 @@ namespace KaiTrade.Interfaces
         { get; set; }
 
         /// <summary>
+        /// Min price allowed for a given day,
         /// Price that is the low point of the slots - this is offset from the
         /// start price used to create the DOMData
         /// </summary>
-        decimal BasePrice
+        decimal MinPrice
+        { get; set; }
+
+        
+        /// <summary>
+        /// Max allowed price for a given day
+        /// </summary>
+        decimal MaxPrice
         { get; set; }
 
         IDOMSlot[] K2DOMSlots

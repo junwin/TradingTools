@@ -136,7 +136,7 @@ namespace K2Managers
             }
             catch (Exception ex)
             {
-                m_Log.Error("Load", myE);
+                m_Log.Error("Load", ex);
             }
             return drivers;
         }

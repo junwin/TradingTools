@@ -27,23 +27,30 @@ namespace K2DataObjects
     [JsonObject(MemberSerialization.OptIn)]
     public class DOMData :KaiTrade.Interfaces.IDOMData
     {
-        private decimal basePrice;
+        private decimal minPrice;
+        private decimal maxPrice;
+
+        
         private KaiTrade.Interfaces.IDOMSlot[] DOMSlots;
         private int maxSlots;
         private decimal minPxIncrement;
 
+    
+
         [DataMember]
         [JsonProperty]
-        public decimal BasePrice
+        public decimal MinPrice
         {
-            get
-            {
-                return basePrice;
-            }
-            set
-            {
-                basePrice = value;
-            }
+            get { return minPrice; }
+            set { minPrice = value; }
+        }
+
+        [DataMember]
+        [JsonProperty]
+        public decimal MaxPrice
+        {
+            get { return maxPrice; }
+            set { maxPrice = value; }
         }
 
         [DataMember]

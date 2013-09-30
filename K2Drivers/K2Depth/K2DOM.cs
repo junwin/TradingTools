@@ -38,11 +38,11 @@ namespace K2Depth
         /// <summary>
         /// Worker thread to handle inbound dom updatesmessages
         /// </summary>
-        private DOMUpdateProcessor m_DOMUpdateProcessor;
-        private Queue<List<KaiTrade.Interfaces.IDOMSlot>> m_SlotUpdateQueue;
+        private DOMUpdateProcessor dOMUpdateProcessor;
+        private Queue<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdateQueue;
         //private Queue<KaiTrade.Interfaces.IDOMSlot> m_SlotUpdateQueue;
-        private SyncEvents m_SyncEvents;
-        private Thread m_DOMUpdateThread;
+        private SyncEvents syncEvents;
+        private Thread dOMUpdateThread;
 
         public log4net.ILog m_Log = log4net.LogManager.GetLogger("Kaitrade");
 
@@ -63,24 +63,33 @@ namespace K2Depth
         public K2DOM()
         {
             
-            m_SlotUpdateQueue = new Queue<List<KaiTrade.Interfaces.IDOMSlot>>();
-            m_SyncEvents = new SyncEvents();
-            m_DOMUpdateProcessor  =new DOMUpdateProcessor(this,m_SlotUpdateQueue,m_SyncEvents);
-            m_DOMUpdateThread = new Thread(m_DOMUpdateProcessor.ThreadRun);
-            m_DOMUpdateThread.Start();
+            slotUpdateQueue = new Queue<List<KaiTrade.Interfaces.IDOMSlot>>();
+            syncEvents = new SyncEvents();
+            dOMUpdateProcessor  =new DOMUpdateProcessor(this,slotUpdateQueue,syncEvents);
+            dOMUpdateThread = new Thread(dOMUpdateProcessor.ThreadRun);
+            dOMUpdateThread.Start();
 
 
         }
 
+        /// <summary>
+        /// Each price has a slot in the dom this returns the index of the DOM slot
+        /// for the specified price or -1 if not found
+        /// </summary>
+        /// <param name="price"></param>
+        /// <returns></returns>
         public int GetSlotIndex(decimal price)
         {
             int slotIndex = -1;
             try
             {
-                // note that the BasePrice is low - ideally the lowest price
-                // allowing for a max daily movement
-                decimal offset = price - domData.BasePrice;
-                slotIndex = (int)(offset / domData.MinPxIncrement);
+                if ((price >= domData.MinPrice) && (price <= domData.MaxPrice))
+                {
+                    // note that the BasePrice is low - ideally the lowest price
+                    // allowing for a max daily movement
+                    decimal offset = price - domData.MinPrice;
+                    slotIndex = (int)(offset / domData.MinPxIncrement);
+                }
             }
             catch (Exception myE)
             {
@@ -88,20 +97,34 @@ namespace K2Depth
             return slotIndex;
         }
 
+        /// <summary>
+        /// This sets up the underlying DOM data used in based on an initial price
+        /// and max price movement
+        /// </summary>
+        /// <param name="startPx"></param>
+        /// <param name="maxPxMovement"></param>
+        /// <param name="minPxIncrement"></param>
+        /// <returns></returns>
         public KaiTrade.Interfaces.IDOMData Create(decimal startPx, decimal maxPxMovement, decimal minPxIncrement)
         {
 
             domData = null;
             try
             {
-                // Calculate the max slots
-                int maxSlots = (int)(maxPxMovement / minPxIncrement);
                 domData = new K2DataObjects.DOMData();
-                domData.K2DOMSlots = new K2DataObjects.DOMSlot[maxSlots];
-                domData.MaxSlots = maxSlots;
+                // Calculate the max slots// 13125257190
+                // Calculate the max number of ticks the price can move
+                // this gives a minn and max price for a given day
+                int maxTicks = (int)(maxPxMovement / minPxIncrement);
+                domData.MinPrice = startPx - maxTicks * minPxIncrement;
+                domData.MaxPrice = startPx + maxTicks * minPxIncrement;
 
-                // base price is low down the array (should be pos 0)
-                domData.BasePrice = startPx - (minPxIncrement * maxSlots / 2);
+                // The max slots are the number of slots to cover the 
+                // max price movement in six of allowed ticks
+                domData.MaxSlots = 1 + maxTicks * 2;
+
+                domData.K2DOMSlots = new K2DataObjects.DOMSlot[domData.MaxSlots];
+                
                 domData.MinPxIncrement = minPxIncrement;
 
             }
@@ -120,13 +143,19 @@ namespace K2Depth
             {
                 List<KaiTrade.Interfaces.IDOMSlot> slotUpdates = new List<KaiTrade.Interfaces.IDOMSlot>();
                 int slotIndex = GetSlotIndex(price);
+                if (slotIndex == -1)
+                {
+                    throw new Exception("Invalid Price:" + price.ToString());
+                }
+
+                // Create a DOM Slot if there is not one at the index for the price
                 if (domData.K2DOMSlots[slotIndex] == null)
                 {
                     domData.K2DOMSlots[slotIndex] = new K2DataObjects.DOMSlot(price, bidSize, askSize);
                 }
                 else
                 {
-
+                    // Update the exisitng slot
                     if (askSize.HasValue)
                     {
                         if (domData.K2DOMSlots[slotIndex].AskSize.Value != askSize.Value)
@@ -316,10 +345,10 @@ namespace K2Depth
             try
             {
                 // do the update assync
-                lock (((ICollection)m_SlotUpdateQueue).SyncRoot)
+                lock (((ICollection)slotUpdateQueue).SyncRoot)
                 {
-                    m_SlotUpdateQueue.Enqueue(slotUpdates);
-                    m_SyncEvents.NewItemEvent.Set();
+                    slotUpdateQueue.Enqueue(slotUpdates);
+                    syncEvents.NewItemEvent.Set();
                 }
 
             }
