@@ -118,7 +118,7 @@ namespace L1PriceSupport
 
                 }
             }
-            catch (Exception myE)
+            catch 
             {
             }
         }
@@ -154,7 +154,7 @@ namespace L1PriceSupport
                 dom.Update(update);
 
             }
-            catch (Exception myE)
+            catch 
             {
             }
         }

@@ -43,12 +43,13 @@ namespace K2Managers
         /// </summary>
         private Dictionary<string, KaiTrade.Interfaces.IDriverDef> _driverDefinition;
 
+        private string _binPath = "";
+
         /// <summary>
         /// provides access to the facade
         /// </summary>
         private IFacade _facade;
 
-        private string _binPath;
 
         private log4net.ILog _wireLog;
 

@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading;
 using System.Collections;
 using System.Linq;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace K2Depth
 {
@@ -28,16 +30,22 @@ namespace K2Depth
         private Queue<List<KaiTrade.Interfaces.IDOMSlot>> _queue;
         private SyncEvents _syncEvents;
         private K2DOM _dom;
+        private BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdates;
 
-        public DOMUpdateProcessor(K2DOM dom, Queue<List<KaiTrade.Interfaces.IDOMSlot>> q, SyncEvents e)
+        public DOMUpdateProcessor(K2DOM dom, BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> updates, SyncEvents e)
         {
-            _queue = q;
+            slotUpdates = updates;
             _syncEvents = e;
             _dom = dom;
         }
         // Consumer.ThreadRun
         public void ThreadRun()
         {
+            foreach (var item in slotUpdates.GetConsumingEnumerable())
+            {
+                applySlotUpdate(item);
+            }
+            /*
             int count = 0;
             Queue<List<KaiTrade.Interfaces.IDOMSlot>> myWorkQueue = new Queue<List<KaiTrade.Interfaces.IDOMSlot>>();
             while (WaitHandle.WaitAny(_syncEvents.EventArray) != 1)
@@ -70,15 +78,16 @@ namespace K2Depth
                 
                 count++;
             }
-            Console.WriteLine("Consumer Thread: consumed {0} items", count);
+             */
+            Console.WriteLine("Consumer Thread: consumed {0} items", 0);
         }
 
-        private void applySlotUpdate(KaiTrade.Interfaces.IDOMSlot slot)
+        private void applySlotUpdate(List<KaiTrade.Interfaces.IDOMSlot> slot)
         {
-            if (slot.DOMSlotUpdate != null)
-            {
-                slot.DOMSlotUpdate(slot, slot.Price, slot.BidSize, slot.AskSize);
-            }
+            //List<KaiTrade.Interfaces.IDOMSlot> slots =  new List<KaiTrade.Interfaces.IDOMSlot>();
+            //slots.Add(slot);
+            _dom.DOMUpdate(_dom, slot);
+            
         }
         
     }

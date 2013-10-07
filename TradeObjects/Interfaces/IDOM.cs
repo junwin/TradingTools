@@ -20,7 +20,7 @@ using System.Text;
 
 namespace KaiTrade.Interfaces
 {
-    public delegate void OnDOMUpdate(object sender, decimal? price);
+    public delegate void OnDOMUpdate(object sender, List<IDOMSlot> updatedSlots);
     public delegate void OnDOMImage(object sender);
     public delegate void OnDOMSlotUpdate(object sender, decimal? price, decimal? bidSize, decimal? askSize);
     public interface IDOM

@@ -1167,9 +1167,7 @@ namespace KTASimulator
                     throw myE;
                 }
 
-                double myLastFillPrice = 0.0;
                 double myAveFillPrice = 0.0;
-                double myLastFillQty = 0.0;
 
                 myContext.ClOrdID = cancel.ClOrdID;
                 myContext.OrigClOrdID = cancel.OrigClOrdID;

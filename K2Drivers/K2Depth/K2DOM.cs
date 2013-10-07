@@ -22,18 +22,35 @@ using System.IO;
 using System.Collections;
 using System.Diagnostics;
 using System.Timers;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace K2Depth
 {
+    /// <summary>
+    /// Provides a DOM to manage price depth - note this really acts as
+    /// a model for the depth it does not provide many operations on 
+    /// the depth itself.
+    /// </summary>
     public class K2DOM : KaiTrade.Interfaces.IDOM
     {
-        private delegate void SendDOMSlotUpdate(KaiTrade.Interfaces.IDOMSlot slot);
-        //SendDOMSlotUpdate m_SndDOMSlotUpdDelegate;
-
+       
+        /// <summary>
+        /// Delgates register
+        /// </summary>
         private KaiTrade.Interfaces.OnDOMImage domImage;
-
-
         private KaiTrade.Interfaces.OnDOMUpdate domUpdate;
+        private BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdates;
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// Worker thread to handle inbound dom updatesmessages
@@ -62,10 +79,10 @@ namespace K2Depth
 
         public K2DOM()
         {
-            
+            slotUpdates = new BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>>();
             slotUpdateQueue = new Queue<List<KaiTrade.Interfaces.IDOMSlot>>();
             syncEvents = new SyncEvents();
-            dOMUpdateProcessor  =new DOMUpdateProcessor(this,slotUpdateQueue,syncEvents);
+            dOMUpdateProcessor  =new DOMUpdateProcessor(this,slotUpdates,syncEvents);
             dOMUpdateThread = new Thread(dOMUpdateProcessor.ThreadRun);
             dOMUpdateThread.Start();
 
@@ -253,10 +270,8 @@ namespace K2Depth
                 }
                 ApplyDOMUpdate(slotUpdates);
 
-
-
             }
-            catch (Exception myE)
+            catch 
             {
             }
         }
@@ -340,16 +355,25 @@ namespace K2Depth
 
         
 
-        public void ApplyDOMUpdate(List<KaiTrade.Interfaces.IDOMSlot> slotUpdates)
+        public void ApplyDOMUpdate(List<KaiTrade.Interfaces.IDOMSlot> updates)
         {
             try
             {
+                slotUpdates.Add(updates);
+                
+       
+
+
+
+             /*
+
                 // do the update assync
                 lock (((ICollection)slotUpdateQueue).SyncRoot)
                 {
                     slotUpdateQueue.Enqueue(slotUpdates);
                     syncEvents.NewItemEvent.Set();
                 }
+              */
 
             }
             catch (Exception myE)

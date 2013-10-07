@@ -51,7 +51,6 @@ namespace DriverBase
         private long m_LastCommandTicks;
 
 
-        private int m_LeavesQty = 0;
         private int m_OrderQty = 0;
         private int m_CumQty = 0;
         private double m_FilledVolume = 0;
