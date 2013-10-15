@@ -23,8 +23,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Timers;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace K2Depth
@@ -44,21 +42,11 @@ namespace K2Depth
         private KaiTrade.Interfaces.OnDOMUpdate domUpdate;
         private BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdates;
 
-
-
-
-
-
-
-
-
         /// <summary>
         /// Worker thread to handle inbound dom updatesmessages
         /// </summary>
         private DOMUpdateProcessor dOMUpdateProcessor;
-        private Queue<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdateQueue;
-        //private Queue<KaiTrade.Interfaces.IDOMSlot> m_SlotUpdateQueue;
-        private SyncEvents syncEvents;
+
         private Thread dOMUpdateThread;
 
         public log4net.ILog m_Log = log4net.LogManager.GetLogger("Kaitrade");
@@ -80,9 +68,7 @@ namespace K2Depth
         public K2DOM()
         {
             slotUpdates = new BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>>();
-            slotUpdateQueue = new Queue<List<KaiTrade.Interfaces.IDOMSlot>>();
-            syncEvents = new SyncEvents();
-            dOMUpdateProcessor  =new DOMUpdateProcessor(this,slotUpdates,syncEvents);
+            dOMUpdateProcessor  =new DOMUpdateProcessor(this,slotUpdates);
             dOMUpdateThread = new Thread(dOMUpdateProcessor.ThreadRun);
             dOMUpdateThread.Start();
 
@@ -108,7 +94,7 @@ namespace K2Depth
                     slotIndex = (int)(offset / domData.MinPxIncrement);
                 }
             }
-            catch (Exception myE)
+            catch 
             {
             }
             return slotIndex;
@@ -348,7 +334,7 @@ namespace K2Depth
                 ApplyDOMUpdate(slotUpdates);
 
             }
-            catch (Exception myE)
+            catch 
             {
             }
         }

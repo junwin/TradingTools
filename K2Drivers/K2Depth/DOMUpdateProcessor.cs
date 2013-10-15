@@ -27,16 +27,14 @@ namespace K2Depth
     /// </summary>
     public class DOMUpdateProcessor
     {
-        private Queue<List<KaiTrade.Interfaces.IDOMSlot>> _queue;
-        private SyncEvents _syncEvents;
-        private K2DOM _dom;
+
+        private K2DOM dom;
         private BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdates;
 
-        public DOMUpdateProcessor(K2DOM dom, BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> updates, SyncEvents e)
+        public DOMUpdateProcessor(K2DOM dom, BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> updates)
         {
             slotUpdates = updates;
-            _syncEvents = e;
-            _dom = dom;
+            dom = dom;
         }
         // Consumer.ThreadRun
         public void ThreadRun()
@@ -45,40 +43,7 @@ namespace K2Depth
             {
                 applySlotUpdate(item);
             }
-            /*
-            int count = 0;
-            Queue<List<KaiTrade.Interfaces.IDOMSlot>> myWorkQueue = new Queue<List<KaiTrade.Interfaces.IDOMSlot>>();
-            while (WaitHandle.WaitAny(_syncEvents.EventArray) != 1)
-            {
-                lock (((ICollection)_queue).SyncRoot)
-                {
-                    while (_queue.Count > 0)
-                    {
-                        myWorkQueue.Enqueue(_queue.Dequeue());
-                    }
-                }
-                while (myWorkQueue.Count > 0)
-                {
-                    try
-                    {
-                        List<KaiTrade.Interfaces.IDOMSlot> slotUpdate = myWorkQueue.Dequeue();
-                        foreach (KaiTrade.Interfaces.IDOMSlot slot in slotUpdate)
-                        {
-                            if (slot != null)
-                            {
-                                applySlotUpdate(slot);
-                            }
-                        }
-                    }
-                    catch
-                    {
-                    }
-                    
-                }
-                
-                count++;
-            }
-             */
+            
             Console.WriteLine("Consumer Thread: consumed {0} items", 0);
         }
 
@@ -86,7 +51,7 @@ namespace K2Depth
         {
             //List<KaiTrade.Interfaces.IDOMSlot> slots =  new List<KaiTrade.Interfaces.IDOMSlot>();
             //slots.Add(slot);
-            _dom.DOMUpdate(_dom, slot);
+            dom.DOMUpdate(dom, slot);
             
         }
         
@@ -94,34 +59,6 @@ namespace K2Depth
 
    
 
-    public class SyncEvents
-    {
-        public SyncEvents()
-        {
-
-            _newItemEvent = new AutoResetEvent(false);
-            _exitThreadEvent = new ManualResetEvent(false);
-            _eventArray = new WaitHandle[2];
-            _eventArray[0] = _newItemEvent;
-            _eventArray[1] = _exitThreadEvent;
-        }
-
-        public EventWaitHandle ExitThreadEvent
-        {
-            get { return _exitThreadEvent; }
-        }
-        public EventWaitHandle NewItemEvent
-        {
-            get { return _newItemEvent; }
-        }
-        public WaitHandle[] EventArray
-        {
-            get { return _eventArray; }
-        }
-
-        private EventWaitHandle _newItemEvent;
-        private EventWaitHandle _exitThreadEvent;
-        private WaitHandle[] _eventArray;
-    }
+   
 }
 

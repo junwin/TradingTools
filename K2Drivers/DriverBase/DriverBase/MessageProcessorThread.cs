@@ -17,26 +17,25 @@ using System.Text;
 using System.Threading;
 using System.Collections;
 using System.Linq;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace DriverBase
 {
     public class MessageProcessorThread
     {
-        private Queue<KaiTrade.Interfaces.IMessage> _queue;
-        private SyncEvents _syncEvents;
+        private BlockingCollection<KaiTrade.Interfaces.IMessage> messages;
         List<KaiTrade.Interfaces.IClient> _Clients;
 
 
-        public MessageProcessorThread(ref List<KaiTrade.Interfaces.IClient> clients, Queue<KaiTrade.Interfaces.IMessage> q, SyncEvents e)
+        public MessageProcessorThread(ref List<KaiTrade.Interfaces.IClient> clients, BlockingCollection<KaiTrade.Interfaces.IMessage> m)
         {
-            _queue = q;
-            _syncEvents = e;
+            messages = m;
             _Clients = clients;
         }
-        public MessageProcessorThread(KaiTrade.Interfaces.IClient client, Queue<KaiTrade.Interfaces.IMessage> q, SyncEvents e)
+        public MessageProcessorThread(KaiTrade.Interfaces.IClient client, BlockingCollection<KaiTrade.Interfaces.IMessage> m)
         {
-            _queue = q;
-            _syncEvents = e;
+            messages = m;
             _Clients = new List<KaiTrade.Interfaces.IClient>();
             _Clients.Add(client);
         }
@@ -44,39 +43,27 @@ namespace DriverBase
         public void ThreadRun()
         {
             int count = 0;
-            Queue<KaiTrade.Interfaces.IMessage> myWorkQueue = new Queue<KaiTrade.Interfaces.IMessage>();
-            while (WaitHandle.WaitAny(_syncEvents.EventArray) != 1)
+            foreach (var msg in messages.GetConsumingEnumerable())
             {
-                lock (((ICollection)_queue).SyncRoot)
-                {
-                    while (_queue.Count > 0)
-                    {
-                        myWorkQueue.Enqueue(_queue.Dequeue());
-                    }
-                }
-                while (myWorkQueue.Count > 0)
-                {
-                    KaiTrade.Interfaces.IMessage msg = myWorkQueue.Dequeue();
 
-                    foreach (KaiTrade.Interfaces.IClient myClient in _Clients)
+                foreach (KaiTrade.Interfaces.IClient myClient in _Clients)
+                {
+                    try
                     {
-                        try
+                        if (myClient != null)
                         {
-                            if (myClient != null)
-                            {
-                                myClient.OnMessage(msg);
-                            }
-                        }
-                        catch (Exception myE)
-                        {
-                            
+                            myClient.OnMessage(msg);
                         }
                     }
+                    catch (Exception myE)
+                    {
+
+                    }
                 }
-                
                 count++;
             }
-            //Console.WriteLine("Consumer Thread: consumed {0} items", count);
+
+            
         }
     }
 }

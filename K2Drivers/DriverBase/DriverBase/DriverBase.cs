@@ -24,6 +24,8 @@ using System.Threading;
 using System.Reflection;
 using Newtonsoft.Json;
 using K2ServiceInterface;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 
 namespace DriverBase
@@ -189,6 +191,11 @@ namespace DriverBase
 
         protected DriverStatus _runningState;
 
+        private BlockingCollection<KaiTrade.Interfaces.IPXUpdate> pxUpdates;
+        private BlockingCollection<KaiTrade.Interfaces.IMessage> inboundMessages;
+        private BlockingCollection<KaiTrade.Interfaces.IMessage> outboundMessages;
+        private BlockingCollection<RequestData> replaceRequest;
+
         /// <summary>
         /// Worker thread to handle Px messages
         /// </summary>
@@ -203,7 +210,7 @@ namespace DriverBase
         /// </summary>
         private MessageProcessorThread  _inboundProcessor;
         private Thread _inboundProcessorThread;
-        private Queue<KaiTrade.Interfaces.IMessage> _inboundProcessorQueue;
+        //private Queue<KaiTrade.Interfaces.IMessage> _inboundProcessorQueue;
         private SyncEvents _inboundProcessorSyncEvents;
 
         /// <summary>
@@ -300,17 +307,17 @@ namespace DriverBase
             _replaceUpdateThread = new Thread(_replaceProcessor.ThreadRun);
             _replaceUpdateThread.Start();
 
-
-
-            _inboundProcessorQueue = new Queue<KaiTrade.Interfaces.IMessage>();
+            //private BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdates;
+            inboundMessages = new BlockingCollection<KaiTrade.Interfaces.IMessage>();
+            //_inboundProcessorQueue = new Queue<KaiTrade.Interfaces.IMessage>();
             _inboundProcessorSyncEvents = new SyncEvents();           
-            _inboundProcessor = new MessageProcessorThread(this, _inboundProcessorQueue, _inboundProcessorSyncEvents);
+            _inboundProcessor = new MessageProcessorThread(this, inboundMessages);
             _inboundProcessorThread = new Thread(_inboundProcessor.ThreadRun);
             _inboundProcessorThread.Start();
 
-            _outboundProcessorQueue = new Queue<KaiTrade.Interfaces.IMessage>();
+            outboundMessages = new BlockingCollection<KaiTrade.Interfaces.IMessage>();
             _outboundProcessorSyncEvents = new SyncEvents();
-            _outboundProcessor = new MessageProcessorThread(ref _clients, _outboundProcessorQueue, _outboundProcessorSyncEvents);
+            _outboundProcessor = new MessageProcessorThread(ref _clients, outboundMessages);
             _outboundProcessorThread = new Thread(_outboundProcessor.ThreadRun);
             _outboundProcessorThread.Start();
 
@@ -1236,13 +1243,7 @@ namespace DriverBase
                 {
                     _message(myMsg);
                 }
-                // do the update assync
-                lock (((ICollection)_inboundProcessorQueue).SyncRoot)
-                {
-                    _inboundProcessorQueue.Enqueue(myMsg);
-                    _inboundProcessorSyncEvents.NewItemEvent.Set();
-                }
-                
+                inboundMessages.Add(myMsg);
                 
             }
             catch (Exception myE)

@@ -8,7 +8,7 @@ namespace ManagerTest
     public class DriverManagerTest
     {
         [TestMethod]
-        public void BasicTest()
+        public void LoadDriverTest()
         {
             //test we can create an instance
             IDriverManager mgr = K2Managers.DriverManager.Instance();
