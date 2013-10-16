@@ -84,20 +84,20 @@ namespace DriverBase
         /// <summary>
         /// Create a logger for use in this Driver 
         /// </summary>
-        public log4net.ILog _log;
+        public log4net.ILog log;
 
-        public log4net.ILog _oRLog = log4net.LogManager.GetLogger("ORTalkTalk");
-        public log4net.ILog _tSLog = log4net.LogManager.GetLogger("TradeSystem");
+        public log4net.ILog oRLog = log4net.LogManager.GetLogger("ORTalkTalk");
+        public log4net.ILog tSLog = log4net.LogManager.GetLogger("TradeSystem");
 
         /// <summary>
         /// Create a logger to record low level details - a wire log
         /// </summary>
-        public log4net.ILog _wireLog;
+        public log4net.ILog wireLog;
 
         /// <summary>
         /// Create a logger to record driver specific info 
         /// </summary>
-        public log4net.ILog _driverLog;
+        public log4net.ILog driverLog;
 
         /// <summary>
         /// Maps the CLOrdID of incomming requests to an
@@ -253,10 +253,10 @@ namespace DriverBase
         public DriverBase()
         {
             // Set up logging - will participate in the standard toolkit log
-            _log = log4net.LogManager.GetLogger("KaiTrade");
+            log = log4net.LogManager.GetLogger("KaiTrade");
 
-            _wireLog = log4net.LogManager.GetLogger("KaiTradeWireLog");
-            _driverLog = log4net.LogManager.GetLogger("KaiDriverLog");
+            wireLog = log4net.LogManager.GetLogger("KaiTradeWireLog");
+            driverLog = log4net.LogManager.GetLogger("KaiDriverLog");
 
             _state = new DriverState();
             _facade = AppFacade.Instance();
@@ -287,7 +287,7 @@ namespace DriverBase
             _runningState = new DriverStatus();
 
 
-            _log.Info("MainMessageHandler Created");
+            log.Info("MainMessageHandler Created");
 
             pxUpdates = new BlockingCollection<KaiTrade.Interfaces.IPXUpdate>();
             _pxUpdateProcessor = new PxUpdateProcessor(this, pxUpdates);
@@ -382,7 +382,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("OnTimer", myE);
+                log.Error("OnTimer", myE);
             }
         }
         /// <summary>
@@ -415,7 +415,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("AddSession", myE);
+                log.Error("AddSession", myE);
                 return null;
             }
         }
@@ -445,7 +445,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("AddSession2", myE);
+                log.Error("AddSession2", myE);
                 return null;
             }
         }
@@ -479,7 +479,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("UpdateStatus", myE);
+                log.Error("UpdateStatus", myE);
             }
         }
 
@@ -492,7 +492,7 @@ namespace DriverBase
         {
             try
             {
-                _driverLog.Info(Name + " advisory:"  + myMessageText);
+                driverLog.Info(Name + " advisory:"  + myMessageText);
                 IDriverStatusMessage myDSM;
                 setupAdvisory(out myDSM, myMessageText);
                 KaiTrade.Interfaces.IMessage myMessage = new K2DataObjects.Message();
@@ -503,7 +503,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("SendAdvisoryMessage", myE);
+                log.Error("SendAdvisoryMessage", myE);
             }
         }
 
@@ -525,7 +525,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("setupAdvisory", myE);
+                log.Error("setupAdvisory", myE);
             }
 
         }
@@ -554,7 +554,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("SendMessage", myE);
+                log.Error("SendMessage", myE);
             }
 
             
@@ -588,7 +588,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("sendResponse", myE);
+                log.Error("sendResponse", myE);
             }
         }
 
@@ -636,7 +636,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("SendStatusMessage", myE);
+                log.Error("SendStatusMessage", myE);
             }
 
         }
@@ -657,7 +657,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("setupStatus", myE);
+                log.Error("setupStatus", myE);
             }
 
         }
@@ -701,7 +701,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("SendStatusMessage", myE);
+                log.Error("SendStatusMessage", myE);
             }
 
         }
@@ -717,7 +717,7 @@ namespace DriverBase
         {
             try
             {
-                _driverLog.Info(Name + ":" +myState.ToString() +":" + myText);
+                driverLog.Info(Name + ":" +myState.ToString() +":" + myText);
                 // update the base session status
                 UpdateStatus("DriverStatus", "", "", "", myState, myText);
 
@@ -734,7 +734,7 @@ namespace DriverBase
             }
             catch(Exception myE)
             {
-                _log.Error("SendStatusMessage", myE);
+                log.Error("SendStatusMessage", myE);
             }
         }
 
@@ -821,10 +821,10 @@ namespace DriverBase
 
                     try
                     {
-                        if (_oRLog.IsInfoEnabled)
+                        if (oRLog.IsInfoEnabled)
                         {
-                            _oRLog.Info("modifyOrder:context" + r.OrderContext.ToString());
-                            _oRLog.Info("modifyOrder:order" + r.OrderContext.ExternalOrder.ToString());
+                            oRLog.Info("modifyOrder:context" + r.OrderContext.ToString());
+                            oRLog.Info("modifyOrder:order" + r.OrderContext.ExternalOrder.ToString());
                         }
                     }
                     catch
@@ -852,7 +852,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("ApplyReplaceRequest", myE);
+                log.Error("ApplyReplaceRequest", myE);
             }
         }
 
@@ -888,10 +888,10 @@ namespace DriverBase
 
                     try
                     {
-                        if (_oRLog.IsInfoEnabled)
+                        if (oRLog.IsInfoEnabled)
                         {
-                            _oRLog.Info("cancelOrder:context" + r.OrderContext.ToString());
-                            _oRLog.Info("cancelOrder:order" + r.OrderContext.ExternalOrder.ToString());
+                            oRLog.Info("cancelOrder:context" + r.OrderContext.ToString());
+                            oRLog.Info("cancelOrder:order" + r.OrderContext.ExternalOrder.ToString());
                         }
                     }
                     catch
@@ -917,7 +917,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("ApplyReplaceRequest", myE);
+                log.Error("ApplyReplaceRequest", myE);
             }
         }
 
@@ -944,7 +944,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("ApplyPriceUpdate", myE);
+                log.Error("ApplyPriceUpdate", myE);
             }
         }
 
@@ -956,7 +956,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("DoApplyPriceUpdate", myE);
+                log.Error("DoApplyPriceUpdate", myE);
             }
         }
 
@@ -1055,7 +1055,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("IsCurrencyPair", myE);
+                log.Error("IsCurrencyPair", myE);
             }
 
             return bRet;
@@ -1144,12 +1144,12 @@ namespace DriverBase
         {
             try
             {
-                _log.Error("RequestProductDetails:product i/f - Driver Base class cannot process");
+                log.Error("RequestProductDetails:product i/f - Driver Base class cannot process");
 
             }
             catch (Exception myE)
             {
-                _log.Error("RequestProductDetails", myE);
+                log.Error("RequestProductDetails", myE);
             }
         }
 
@@ -1167,7 +1167,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.Register:client", myE);
+                log.Error("Driver.Register:client", myE);
             }
         }
 
@@ -1197,7 +1197,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.Send", myE);
+                log.Error("Driver.Send", myE);
             }
         }
 
@@ -1209,7 +1209,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("OnMessage", myE);
+                log.Error("OnMessage", myE);
             }
         }
 
@@ -1249,7 +1249,7 @@ namespace DriverBase
                 }
                 catch (Exception myE)
                 {
-                    _log.Error("Driver.Start:cannot read state", myE);
+                    log.Error("Driver.Start:cannot read state", myE);
                 }
                 if (this.UseWatchDogStart)
                 {
@@ -1265,7 +1265,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.Start", myE);
+                log.Error("Driver.Start", myE);
             }
 
         }
@@ -1292,7 +1292,7 @@ namespace DriverBase
             catch (Exception myE)
             {
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.error, "Issue starting watchdog thread" + myE.Message);
-                _log.Error("StartWD", myE);
+                log.Error("StartWD", myE);
 
             }
         }
@@ -1317,7 +1317,7 @@ namespace DriverBase
             catch (Exception myE)
             {
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.error, "WD Thread terminated :" + myE.Message);
-                _log.Error("runWDThread", myE);
+                log.Error("runWDThread", myE);
 
             }
         }
@@ -1349,7 +1349,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.StatusRequest", myE);
+                log.Error("Driver.StatusRequest", myE);
             }
         }
 
@@ -1370,7 +1370,7 @@ namespace DriverBase
                 }
                 catch (Exception myE)
                 {
-                    _driverLog.Error("Stop:DoStop in base", myE);
+                    driverLog.Error("Stop:DoStop in base", myE);
                 }
 
                 _publisherRegister.Clear();
@@ -1380,7 +1380,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("Stop:", myE);
+                log.Error("Stop:", myE);
             }
         }
 
@@ -1396,11 +1396,11 @@ namespace DriverBase
                 _liveMarket = value;
                 if (_liveMarket)
                 {
-                    _log.Info("LiveMarket:True");
+                    log.Info("LiveMarket:True");
                 }
                 else
                 {
-                    _log.Info("LiveMarket:False");
+                    log.Info("LiveMarket:False");
                 }
             }
         }
@@ -1426,7 +1426,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.UnRegister:publisher", myE);
+                log.Error("Driver.UnRegister:publisher", myE);
             }
         }
 
@@ -1438,7 +1438,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.UnRegister:client", myE);
+                log.Error("Driver.UnRegister:client", myE);
             }
         }
 
@@ -1477,12 +1477,12 @@ namespace DriverBase
                 _status = myStatus;
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, Name + "Status changed to:" + _status.ToString());
                 this.SendAdvisoryMessage(Name + "Status changed to:" + _status.ToString());
-                _log.Info(Name + "Status changed to:" + _status.ToString());
-                _wireLog.Info(Name + "Status changed to:" + _status.ToString());
+                log.Info(Name + "Status changed to:" + _status.ToString());
+                wireLog.Info(Name + "Status changed to:" + _status.ToString());
             }
             catch (Exception myE)
             {
-                _log.Error("setStatus", myE);
+                log.Error("setStatus", myE);
 
             }
         }
@@ -1495,7 +1495,7 @@ namespace DriverBase
         {
             try
             {
-                _driverLog.Info("setSubscriptionsStatus:" + myStatus.ToString());
+                driverLog.Info("setSubscriptionsStatus:" + myStatus.ToString());
                 foreach (KaiTrade.Interfaces.IPublisher myPub in _publisherRegister.Values)
                 {
                     myPub.Status = myStatus;
@@ -1504,7 +1504,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("setSubscriptionsStatus", myE);
+                log.Error("setSubscriptionsStatus", myE);
             }
         }
 
@@ -1648,7 +1648,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("AddProductDirect", myE);
+                log.Error("AddProductDirect", myE);
             }
             return product;
         }
@@ -1679,13 +1679,13 @@ namespace DriverBase
             {
                 if (myCntx.CurrentCommand != expectedCmd)
                 {
-                    _driverLog.Error("SetContextCommand:unexpected existing cmd:clordid:" + myCntx.ClOrdID + " existing:" + myCntx.CurrentCommand.ToString() + " expectd:" + expectedCmd.ToString() + " new:" + newCmd.ToString());
+                    driverLog.Error("SetContextCommand:unexpected existing cmd:clordid:" + myCntx.ClOrdID + " existing:" + myCntx.CurrentCommand.ToString() + " expectd:" + expectedCmd.ToString() + " new:" + newCmd.ToString());
                 }
                 myCntx.CurrentCommand = newCmd;
             }
             catch (Exception myE)
             {
-                _driverLog.Error("SetContextCommand", myE);
+                driverLog.Error("SetContextCommand", myE);
             }
         }
 
@@ -1712,7 +1712,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("removeInactiveContexts", myE);
+                log.Error("removeInactiveContexts", myE);
             }
             return numberActive;
         }
@@ -1781,7 +1781,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("RecordOrderContext", myE);
+                log.Error("RecordOrderContext", myE);
             }
             return myCntx;
         }
@@ -1896,7 +1896,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("sendExecReport", myE);
+                log.Error("sendExecReport", myE);
             }
         }
 
@@ -1957,7 +1957,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("sendExecReport", myE);
+                log.Error("sendExecReport", myE);
             }
         }
 
@@ -1975,7 +1975,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("sendCancelRej", myE);
+                log.Error("sendCancelRej", myE);
             }
         }
 
@@ -1990,7 +1990,7 @@ namespace DriverBase
             }
             catch (Exception myE)
             {
-                _log.Error("sendCancelReplaceRej", myE);
+                log.Error("sendCancelReplaceRej", myE);
             }
         }
 

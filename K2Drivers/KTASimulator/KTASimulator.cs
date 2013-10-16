@@ -106,7 +106,7 @@ namespace KTASimulator
             m_ID = "KTSIM";
             m_Tag = "";
 
-            _log.Info(Name + " Created");
+            log.Info(Name + " Created");
 
             m_SRDelegate = new SendResponseDelegate(this.handleResponse);
 
@@ -155,7 +155,7 @@ namespace KTASimulator
 
         public log4net.ILog Log
         {
-            get { return _log; }
+            get { return log; }
         }
 
         public void StartTimer()
@@ -186,7 +186,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("OnTimer", myE);
+                log.Error("OnTimer", myE);
             }
         }
 
@@ -240,9 +240,9 @@ namespace KTASimulator
         {
             try
             {
-                _log = log4net.LogManager.GetLogger("Kaitrade");
+                log = log4net.LogManager.GetLogger("Kaitrade");
 
-                _log.Info("KTA Simulator Driver Started");
+                log.Info("KTA Simulator Driver Started");
 
                 // try load our config file
                 processConfigFile(_configPath + "SimulatorConfig.txt");
@@ -288,7 +288,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("doStart", myE);
+                log.Error("doStart", myE);
             }
 
 
@@ -347,14 +347,14 @@ namespace KTASimulator
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("processConfigFile:loop", myE);
+                        log.Error("processConfigFile:loop", myE);
                     }
                 }
 
             }
             catch (Exception myE)
             {
-                _log.Error("processConfigFile", myE);
+                log.Error("processConfigFile", myE);
             }
         }
 
@@ -405,7 +405,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("SubscribeMD", myE);
+                log.Error("SubscribeMD", myE);
             }
         }
 
@@ -427,7 +427,7 @@ namespace KTASimulator
                 }
                 else
                 {
-                    _log.Error("Bar data not supported");
+                    log.Error("Bar data not supported");
                     /*
                     string fileName = myTSSet.Mnemonic + "_tsset.xml";
                     KAI.kaitns.TSDataSet myDB = new KAI.kaitns.TSDataSet();
@@ -471,7 +471,7 @@ namespace KTASimulator
                             break;
 
                         default:
-                            _driverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
+                            driverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
                             break;
                     }
 
@@ -479,7 +479,7 @@ namespace KTASimulator
                 }
                 catch (Exception myE)
                 {
-                    _log.Error("RequestTSData", myE);
+                    log.Error("RequestTSData", myE);
                     this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "DoGetTSData" + myE.Message);
 
                 }
@@ -496,7 +496,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("CreateMarket", myE);
+                log.Error("CreateMarket", myE);
             }
         }
 
@@ -523,7 +523,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("GetPriceFiles", myE);
+                log.Error("GetPriceFiles", myE);
             }
         }
 
@@ -550,7 +550,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("AddPriceFile", myE);
+                log.Error("AddPriceFile", myE);
             }
         }
 
@@ -566,7 +566,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("RunPxRealTime", myE);
+                log.Error("RunPxRealTime", myE);
             }
         }
 
@@ -582,7 +582,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("RunPxRealTime", myE);
+                log.Error("RunPxRealTime", myE);
             }
         }
 
@@ -608,7 +608,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("PriceUpdateStatus", myE);
+                log.Error("PriceUpdateStatus", myE);
             }
         }
 
@@ -630,7 +630,7 @@ namespace KTASimulator
                 }
                 catch (Exception myE)
                 {
-                    _log.Error("PriceUpdate", myE);
+                    log.Error("PriceUpdate", myE);
                 }
             }
         }
@@ -720,7 +720,7 @@ namespace KTASimulator
             {
                 nos = JsonConvert.DeserializeObject<K2DataObjects.SubmitRequest>(myMsg.Data);
                 
-                _log.Error("SUBTEST:" + myMsg.Data);
+                log.Error("SUBTEST:" + myMsg.Data);
                 
                 long quantity = nos.OrderQty;
                 decimal myOrdPrice = nos.Price.Value;
@@ -993,7 +993,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("submitOrder", myE);
+                log.Error("submitOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -1025,7 +1025,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("gradualFill", myE);
+                log.Error("gradualFill", myE);
             }
         }
 
@@ -1079,7 +1079,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("gradualFill", myE);
+                log.Error("gradualFill", myE);
             }
         }
         private void doFillList()
@@ -1108,7 +1108,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Warn("doFillList", myE);
+                log.Warn("doFillList", myE);
             }
         }
 
@@ -1232,7 +1232,7 @@ namespace KTASimulator
             catch (Exception myE)
             {
 
-                _log.Error("pullOrder", myE);
+                log.Error("pullOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -1305,7 +1305,7 @@ namespace KTASimulator
             catch (Exception myE)
             {
 
-                _log.Error("modifyOrderRD", myE);
+                log.Error("modifyOrderRD", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -1430,7 +1430,7 @@ namespace KTASimulator
         /// <param name="myMsg"></param>
         private void handleResponse(string myMsgType, string myMsg)
         {
-            _log.Error("TEST:" + myMsg);
+            log.Error("TEST:" + myMsg);
             sendResponse(myMsgType, myMsg);
         }
 
@@ -1487,7 +1487,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.Send", myE);
+                log.Error("Driver.Send", myE);
             }
         }
 
@@ -1526,7 +1526,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("Kaitrade.Interfaces.Driver.Stop:", myE);
+                log.Error("Kaitrade.Interfaces.Driver.Stop:", myE);
             }
         }
 
@@ -1548,7 +1548,7 @@ namespace KTASimulator
             }
             catch (Exception myE)
             {
-                _log.Error("Driver.UnRegister:publisher", myE);
+                log.Error("Driver.UnRegister:publisher", myE);
             }
         }
 
