@@ -61,7 +61,9 @@ namespace SimulatorTest
         {
             // HPQ will just fill over time an order of 5 will fill 2,1,2
             _driver = new KTASimulator.KTASimulator();
-            _driver.Facade.AppPath = @"C:\Users\John\Documents\GitHub\TradingTools\build\bin\";
+            string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            path = System.IO.Path.GetDirectoryName(path);
+            _driver.Facade.AppPath = path;
             
             _priceHandler = new L1PriceSupport.MemoryPriceHandler();
             _driver.Facade.PriceHandler = _priceHandler;

@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading;
 using System.Collections;
 using System.Linq;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace DriverBase
 {
@@ -25,71 +27,27 @@ namespace DriverBase
     /// </summary>
     public class PxUpdateProcessor
     {
-        private Queue<KaiTrade.Interfaces.IPXUpdate> _queue;
-        private SyncEvents _syncEvents;
-        DriverBase _Handler;
+        private BlockingCollection<KaiTrade.Interfaces.IPXUpdate> pxUpdates;
+        DriverBase handler;
 
 
-        public PxUpdateProcessor(DriverBase myHanlder, Queue<KaiTrade.Interfaces.IPXUpdate> q, SyncEvents e)
+        public PxUpdateProcessor(DriverBase myHanlder, BlockingCollection<KaiTrade.Interfaces.IPXUpdate> newUpdates)
         {
-            _queue = q;
-            _syncEvents = e;
-            _Handler = myHanlder;
+            pxUpdates = newUpdates;
+            handler = myHanlder;
         }
         // Consumer.ThreadRun
         public void ThreadRun()
         {
             int count = 0;
-            Queue<KaiTrade.Interfaces.IPXUpdate> myWorkQueue = new Queue<KaiTrade.Interfaces.IPXUpdate>();
-            while (WaitHandle.WaitAny(_syncEvents.EventArray) != 1)
+            foreach (var update in pxUpdates.GetConsumingEnumerable())
             {
-                lock (((ICollection)_queue).SyncRoot)
-                {
-                    while (_queue.Count > 0)
-                    {
-                        myWorkQueue.Enqueue(_queue.Dequeue());
-                    }
-                }
-                while (myWorkQueue.Count > 0)
-                {
-                    KaiTrade.Interfaces.IPXUpdate update = myWorkQueue.Dequeue();
-                    _Handler.DoApplyPriceUpdate(update);
-                }
-                
+                handler.PriceUpdateClients(update);
                 count++;
             }
-            Console.WriteLine("Consumer Thread: consumed {0} items", count);
         }
         
     }
 
-    public class SyncEvents
-    {
-        public SyncEvents()
-        {
-
-            _newItemEvent = new AutoResetEvent(false);
-            _exitThreadEvent = new ManualResetEvent(false);
-            _eventArray = new WaitHandle[2];
-            _eventArray[0] = _newItemEvent;
-            _eventArray[1] = _exitThreadEvent;
-        }
-
-        public EventWaitHandle ExitThreadEvent
-        {
-            get { return _exitThreadEvent; }
-        }
-        public EventWaitHandle NewItemEvent
-        {
-            get { return _newItemEvent; }
-        }
-        public WaitHandle[] EventArray
-        {
-            get { return _eventArray; }
-        }
-
-        private EventWaitHandle _newItemEvent;
-        private EventWaitHandle _exitThreadEvent;
-        private WaitHandle[] _eventArray;
-    }
+    
 }

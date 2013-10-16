@@ -68,7 +68,7 @@ namespace K2Depth
         public K2DOM()
         {
             slotUpdates = new BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>>();
-            dOMUpdateProcessor  =new DOMUpdateProcessor(this,slotUpdates);
+            dOMUpdateProcessor  =new K2Depth.DOMUpdateProcessor(this,slotUpdates);
             dOMUpdateThread = new Thread(dOMUpdateProcessor.ThreadRun);
             dOMUpdateThread.Start();
 

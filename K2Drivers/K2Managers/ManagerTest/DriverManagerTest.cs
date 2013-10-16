@@ -15,7 +15,11 @@ namespace ManagerTest
             Assert.IsNotNull(mgr);
 
             // Dynamically load the simulator
-            mgr.DynamicLoad( @"C:\Users\John\Documents\GitHub\TradingTools\build\bin\KTASimulator.dll");
+            //path = "C:\\Users\\junwin\\Documents\\GitHub\\TradingTools\\build\\bin\\ManagerTest.dll"
+            string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            path = System.IO.Path.GetDirectoryName(path);
+            path += @"\KTASimulator.dll";
+            mgr.DynamicLoad( path);
 
             // Should be oe driver
             Assert.AreEqual(1, mgr.GetDrivers().Count);

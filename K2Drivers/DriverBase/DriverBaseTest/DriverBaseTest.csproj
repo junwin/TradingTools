@@ -37,42 +37,42 @@
   <ItemGroup>
     <Reference Include="DriverBase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\DriverBase.dll</HintPath>
+      <HintPath>..\..\..\build\bin\DriverBase.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="K2DataObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\K2DataObjects.dll</HintPath>
+      <HintPath>..\..\..\build\bin\K2DataObjects.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="K2Depth, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\K2Depth.dll</HintPath>
+      <HintPath>..\..\..\build\bin\K2Depth.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="K2ServiceInterface, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\K2ServiceInterface.dll</HintPath>
+      <HintPath>..\..\..\build\bin\K2ServiceInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KTInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\KTInterfaces.dll</HintPath>
+      <HintPath>..\..\..\build\bin\KTInterfaces.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="L1PriceSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=198de4c8428494a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\L1PriceSupport.dll</HintPath>
+      <HintPath>..\..\..\build\bin\L1PriceSupport.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
+    <Reference Include="log4net, Version=1.2.12.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\log4net.dll</HintPath>
+      <HintPath>..\..\..\build\bin\log4net.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.0.3.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\bin\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\build\bin\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

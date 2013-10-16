@@ -194,7 +194,7 @@ namespace DriverBase
         private BlockingCollection<KaiTrade.Interfaces.IPXUpdate> pxUpdates;
         private BlockingCollection<KaiTrade.Interfaces.IMessage> inboundMessages;
         private BlockingCollection<KaiTrade.Interfaces.IMessage> outboundMessages;
-        private BlockingCollection<RequestData> replaceRequest;
+        private BlockingCollection<RequestData> replaceRequests;
 
         /// <summary>
         /// Worker thread to handle Px messages
@@ -202,7 +202,6 @@ namespace DriverBase
         private PxUpdateProcessor _pxUpdateProcessor;
         private Thread _pXUpdateThread;
         private Queue<KaiTrade.Interfaces.IPXUpdate> _pxUpdateQueue;
-        private SyncEvents _syncEvents;
         protected bool _useAsyncPriceUpdates = false;
 
         /// <summary>
@@ -210,16 +209,14 @@ namespace DriverBase
         /// </summary>
         private MessageProcessorThread  _inboundProcessor;
         private Thread _inboundProcessorThread;
-        //private Queue<KaiTrade.Interfaces.IMessage> _inboundProcessorQueue;
-        private SyncEvents _inboundProcessorSyncEvents;
+
 
         /// <summary>
         /// Worker thread to handle Outbound messages
         /// </summary>
         private MessageProcessorThread _outboundProcessor;
         private Thread _outboundProcessorThread;
-        private Queue<KaiTrade.Interfaces.IMessage> _outboundProcessorQueue;
-        private SyncEvents _outboundProcessorSyncEvents;
+
         
 
         /// <summary>
@@ -234,7 +231,6 @@ namespace DriverBase
         /// </summary>
         private Queue<RequestData> _replaceQueue;
 
-        private SyncEvents _replaceSyncEvents;
 
         /// <summary>
         /// are we supposed to queue replace requests?
@@ -293,30 +289,23 @@ namespace DriverBase
 
             _log.Info("MainMessageHandler Created");
 
-
-            _pxUpdateQueue = new Queue<KaiTrade.Interfaces.IPXUpdate>();
-            _syncEvents = new SyncEvents();
-            _pxUpdateProcessor = new PxUpdateProcessor(this, _pxUpdateQueue, _syncEvents);
+            pxUpdates = new BlockingCollection<KaiTrade.Interfaces.IPXUpdate>();
+            _pxUpdateProcessor = new PxUpdateProcessor(this, pxUpdates);
             _pXUpdateThread = new Thread(_pxUpdateProcessor.ThreadRun);
             _pXUpdateThread.Start();
 
-
-            _replaceQueue = new Queue<RequestData>();
-            _replaceSyncEvents = new SyncEvents();
-            _replaceProcessor = new OrderReplaceProcessor(this, _replaceQueue, _replaceSyncEvents);
+            replaceRequests = new BlockingCollection<RequestData>();
+            _replaceProcessor = new OrderReplaceProcessor(this, replaceRequests);
             _replaceUpdateThread = new Thread(_replaceProcessor.ThreadRun);
             _replaceUpdateThread.Start();
 
             //private BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdates;
-            inboundMessages = new BlockingCollection<KaiTrade.Interfaces.IMessage>();
-            //_inboundProcessorQueue = new Queue<KaiTrade.Interfaces.IMessage>();
-            _inboundProcessorSyncEvents = new SyncEvents();           
+            inboundMessages = new BlockingCollection<KaiTrade.Interfaces.IMessage>();      
             _inboundProcessor = new MessageProcessorThread(this, inboundMessages);
             _inboundProcessorThread = new Thread(_inboundProcessor.ThreadRun);
             _inboundProcessorThread.Start();
 
             outboundMessages = new BlockingCollection<KaiTrade.Interfaces.IMessage>();
-            _outboundProcessorSyncEvents = new SyncEvents();
             _outboundProcessor = new MessageProcessorThread(ref _clients, outboundMessages);
             _outboundProcessorThread = new Thread(_outboundProcessor.ThreadRun);
             _outboundProcessorThread.Start();
@@ -797,20 +786,7 @@ namespace DriverBase
 
         }
 
-        /// <summary>
-        /// Will apply any replace requests that are pending
-        /// </summary>
-        public void ApplyAnyPendingReplace()
-        {
-            try
-            {
-                _replaceSyncEvents.NewItemEvent.Set();
-            }
-            catch (Exception myE)
-            {
-                _log.Error("ApplyAnyPendingReplace", myE);
-            }
-        }
+       
 
         /// <summary>
         /// Apply new replace requests
@@ -860,12 +836,10 @@ namespace DriverBase
                     r.OrderContext.ClOrdID =r.ClOrdID;
                     r.OrderContext.OrigClOrdID = r.OrigClOrdID;
 
-                    // do the update assync
-                    lock (((ICollection)_replaceQueue).SyncRoot)
-                    {
-                        _replaceQueue.Enqueue(r);
-                        _replaceSyncEvents.NewItemEvent.Set();
-                    }
+                    // Use blocking collection
+                    replaceRequests.Add(r);
+
+                    
                 }
                 else
                 {
@@ -928,12 +902,9 @@ namespace DriverBase
                     r.OrderContext.ClOrdID = r.ClOrdID;
                     r.OrderContext.OrigClOrdID = r.ClOrdID;
 
-                    // do the update assync
-                    lock (((ICollection)_replaceQueue).SyncRoot)
-                    {
-                        _replaceQueue.Enqueue(r);
-                        _replaceSyncEvents.NewItemEvent.Set();
-                    }
+                    // use a blocking collection
+                    replaceRequests.Add(r);
+                    
                 }
                 else
                 {
@@ -957,7 +928,7 @@ namespace DriverBase
         /// Do an async update to any registered delegates
         /// </summary>
         /// <param name="update"></param>
-        public async void PriceUpdateClients(KaiTrade.Interfaces.IPXUpdate update)
+        public  void PriceUpdateClients(KaiTrade.Interfaces.IPXUpdate update)
         {
             if (PriceUpdate != null)
             {
@@ -968,30 +939,8 @@ namespace DriverBase
         {
             try
             {
-                PriceUpdateClients(update);
-                if (_useAsyncPriceUpdates)
-                {
-                    // do the update assync
-                    lock (((ICollection)_pxUpdateQueue).SyncRoot)
-                    {
-                        _pxUpdateQueue.Enqueue(update);
-                        _syncEvents.NewItemEvent.Set();
-                    }
-                }
-                else
-                {
-                    //sync update
-                    //DoApplyPriceUpdate(update);
-                    // do the update assync
-                    lock (((ICollection)_pxUpdateQueue).SyncRoot)
-                    {
-                        _pxUpdateQueue.Enqueue(update);
-                        _syncEvents.NewItemEvent.Set();
-                    }
-                }
-
-                
-
+                // uses a blocking collection
+                pxUpdates.Add(update);               
             }
             catch (Exception myE)
             {

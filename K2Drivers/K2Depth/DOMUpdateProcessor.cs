@@ -28,13 +28,13 @@ namespace K2Depth
     public class DOMUpdateProcessor
     {
 
-        private K2DOM dom;
+        private K2DOM domData;
         private BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> slotUpdates;
 
         public DOMUpdateProcessor(K2DOM dom, BlockingCollection<List<KaiTrade.Interfaces.IDOMSlot>> updates)
         {
             slotUpdates = updates;
-            dom = dom;
+            domData = dom;
         }
         // Consumer.ThreadRun
         public void ThreadRun()
@@ -51,7 +51,7 @@ namespace K2Depth
         {
             //List<KaiTrade.Interfaces.IDOMSlot> slots =  new List<KaiTrade.Interfaces.IDOMSlot>();
             //slots.Add(slot);
-            dom.DOMUpdate(dom, slot);
+            domData.DOMUpdate(domData, slot);
             
         }
         

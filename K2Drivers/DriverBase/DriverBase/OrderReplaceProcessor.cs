@@ -18,6 +18,9 @@ using System.Threading;
 using System.Collections;
 using System.Linq;
 using K2ServiceInterface;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+
 namespace DriverBase
 {
     /// <summary>
@@ -26,9 +29,7 @@ namespace DriverBase
     /// </summary>
     public class OrderReplaceProcessor
     {
-        private Queue<RequestData> _queue;
-
-        private SyncEvents _syncEvents;
+        BlockingCollection<RequestData> replaceRequests;
         DriverBase _Handler;
 
         private Dictionary<string, RequestData> _replaceRequest;
@@ -38,10 +39,9 @@ namespace DriverBase
         /// </summary>
         public log4net.ILog m_DriverLog;
 
-        public OrderReplaceProcessor(DriverBase myHandler, Queue<RequestData> q, SyncEvents e)
+        public OrderReplaceProcessor(DriverBase myHandler, BlockingCollection<RequestData> replaceRequestsCollection)
         {
-            _queue = q;
-            _syncEvents = e;
+            replaceRequests = replaceRequestsCollection;
             _Handler = myHandler;
             _replaceRequest = new Dictionary<string, RequestData>();
             m_DriverLog = log4net.LogManager.GetLogger("KaiDriverLog");
@@ -50,67 +50,51 @@ namespace DriverBase
         public void ThreadRun()
         {
             int count = 0;
-            Queue<RequestData> myWorkQueue = new Queue<RequestData>();
-            while (WaitHandle.WaitAny(_syncEvents.EventArray) != 1)
+            try
             {
-                try
+                foreach (var replace in replaceRequests.GetConsumingEnumerable())
                 {
-                    // get any new replace requests
-                    lock (((ICollection)_queue).SyncRoot)
+
+                    if (_replaceRequest.ContainsKey(replace.Mnemonic))
                     {
-                        while (_queue.Count > 0)
-                        {
-                            myWorkQueue.Enqueue(_queue.Dequeue());
-                        }
+                        _replaceRequest[replace.Mnemonic] = (replace);
+                    }
+                    else
+                    {
+                        _replaceRequest.Add(replace.Mnemonic, replace);
+                    }
+                    OrderReplaceResult result = OrderReplaceResult.error;
+                    if (_replaceRequest[replace.Mnemonic].CRRType == crrType.replace)
+                    {
+                        result = _Handler.modifyOrder(_replaceRequest[replace.Mnemonic] as ModifyRequestData);
+                    }
+                    else if (_replaceRequest[replace.Mnemonic].CRRType == crrType.cancel)
+                    {
+                        result = _Handler.cancelOrder(_replaceRequest[replace.Mnemonic] as CancelRequestData);
+                    }
+                    else
+                    {
+                        // error condition
+                        m_DriverLog.Error("Invild CancelReplace type");
                     }
 
-                    // action most recent requests
-                    while (myWorkQueue.Count > 0)
+                    switch (result)
                     {
-                        RequestData replace = myWorkQueue.Dequeue();
-                        if (_replaceRequest.ContainsKey(replace.Mnemonic))
-                        {
-                            _replaceRequest[replace.Mnemonic]=(replace);
-                        }
-                        else
-                        {
-                            _replaceRequest.Add(replace.Mnemonic, replace);
-                        }
-                        OrderReplaceResult result = OrderReplaceResult.error;
-                        if (_replaceRequest[replace.Mnemonic].CRRType == crrType.replace)
-                        {
-                            result = _Handler.modifyOrder(_replaceRequest[replace.Mnemonic]as ModifyRequestData);
-                        }
-                        else if (_replaceRequest[replace.Mnemonic].CRRType == crrType.cancel)
-                        {
-                            result = _Handler.cancelOrder(_replaceRequest[replace.Mnemonic]as CancelRequestData);
-                        }
-                        else
-                        {
-                            // error condition
-                            m_DriverLog.Error("Invild CancelReplace type");
-
-                        }
-
-                        switch (result)
-                        {
-                            case OrderReplaceResult.success:
-                                _replaceRequest.Remove(replace.Mnemonic);
-                                break;
-                            case OrderReplaceResult.error:
-                                _replaceRequest.Remove(replace.Mnemonic);
-                                break;
-                            case OrderReplaceResult.replacePending:
-                                _replaceRequest[replace.Mnemonic].RetryCount += 1;
-                                break;
-                            case OrderReplaceResult.cancelPending:
-                                _replaceRequest[replace.Mnemonic].RetryCount += 1;
-                                break;
-                            default:
-                                _replaceRequest[replace.Mnemonic].RetryCount += 1;
-                                break;
-                        }
-
+                        case OrderReplaceResult.success:
+                            _replaceRequest.Remove(replace.Mnemonic);
+                            break;
+                        case OrderReplaceResult.error:
+                            _replaceRequest.Remove(replace.Mnemonic);
+                            break;
+                        case OrderReplaceResult.replacePending:
+                            _replaceRequest[replace.Mnemonic].RetryCount += 1;
+                            break;
+                        case OrderReplaceResult.cancelPending:
+                            _replaceRequest[replace.Mnemonic].RetryCount += 1;
+                            break;
+                        default:
+                            _replaceRequest[replace.Mnemonic].RetryCount += 1;
+                            break;
                     }
 
                     // action any remaining requests
@@ -121,8 +105,7 @@ namespace DriverBase
                     }
                     foreach (string mnemonic in mnemonics)
                     {
-
-                        OrderReplaceResult result = _Handler.modifyOrder(_replaceRequest[mnemonic] as ModifyRequestData);
+                        result = _Handler.modifyOrder(_replaceRequest[mnemonic] as ModifyRequestData);
                         switch (result)
                         {
                             case OrderReplaceResult.success:
@@ -138,14 +121,15 @@ namespace DriverBase
                         }
 
                     }
+                }
 
-                    count++;
-                }
-                catch (Exception myE)
-                {
-                    m_DriverLog.Error("Main Loop:", myE);
-                }
+                count++;
             }
+            catch (Exception myE)
+            {
+                m_DriverLog.Error("Main Loop:", myE);
+            }
+
 
         }
 
