@@ -90,7 +90,7 @@ namespace KTACQG
         /// Time series sets used in the driver indexes by the CQG id
         /// used when handling updates and when the bars are resolved
         /// </summary>
-        private Dictionary<string, KaiTrade.Interfaces.TSSet> m_TSSets;
+        private Dictionary<string, KaiTrade.Interfaces.ITSSet> m_TSSets;
 
         /// <summary>
         /// CQG Gateway status
@@ -115,7 +115,7 @@ namespace KTACQG
         /// </summary>
         private long m_TimeWarningCount = 0;
 
-        Stack<KaiTrade.Interfaces.TradableProduct> m_DelayedProductRequests;
+        Stack<KaiTrade.Interfaces.IProduct> m_DelayedProductRequests;
 
         /// <summary>
         /// Time in ticks of the last order routing request
@@ -160,7 +160,7 @@ namespace KTACQG
 
             // this is the name used in the publisher
             Name = "KTACQG";
-            _driverLog.Info("KTACQG Created");
+            driverLog.Info("KTACQG Created");
 
             m_Config = new KAI.kaitns.CQGConfig();
 
@@ -170,8 +170,8 @@ namespace KTACQG
 
             //m_ClIDOrder = new System.Collections.Hashtable();
             m_GUID2CQGOrder = new System.Collections.Hashtable();
-            m_TSSets = new Dictionary<string, KaiTrade.Interfaces.TSSet>();
-            m_DelayedProductRequests = new Stack<KaiTrade.Interfaces.TradableProduct>();
+            m_TSSets = new Dictionary<string, KaiTrade.Interfaces.ITSSet>();
+            m_DelayedProductRequests = new Stack<KaiTrade.Interfaces.IProduct>();
             m_ExpressionStrategyID = new Dictionary<string, string>();
             m_ExecutionPatterns = new Dictionary<string, string>();
             // set status to down
@@ -207,7 +207,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("resetDefaultFields", myE);
+                log.Error("resetDefaultFields", myE);
             }
         }
 
@@ -219,7 +219,7 @@ namespace KTACQG
         {
             try
             {
-                _driverLog.Info("KTACQG doStart");
+                driverLog.Info("KTACQG doStart");
 
                 // open the CQG Host form
                 m_CQGHostForm = new CQGFrm();
@@ -261,7 +261,7 @@ namespace KTACQG
                 }
                 catch (Exception myE)
                 {
-                    _driverLog.Error("property processing", myE);
+                    driverLog.Error("property processing", myE);
                 }
 
 
@@ -277,7 +277,7 @@ namespace KTACQG
                 // Report that we are open - this will show in the adapter view
                 // in the dashboard
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "KTCQG adapter is open");
-                _driverLog.Info("KTCQG adapter is open");
+                driverLog.Info("KTCQG adapter is open");
             }
             catch (Exception myE)
             {
@@ -311,11 +311,11 @@ namespace KTACQG
         /// Disconnect a TSSet  
         /// </summary>
         /// <param name="myTSSet"></param>
-        public override void DisconnectTSData(KaiTrade.Interfaces.TSSet myTSSet)
+        public override void DisconnectTSData(KaiTrade.Interfaces.ITSSet myTSSet)
         {
             try
             {
-                _driverLog.Info("DisconnectTSData:" + myTSSet.ToString());
+                driverLog.Info("DisconnectTSData:" + myTSSet.ToString());
                 if (myTSSet.ExternalRef != null)
                 {
                     switch (myTSSet.TSType)
@@ -342,13 +342,13 @@ namespace KTACQG
                 }
                 else
                 {
-                    _driverLog.Warn("Cannot disconnect set since no external ref provided");
+                    driverLog.Warn("Cannot disconnect set since no external ref provided");
                 }
-                _driverLog.Info("DisconnectTSData:Exit");
+                driverLog.Info("DisconnectTSData:Exit");
             }
             catch (Exception myE)
             {
-                _log.Error("DisconnectTSData", myE);
+                log.Error("DisconnectTSData", myE);
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "DoGetTSData" + myE.Message);
             }
         }
@@ -368,7 +368,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("RequestTradeSystems", myE);
+                log.Error("RequestTradeSystems", myE);
             }
         }
 
@@ -384,12 +384,12 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("RequestConditions", myE);
+                log.Error("RequestConditions", myE);
             }
         }
 
 
-        public override void RequestTSData(KaiTrade.Interfaces.TSSet myTSSet)
+        public override void RequestTSData(KaiTrade.Interfaces.ITSSet myTSSet)
         {
             lock (m_GetTSReqToken)
             {
@@ -419,13 +419,13 @@ namespace KTACQG
                             break;
 
                         default:
-                            _driverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
+                            driverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
                             break;
                     }
                 }
                 catch (Exception myE)
                 {
-                    _log.Error("RequestTSData", myE);
+                    log.Error("RequestTSData", myE);
                     this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "DoGetTSData" + myE.Message);
                 }
             }
@@ -436,14 +436,14 @@ namespace KTACQG
         /// Get time series data from CQG
         /// </summary>
         /// <param name="myState"></param>
-        private void getTSConstantBarData(ref KaiTrade.Interfaces.TSSet myTSSet)
+        private void getTSConstantBarData(ref KaiTrade.Interfaces.ITSSet myTSSet)
         {
             CQGConstantVolumeBars myBars;
             CQGConstantVolumeBarsRequest myReq;
 
             try
             {
-                _driverLog.Info("getTSConstantBarData:" + myTSSet.ToString());
+                driverLog.Info("getTSConstantBarData:" + myTSSet.ToString());
                 myTSSet.Status = KaiTrade.Interfaces.Status.opening;
                 myReq = m_CQGHostForm.CQGApp.CreateConstantVolumeBarsRequest();
 
@@ -529,11 +529,11 @@ namespace KTACQG
 
                 m_TSSets.Add(myTSSet.ExternalID, myTSSet);
 
-                _driverLog.Info("getTSConstantBarData completed cqgid:" + myBars.Id.ToString() + ":" + myBars.Status.ToString());
+                driverLog.Info("getTSConstantBarData completed cqgid:" + myBars.Id.ToString() + ":" + myBars.Status.ToString());
             }
             catch (Exception myE)
             {
-                _log.Error("getTSConstantBarData", myE);
+                log.Error("getTSConstantBarData", myE);
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "getTSConstantBarData" + myE.Message);
 
                 myTSSet.Status = KaiTrade.Interfaces.Status.error;
@@ -585,13 +585,13 @@ namespace KTACQG
             return isIntraDay;
         }
 
-        private void getTSBarData(ref KaiTrade.Interfaces.TSSet myTSSet)
+        private void getTSBarData(ref KaiTrade.Interfaces.ITSSet myTSSet)
         {
             CQGTimedBars myTimedBars;
             CQGTimedBarsRequest myReq;
             try
             {
-                _driverLog.Info("getTSBarData:" + myTSSet.ToString());
+                driverLog.Info("getTSBarData:" + myTSSet.ToString());
                 myTSSet.Status = KaiTrade.Interfaces.Status.opening;
                 myReq = m_CQGHostForm.CQGApp.CreateTimedBarsRequest();
 
@@ -695,11 +695,11 @@ namespace KTACQG
 
                 m_TSSets.Add(myTSSet.ExternalID, myTSSet);
 
-                _driverLog.Info("getTSBarData completed cqgid:" + myTimedBars.Id.ToString() + ":" + myTimedBars.Status.ToString());
+                driverLog.Info("getTSBarData completed cqgid:" + myTimedBars.Id.ToString() + ":" + myTimedBars.Status.ToString());
             }
             catch (Exception myE)
             {
-                _log.Error("getTSBarData", myE);
+                log.Error("getTSBarData", myE);
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "getTSBarData" + myE.Message);
 
                 myTSSet.Status = KaiTrade.Interfaces.Status.error;
@@ -713,13 +713,13 @@ namespace KTACQG
         /// Get time series data from CQG custom study
         /// </summary>
         /// <param name="myState"></param>
-        private void getTSStudyData(ref KaiTrade.Interfaces.TSSet myTSSet)
+        private void getTSStudyData(ref KaiTrade.Interfaces.ITSSet myTSSet)
         {
             CQGCustomStudy myCustomStudy;
             CQGCustomStudyRequest myReq;
             try
             {
-                _driverLog.Info("getTSStudyData:" + myTSSet.ToString());
+                driverLog.Info("getTSStudyData:" + myTSSet.ToString());
 
                 myTSSet.Status = KaiTrade.Interfaces.Status.opening;
 
@@ -821,26 +821,26 @@ namespace KTACQG
 
                 m_TSSets.Add(myTSSet.ExternalID, myTSSet);
 
-                _driverLog.Info("getTSStudyData completed cqgid" + myCustomStudy.Id.ToString() + ":" + myCustomStudy.Status.ToString());
+                driverLog.Info("getTSStudyData completed cqgid" + myCustomStudy.Id.ToString() + ":" + myCustomStudy.Status.ToString());
             }
             catch (Exception myE)
             {
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "getTSStudyData" + myE.Message);
-                _log.Error("getTSStudyData", myE);
+                log.Error("getTSStudyData", myE);
                 myTSSet.Status = KaiTrade.Interfaces.Status.error;
                 myTSSet.Text = myE.Message;
             }
         }
 
 
-        private void getTSConditionData(ref KaiTrade.Interfaces.TSSet myTSSet)
+        private void getTSConditionData(ref KaiTrade.Interfaces.ITSSet myTSSet)
         {
             CQGCondition myCondition;
             CQGConditionRequest myReq;
 
             try
             {
-                _driverLog.Info("getTSConditionData:" + myTSSet.ToString());
+                driverLog.Info("getTSConditionData:" + myTSSet.ToString());
 
                 myTSSet.Status = KaiTrade.Interfaces.Status.opening;
                 myReq = m_CQGHostForm.CQGApp.CreateConditionRequest(myTSSet.ConditionName);
@@ -852,7 +852,7 @@ namespace KTACQG
                 // the raw menmonic
                 if (myTSSet.Expressions.Count > 0)
                 {
-                    KaiTrade.Interfaces.TSExpression myExpression = myTSSet.Expressions[0];
+                    KaiTrade.Interfaces.ITSExpression myExpression = myTSSet.Expressions[0];
                     string myTemp = "";
                     if (instrument != null)
                     {
@@ -863,7 +863,7 @@ namespace KTACQG
                         myTemp = myExpression.Expression;
                     }
                     myReq.BaseExpression = myTemp;
-                    _driverLog.Info("getTSConditionData:using expression:" + myTemp);
+                    driverLog.Info("getTSConditionData:using expression:" + myTemp);
                 }
                 else
                 {
@@ -955,18 +955,18 @@ namespace KTACQG
                 m_TSSets.Add(myTSSet.ExternalID, myTSSet);
 
 
-                _driverLog.Info("getTSConditionData completed cqgid:" + myCondition.Id.ToString() + ":" + myCondition.Status.ToString());
+                driverLog.Info("getTSConditionData completed cqgid:" + myCondition.Id.ToString() + ":" + myCondition.Status.ToString());
             }
             catch (Exception myE)
             {
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "getTSConditionData" + myE.Message);
-                _log.Error("getTSConditionData", myE);
+                log.Error("getTSConditionData", myE);
                 myTSSet.Status = KaiTrade.Interfaces.Status.error;
                 myTSSet.Text = myE.Message;
             }
         }
 
-        private void getTradingSystem(ref KaiTrade.Interfaces.TSSet myTSSet)
+        private void getTradingSystem(ref KaiTrade.Interfaces.ITSSet myTSSet)
         {
             CQGTradingSystem myTradingSystem;
             CQGTradingSystemRequest myReq;
@@ -974,14 +974,14 @@ namespace KTACQG
             //myTSSet.UpdatesEnabled
             try
             {
-                m_TSLog.Info("getTradingSystem:" + myTSSet.ToString());
+                tSLog.Info("getTradingSystem:" + myTSSet.ToString());
 
                 try
                 {
-                    if (m_TSLog.IsInfoEnabled)
+                    if (tSLog.IsInfoEnabled)
                     {
-                        m_TSLog.Info(myTSSet.ToDataBinding().ToXml());
-                        m_TSLog.Info("CalculationMode=" + myTSSet.CalculationMode.ToString() + "CalculationPeriod=" + myTSSet.CalculationPeriod.ToString());
+                        tSLog.Info(myTSSet.ToDataBinding().ToXml());
+                        tSLog.Info("CalculationMode=" + myTSSet.CalculationMode.ToString() + "CalculationPeriod=" + myTSSet.CalculationPeriod.ToString());
                     }
                 }
                 catch
@@ -999,7 +999,7 @@ namespace KTACQG
                 // the raw menmonic
                 if (myTSSet.Expressions.Count > 0)
                 {
-                    KaiTrade.Interfaces.TSExpression myExpression = myTSSet.Expressions[0];
+                    KaiTrade.Interfaces.ITSExpression myExpression = myTSSet.Expressions[0];
                     string myTemp = "";
                     if (instrument != null)
                     {
@@ -1010,7 +1010,7 @@ namespace KTACQG
                         myTemp = myExpression.Expression;
                     }
                     myReq.BaseExpression = myTemp;
-                    m_TSLog.Info("getTSTradeSystemData:using expression:" + myTemp);
+                    tSLog.Info("getTSTradeSystemData:using expression:" + myTemp);
                 }
                 else
                 {
@@ -1122,13 +1122,13 @@ namespace KTACQG
                 m_TSSets.Add(myTSSet.ExternalID, myTSSet);
 
 
-                m_TSLog.Info("getTradingSystem completed cqgid:" + myTradingSystem.Id.ToString() + ":" + myTradingSystem.Status.ToString());
+                tSLog.Info("getTradingSystem completed cqgid:" + myTradingSystem.Id.ToString() + ":" + myTradingSystem.Status.ToString());
             }
             catch (Exception myE)
             {
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "getTradingSystem" + myE.Message);
-                m_TSLog.Error("getTradingSystem", myE);
-                _log.Error("getTradingSystem", myE);
+                tSLog.Error("getTradingSystem", myE);
+                log.Error("getTradingSystem", myE);
                 myTSSet.Status = KaiTrade.Interfaces.Status.error;
                 myTSSet.Text = myE.Message;
             }
@@ -1139,21 +1139,21 @@ namespace KTACQG
             try
             {
 
-                _driverLog.Info("logTSParameters:enter:" + myReq.BaseExpression);
+                driverLog.Info("logTSParameters:enter:" + myReq.BaseExpression);
                 foreach (CQGParameterDefinition p in myReq.Definition.ParameterDefinitions)
                 {
-                    _driverLog.Info("parameters:name:" + p.Name + "def value:" + p.DefaultValue.ToString());
-                    _driverLog.Info("parameters:name:" + p.Name + " value:" + myReq.Parameter[p.Name].ToString());
+                    driverLog.Info("parameters:name:" + p.Name + "def value:" + p.DefaultValue.ToString());
+                    driverLog.Info("parameters:name:" + p.Name + " value:" + myReq.Parameter[p.Name].ToString());
 
                 }
-                _log.Info("logTSParameters:exit:" );
+                log.Info("logTSParameters:exit:" );
                 
 
 
             }
             catch (Exception myE)
             {
-                _log.Error("setRequestParameters", myE);
+                log.Error("setRequestParameters", myE);
             }
         }
 
@@ -1162,27 +1162,27 @@ namespace KTACQG
             try
             {
 
-                _driverLog.Info("logValidReqParmNames");
+                driverLog.Info("logValidReqParmNames");
                 foreach (CQGParameterDefinition pd in myReq.Definition.ParameterDefinitions)
                 {
                     string plog = string.Format("Name:{0}:Type:{1}:DefaultValue:{2}", pd.Name, pd.Type.ToString(), pd.DefaultValue);
-                    _driverLog.Info(plog);
+                    driverLog.Info(plog);
                 }
                 
             }
             catch (Exception myE)
             {
-                _log.Error("logValidReqParmNames", myE);
+                log.Error("logValidReqParmNames", myE);
             }
         }
-        private void setRequestParameters(CQGTradingSystemRequest myReq, List<KaiTrade.Interfaces.K2Parameter> parms)
+        private void setRequestParameters(CQGTradingSystemRequest myReq, List<KaiTrade.Interfaces.IParameter> parms)
         {
             try
             {
-                _driverLog.Info("setRequestParameters:enter:"+myReq.BaseExpression);
+                driverLog.Info("setRequestParameters:enter:"+myReq.BaseExpression);
                 logValidReqParmNames(myReq);
 
-                foreach (KaiTrade.Interfaces.K2Parameter p in parms)
+                foreach (KaiTrade.Interfaces.IParameter p in parms)
                 {
                     try
                     {
@@ -1195,20 +1195,20 @@ namespace KTACQG
                                 myReq.set_Parameter(p.ParameterName, int.Parse(p.ParameterValue));
                                 break;
                         }
-                        _driverLog.Info("setParameters:name:" + p.ParameterName+" value:"+p.ParameterValue);
+                        driverLog.Info("setParameters:name:" + p.ParameterName+" value:"+p.ParameterValue);
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("setRequestParameters:InvalidParameter" + p.ParameterName + ":" + p.ParameterValue, myE);
+                        log.Error("setRequestParameters:InvalidParameter" + p.ParameterName + ":" + p.ParameterValue, myE);
                     }
                     
 
                 }
-                _driverLog.Info("setRequestParameters:exit:" + myReq.BaseExpression);
+                driverLog.Info("setRequestParameters:exit:" + myReq.BaseExpression);
             }
             catch (Exception myE)
             {
-                _log.Error("setRequestParameters", myE);
+                log.Error("setRequestParameters", myE);
             }
         }
 
@@ -1216,13 +1216,13 @@ namespace KTACQG
         /// Get time series data from CQG custom study
         /// </summary>
         /// <param name="myState"></param>
-        private void getTSExpressionData(ref KaiTrade.Interfaces.TSSet myTSSet)
+        private void getTSExpressionData(ref KaiTrade.Interfaces.ITSSet myTSSet)
         {
             CQGExpression myExpression;
             CQGExpressionRequest myReq;
             try
             {
-                _driverLog.Info("getTSExpressionData:" + myTSSet.ToString());
+                driverLog.Info("getTSExpressionData:" + myTSSet.ToString());
 
                 myTSSet.Status = KaiTrade.Interfaces.Status.opening;
                 myReq = m_CQGHostForm.CQGApp.CreateExpressionRequest();
@@ -1239,7 +1239,7 @@ namespace KTACQG
                     }
                 }
                 //myReq.AddSubExpression(myTSSet.ConditionName, myTSSet.Alias);
-                foreach (KaiTrade.Interfaces.TSExpression myTSExpression in myTSSet.Expressions)
+                foreach (KaiTrade.Interfaces.ITSExpression myTSExpression in myTSSet.Expressions)
                 {
                     string myTemp = myTSExpression.Expression.Replace("DJI", instrument.FullName);
                     myReq.AddSubExpression(myTemp, myTSExpression.Alias);
@@ -1327,12 +1327,12 @@ namespace KTACQG
 
                 m_TSSets.Add(myTSSet.ExternalID, myTSSet);
 
-                _driverLog.Info("getTSExpressionData completed cqgid:" + myExpression.Id.ToString() + ":" + myExpression.Status.ToString());
+                driverLog.Info("getTSExpressionData completed cqgid:" + myExpression.Id.ToString() + ":" + myExpression.Status.ToString());
             }
             catch (Exception myE)
             {
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "getTSExpressionData" + myE.Message);
-                _log.Error("getTSExpressionData", myE);
+                log.Error("getTSExpressionData", myE);
                 myTSSet.Status = KaiTrade.Interfaces.Status.error;
                 myTSSet.Text = myE.Message;
             }
@@ -1346,7 +1346,7 @@ namespace KTACQG
         {
             try
             {
-                _driverLog.Info("InitializeCQGCEL:enter");
+                driverLog.Info("InitializeCQGCEL:enter");
                 // Configure CQG API. Based on this configuration CQG API works differently.
                 m_CQGHostForm.CQGApp.APIConfiguration.CollectionsThrowException = false;
                 m_CQGHostForm.CQGApp.APIConfiguration.DefaultInstrumentSubscriptionLevel = eDataSubscriptionLevel.dsQuotesAndBBA;
@@ -1438,12 +1438,12 @@ namespace KTACQG
                 m_CQGHostForm.CQGApp.TradingSystemInsertNotification += new _ICQGCELEvents_TradingSystemInsertNotificationEventHandler(CQGApp_TradingSystemInsertNotification);
                 // Start CQGCEL
                 m_CQGHostForm.CQGApp.Startup();
-                _driverLog.Info("InitializeCQGCEL:exit");
+                driverLog.Info("InitializeCQGCEL:exit");
             }
             catch (Exception myE)
             {
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.error, "KTCQG init is not working:" + myE.Message);
-                _log.Error("InitializeCQGCEL", myE);
+                log.Error("InitializeCQGCEL", myE);
                 throw myE;
             }
         }
@@ -1461,8 +1461,8 @@ namespace KTACQG
 
                 if (m_PublisherRegister.ContainsKey(cqg_instrument.FullName))
                 {
-                    //List<KaiTrade.Interfaces.K2DOMSlot> slots = ProcessDOM(cqg_instrument,prev_asks, prev_bids);
-                    List<KaiTrade.Interfaces.K2DOMSlot> slots = ProcessDOMasImage(cqg_instrument, prev_asks, prev_bids);
+                    //List<KaiTrade.Interfaces.IDOMSlot> slots = ProcessDOM(cqg_instrument,prev_asks, prev_bids);
+                    List<KaiTrade.Interfaces.IDOMSlot> slots = ProcessDOMasImage(cqg_instrument, prev_asks, prev_bids);
                     base.ApplyDOMUpdate(cqg_instrument.FullName, slots.ToArray());
                     return;
                 }
@@ -1470,7 +1470,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CQGApp_InstrumentDOMChanged", myE);
+                log.Error("CQGApp_InstrumentDOMChanged", myE);
             }
         }
 
@@ -1481,21 +1481,21 @@ namespace KTACQG
                 for (int i = 0; i < prev_bids.Count; i++)
                 {
                     string temp = string.Format("BID px {0} sz {1} prev: px {2} sz {3}", instrument.DOMBids[i].Price, instrument.DOMBids[i].Volume, prev_bids[i].Price, prev_bids[i].Volume);
-                    _log.Error(temp);
+                    log.Error(temp);
                 }
                 for (int i = 0; i < prev_asks.Count; i++)
                 {
                     string temp = string.Format("ASK px {0} sz {1} prev: px {2} sz {3}", instrument.DOMAsks[i].Price, instrument.DOMAsks[i].Volume, prev_asks[i].Price, prev_asks[i].Volume);
-                    _log.Error(temp);
+                    log.Error(temp);
                 }
             }
             catch (Exception myE)
             {
             }
         }
-        private List<KaiTrade.Interfaces.K2DOMSlot> ProcessDOM(CQGInstrument instrument, CQGDOMQuotes prev_asks, CQGDOMQuotes prev_bids)
+        private List<KaiTrade.Interfaces.IDOMSlot> ProcessDOM(CQGInstrument instrument, CQGDOMQuotes prev_asks, CQGDOMQuotes prev_bids)
         {
-            List<KaiTrade.Interfaces.K2DOMSlot> domSlots = new List<KaiTrade.Interfaces.K2DOMSlot>();
+            List<KaiTrade.Interfaces.IDOMSlot> domSlots = new List<KaiTrade.Interfaces.IDOMSlot>();
             try
             {
                 decimal? price;
@@ -1525,7 +1525,7 @@ namespace KTACQG
                         {
                             // prices have dropped
                             //  ADD SLOT with BidZ = sz AskSz =null
-                            domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
+                            domSlots.Add(new K2DataObjects.DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
                             qtBidIndex++;
                         }
                         if (bidQt.Price == prevBidQt.Price)
@@ -1533,7 +1533,7 @@ namespace KTACQG
                             // same price so just replace
                             if (bidQt.Volume != prevBidQt.Volume)
                             {
-                                domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
+                                domSlots.Add(new K2DataObjects.DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
 
                             }
                             prevBidQtIndex++;
@@ -1544,12 +1544,12 @@ namespace KTACQG
                             // prices moved up
                             if (prevBidQtIndex < prev_bids.Count)
                             {
-                                domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)prevBidQt.Price, null, null));
+                                domSlots.Add(new K2DataObjects.DOMSlot((decimal)prevBidQt.Price, null, null));
                                 prevBidQtIndex++;
                             }
                             else
                             {
-                                domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
+                                domSlots.Add(new K2DataObjects.DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
                                 qtBidIndex++;
                             }
                         }
@@ -1560,7 +1560,7 @@ namespace KTACQG
                         if (askQt.Price < prevAskQt.Price)
                         {
                             // prices have dropped
-                            domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
+                            domSlots.Add(new K2DataObjects.DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
                             qtAskIndex++;
                         }
                         if (askQt.Price == prevAskQt.Price)
@@ -1568,7 +1568,7 @@ namespace KTACQG
                             // same price so just replace
                             if (askQt.Volume != prevAskQt.Volume)
                             {
-                                domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
+                                domSlots.Add(new K2DataObjects.DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
 
                             }
                             prevAskQtIndex++;
@@ -1580,12 +1580,12 @@ namespace KTACQG
                             if (prevAskQtIndex < prev_asks.Count)
                             {
                                 // this slot would have been done in the bid processing
-                                //domSlots[slotIndex++] = new K2DataObjects.K2DOMSlot((decimal)prevAskQt.Price, null, null);
+                                //domSlots[slotIndex++] = new K2DataObjects.DOMSlot((decimal)prevAskQt.Price, null, null);
                                 prevAskQtIndex++;
                             }
                             else
                             {
-                                domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
+                                domSlots.Add(new K2DataObjects.DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
                                 qtAskIndex++;
                             }
                         }
@@ -1600,9 +1600,9 @@ namespace KTACQG
             return domSlots;
         }
 
-        private List<KaiTrade.Interfaces.K2DOMSlot> ProcessDOMasImage(CQGInstrument instrument, CQGDOMQuotes prev_asks, CQGDOMQuotes prev_bids)
+        private List<KaiTrade.Interfaces.IDOMSlot> ProcessDOMasImage(CQGInstrument instrument, CQGDOMQuotes prev_asks, CQGDOMQuotes prev_bids)
         {
-            List<KaiTrade.Interfaces.K2DOMSlot> domSlots = new List<KaiTrade.Interfaces.K2DOMSlot>();
+            List<KaiTrade.Interfaces.IDOMSlot> domSlots = new List<KaiTrade.Interfaces.IDOMSlot>();
             try
             {
 
@@ -1613,12 +1613,12 @@ namespace KTACQG
                 while (qtBidIndex >= 0)
                 {
                     bidQt = instrument.DOMBids[qtBidIndex--];
-                    domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
+                    domSlots.Add(new K2DataObjects.DOMSlot((decimal)bidQt.Price, (decimal)bidQt.Volume, null));
                 }
                 while (qtAskIndex < instrument.DOMAsks.Count)
                 {
                     askQt = instrument.DOMAsks[qtAskIndex++];
-                    domSlots.Add(new K2DataObjects.K2DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
+                    domSlots.Add(new K2DataObjects.DOMSlot((decimal)askQt.Price, null, (decimal)askQt.Volume));
                 }
 
 
@@ -1644,7 +1644,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CQGApp_CommodityInstrumentsResolved", myE);
+                log.Error("CQGApp_CommodityInstrumentsResolved", myE);
             }
         }
 
@@ -1661,7 +1661,7 @@ namespace KTACQG
         {
             try
             {
-                _driverLog.Info("DoStop:enter");
+                driverLog.Info("DoStop:enter");
                 setSubscriptionsStatus(KaiTrade.Interfaces.Status.closed);
                 if (m_GWStatus == eConnectionStatus.csConnectionUp)
                 {
@@ -1687,11 +1687,11 @@ namespace KTACQG
                 m_ClOrdIDOrderMap.Clear();
                 m_GUID2CQGOrder.Clear();
 
-                _driverLog.Info("DoStop:exit");
+                driverLog.Info("DoStop:exit");
             }
             catch (Exception myE)
             {
-                _log.Error("DoStop", myE);
+                log.Error("DoStop", myE);
             }
         }
 
@@ -1703,9 +1703,9 @@ namespace KTACQG
         {
             try
             {
-                _driverLog.Info("setSubscriptionsStatus:" + myStatus.ToString());
+                driverLog.Info("setSubscriptionsStatus:" + myStatus.ToString());
 
-                foreach (KaiTrade.Interfaces.TSSet mySet in m_TSSets.Values)
+                foreach (KaiTrade.Interfaces.ITSSet mySet in m_TSSets.Values)
                 {
                     mySet.Status = myStatus;
                 }
@@ -1714,7 +1714,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("setSubscriptionsStatus", myE);
+                log.Error("setSubscriptionsStatus", myE);
             }
         }
 
@@ -1729,7 +1729,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("processConfig", myE);
+                log.Error("processConfig", myE);
             }
         }
 
@@ -1740,7 +1740,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("subscribeInterestList", myE);
+                log.Error("subscribeInterestList", myE);
             }
         }
 
@@ -1752,9 +1752,9 @@ namespace KTACQG
         {
             try
             {
-                if (m_WireLog.IsInfoEnabled)
+                if (wireLog.IsInfoEnabled)
                 {
-                    m_WireLog.Info("subscribeProduct:mne=" + myDef.Mnemonic + " src=:" + myDef.Src);
+                    wireLog.Info("subscribeProduct:mne=" + myDef.Mnemonic + " src=:" + myDef.Src);
                 }
                 // Record the Mnemnonic that wants a suscription - used later
                 // to get a mnemonic from the long name returned by CQG
@@ -1773,11 +1773,11 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Warn("subscribeProduct", myE);
+                log.Warn("subscribeProduct", myE);
             }
         }
 
-        public override void RequestProductDetails(KaiTrade.Interfaces.TradableProduct myProduct)
+        public override void RequestProductDetails(KaiTrade.Interfaces.IProduct myProduct)
         {
             try
             {
@@ -1785,7 +1785,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("RequestProductDetails", myE);
+                log.Error("RequestProductDetails", myE);
             }
         }
 
@@ -1797,9 +1797,9 @@ namespace KTACQG
         {
             try
             {
-                if (m_WireLog.IsInfoEnabled)
+                if (wireLog.IsInfoEnabled)
                 {
-                    m_WireLog.Info("subscribeProduct:fullname=" + myFullName);
+                    wireLog.Info("subscribeProduct:fullname=" + myFullName);
                 }
                 // Send subscription request
                 m_CQGHostForm.CQGApp.NewInstrument(myFullName);
@@ -1808,7 +1808,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Warn("subscribeProduct:CQG FullName", myE);
+                log.Warn("subscribeProduct:CQG FullName", myE);
             }
         }
 
@@ -1820,9 +1820,9 @@ namespace KTACQG
         {
             try
             {
-                if (m_WireLog.IsInfoEnabled)
+                if (wireLog.IsInfoEnabled)
                 {
-                    m_WireLog.Info("subscribeProductDOM:fullname=" + myFullName);
+                    wireLog.Info("subscribeProductDOM:fullname=" + myFullName);
                 }
                 // Send subscription request
                 m_CQGHostForm.CQGApp.NewInstrument(myFullName);
@@ -1833,7 +1833,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Warn("subscribeProductDOM:CQG FullName", myE);
+                log.Warn("subscribeProductDOM:CQG FullName", myE);
             }
         }
 
@@ -1852,7 +1852,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("subscribeProduct:", myE);
+                log.Error("subscribeProduct:", myE);
             }
         }
 
@@ -1866,7 +1866,7 @@ namespace KTACQG
             try
             {
                 KAI.kaitns.InstrDef myDef = null;
-                KaiTrade.Interfaces.TradableProduct product = null;
+                KaiTrade.Interfaces.IProduct product = null;
                 product = m_Facade.Factory.GetProductManager().GetProductMnemonic(myMnemonic);
                 if (product != null)
                 {
@@ -1875,14 +1875,14 @@ namespace KTACQG
                 else
                 {
                     // it could a structured old style mnemonic
-                    _driverLog.Info("GetInstrumentWithMnemonic:attempt KaiUtil.GetInstrDefOnSrc:" + myMnemonic);
+                    driverLog.Info("GetInstrumentWithMnemonic:attempt KaiUtil.GetInstrDefOnSrc:" + myMnemonic);
                     KaiUtil.KaiUtil.GetInstrDefOnSrc(out myDef, myMnemonic);
                     myInstr = GetInstrument(myDef.Src);
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("GetInstrumentWithMnemonic", myE);
+                log.Error("GetInstrumentWithMnemonic", myE);
             }
             return myInstr;
         }
@@ -1915,7 +1915,7 @@ namespace KTACQG
             }
             catch
             {
-                _driverLog.Info("GetInstrument:not found:" + myFullName);
+                driverLog.Info("GetInstrument:not found:" + myFullName);
                 return null;
             }
         }
@@ -1950,22 +1950,22 @@ namespace KTACQG
                 {
                     descriptiveName = acc.GWAccountName + " (" + acc.GWAccountID + ")";
                     this.SendAdvisoryMessage(descriptiveName);
-                    if (m_WireLog.IsInfoEnabled)
+                    if (wireLog.IsInfoEnabled)
                     {
-                        m_WireLog.Info("AccountMap:Name=" + descriptiveName + ":" + acc.GWAccountID.ToString());
+                        wireLog.Info("AccountMap:Name=" + descriptiveName + ":" + acc.GWAccountID.ToString());
                     }
                     if (m_AccountsMap.ContainsKey(descriptiveName))
                     {
                         m_AccountsMap[descriptiveName] = acc.GWAccountID;
-                        if (m_WireLog.IsInfoEnabled)
+                        if (wireLog.IsInfoEnabled)
                         {
-                            m_WireLog.Info("AccountMap Value replaced");
+                            wireLog.Info("AccountMap Value replaced");
                         }
                     }
                     else
                     {
                         m_AccountsMap.Add(descriptiveName, acc.GWAccountID);
-                        m_WireLog.Info("AccountMap Value Added");
+                        wireLog.Info("AccountMap Value Added");
                     }
                     // creat a KAI account databinding
                     KAI.kaitns.Account myAccountDB = new KAI.kaitns.Account();
@@ -1985,7 +1985,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("FillAccountsMap", myE);
+                log.Error("FillAccountsMap", myE);
             }
         }
 
@@ -2122,7 +2122,7 @@ namespace KTACQG
                     break;               
                 default:
                      
-                    //_log.
+                    //log.
                     //Exception myE = new Exception("CQG:Invalid order side:" + side.ToString());
                     //throw myE;
                     break;
@@ -2175,9 +2175,9 @@ namespace KTACQG
                     long ticksDelta = ticksNow - m_LastORRequestTicks;
                     if (ticksDelta < m_RequiredORIntervalTicks)
                     {
-                        if (_log.IsInfoEnabled)
+                        if (log.IsInfoEnabled)
                         {
-                            _log.Info("DEMO THROTTLE APPLIED: Ticks Delta:" + ticksDelta.ToString());
+                            log.Info("DEMO THROTTLE APPLIED: Ticks Delta:" + ticksDelta.ToString());
                         }
                         int waitDuration = (int)((m_RequiredORIntervalTicks - ticksDelta) / 10000);
                         System.Threading.Thread.Sleep(waitDuration);
@@ -2201,13 +2201,13 @@ namespace KTACQG
             {
                 // Extract the raw FIX Message from the inbound message
                 string strOrder = myMsg.Data;
-                if (m_WireLog.IsInfoEnabled)
+                if (wireLog.IsInfoEnabled)
                 {
-                    m_WireLog.Info("submitOrder:" + strOrder);
+                    wireLog.Info("submitOrder:" + strOrder);
                 }
-                if (_driverLog.IsInfoEnabled)
+                if (driverLog.IsInfoEnabled)
                 {
-                    _driverLog.Info("submitOrder:" + strOrder);
+                    driverLog.Info("submitOrder:" + strOrder);
                 }
 
                 // Use QuickFix to handle the message
@@ -2265,7 +2265,7 @@ namespace KTACQG
                     myAccount = GetAccount(account.getValue());
                     if (myAccount != null)
                     {
-                        _driverLog.Info("CQGAcct:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
+                        driverLog.Info("CQGAcct:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
                     }
                 }
                 if (myAccount == null)
@@ -2387,14 +2387,14 @@ namespace KTACQG
                 m_ClOrdIDOrderMap.Add(clOrdID.getValue(), myContext);
 
                 // send the order
-                _driverLog.Info("CQGAcctA:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
+                driverLog.Info("CQGAcctA:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
                 order.Place();
                 myContext.CurrentCommand = DriverBase.ORCommand.Submit;
-                _driverLog.Info("CQGAcctB:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
+                driverLog.Info("CQGAcctB:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
             }
             catch (Exception myE)
             {
-                _log.Error("submitOrder", myE);
+                log.Error("submitOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -2502,7 +2502,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("pullOrder", myE);
+                log.Error("pullOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -2703,7 +2703,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("modifyOrder", myE);
+                log.Error("modifyOrder", myE);
                 if (m_ORLog.IsInfoEnabled)
                 {
                     m_ORLog.Info("modifyOrder:context:Exception", myE);
@@ -2811,7 +2811,7 @@ namespace KTACQG
                 }
                 else
                 {
-                    _log.Warn("Order was not replaced as all fields were the same");
+                    log.Warn("Order was not replaced as all fields were the same");
                 }
 
                 return KaiTrade.Interfaces.orderReplaceResult.success;
@@ -2819,7 +2819,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("modifyOrderRD", myE);
+                log.Error("modifyOrderRD", myE);
                 if (m_ORLog.IsInfoEnabled)
                 {
                     m_ORLog.Info("modifyOrderRD:context:Exception", myE);
@@ -2872,7 +2872,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("cancelOrderRD", myE);
+                log.Error("cancelOrderRD", myE);
                 if (m_ORLog.IsInfoEnabled)
                 {
                     m_ORLog.Info("cancelOrderRD:Exception", myE);
@@ -3018,7 +3018,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("getOrderData", myE);
+                log.Error("getOrderData", myE);
             }
 
             return orderData;
@@ -3142,9 +3142,9 @@ namespace KTACQG
         {
             try
             {
-                if (m_WireLog.IsInfoEnabled)
+                if (wireLog.IsInfoEnabled)
                 {
-                    m_WireLog.Info("updateOrder:" + change.ToString());
+                    wireLog.Info("updateOrder:" + change.ToString());
                 }
                 QuickFix.ExecType myExecType = new QuickFix.ExecType(QuickFix.ExecType.ORDER_STATUS);
 
@@ -3204,7 +3204,7 @@ namespace KTACQG
                         {
                             myContext.CurrentCommand = DriverBase.ORCommand.Undefined;
                             // expected submit
-                            _driverLog.Warn("ctAdded - but not on submit");
+                            driverLog.Warn("ctAdded - but not on submit");
                         }
                         break;
 
@@ -3255,7 +3255,7 @@ namespace KTACQG
             catch (Exception myE)
             {
                 this.SendAdvisoryMessage("updateOrder:" + myE.ToString());
-                _log.Error("updateOrder:", myE);
+                log.Error("updateOrder:", myE);
             }
         }
 
@@ -3294,7 +3294,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("sendExecReport", myE);
+                log.Error("sendExecReport", myE);
             }
         }
 
@@ -3312,7 +3312,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("sendCancelRej", myE);
+                log.Error("sendCancelRej", myE);
             }
         }
 
@@ -3330,7 +3330,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("sendCancelRej", myE);
+                log.Error("sendCancelRej", myE);
             }
         }
 
@@ -3392,7 +3392,7 @@ namespace KTACQG
                 }
                 catch (Exception e)
                 {
-                    _log.Error("doSend", e);
+                    log.Error("doSend", e);
                 }
             }
         }
@@ -3406,7 +3406,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("SubscribeMD", myE);
+                log.Error("SubscribeMD", myE);
             }
         }
 
@@ -3430,7 +3430,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("UnSubscribeMD", myE);
+                log.Error("UnSubscribeMD", myE);
             }
         }
 
@@ -3478,7 +3478,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("doRegisterSubject", myE);
+                log.Error("doRegisterSubject", myE);
             }
         }
 
@@ -3505,7 +3505,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("doUnRegisterSubject", myE);
+                log.Error("doUnRegisterSubject", myE);
             }
         }
 
@@ -3520,9 +3520,9 @@ namespace KTACQG
         {
             try
             {
-                if (m_WireLog.IsInfoEnabled)
+                if (wireLog.IsInfoEnabled)
                 {
-                    m_WireLog.Info("sendResponse:" + msgType + ":" + myResponseMsg);
+                    wireLog.Info("sendResponse:" + msgType + ":" + myResponseMsg);
                 }
                 // Create message envelope
                 KaiTCPComm.KaiMessageWrap myMsg = new KaiTCPComm.KaiMessageWrap();
@@ -3575,7 +3575,7 @@ namespace KTACQG
         {
             try
             {
-                m_WireLog.Info("cel_DataConnectionStatusChanged old:" + m_DataStatus.ToString() + " new=" + newStatus.ToString());
+                wireLog.Info("cel_DataConnectionStatusChanged old:" + m_DataStatus.ToString() + " new=" + newStatus.ToString());
                 m_DataStatus = newStatus;
 
                 switch (newStatus)
@@ -3625,7 +3625,7 @@ namespace KTACQG
             }
             catch (Exception ex)
             {
-                _log.Error("cel_DataConnectionStatusChanged", ex);
+                log.Error("cel_DataConnectionStatusChanged", ex);
             }
         }
 
@@ -3649,7 +3649,7 @@ namespace KTACQG
                     // Do any deleyed requests
                     while (m_DelayedProductRequests.Count > 0)
                     {
-                        KaiTrade.Interfaces.TradableProduct product = m_DelayedProductRequests.Pop();
+                        KaiTrade.Interfaces.IProduct product = m_DelayedProductRequests.Pop();
                         m_CQGHostForm.CQGApp.NewInstrument(product.GenericName);
                     }
                 }
@@ -3660,7 +3660,7 @@ namespace KTACQG
             }
             catch (Exception ex)
             {
-                _log.Error("setGWStatus", ex);
+                log.Error("setGWStatus", ex);
             }
         }
 
@@ -3674,7 +3674,7 @@ namespace KTACQG
         {
             try
             {
-                m_WireLog.Info("cel_GWConnectionStatusChanged old:" + m_GWStatus.ToString() + " new=" + newStatus.ToString());
+                wireLog.Info("cel_GWConnectionStatusChanged old:" + m_GWStatus.ToString() + " new=" + newStatus.ToString());
 
                 setGWStatus(newStatus);
 
@@ -3719,7 +3719,7 @@ namespace KTACQG
             }
             catch (Exception ex)
             {
-                _log.Error("cel_GWConnectionStatusChanged", ex);
+                log.Error("cel_GWConnectionStatusChanged", ex);
             }
         }
 
@@ -3753,14 +3753,14 @@ namespace KTACQG
                 this.SendStatusMessage(KaiTrade.Interfaces.Status.error, errorDescription);
                 this.SendAdvisoryMessage(errorDescription);
 
-                //m_WireLog.Info("cel_DataError:" + errorDescription);
-                _log.Error("cel_DataError:" + errorDescription);
+                //wireLog.Info("cel_DataError:" + errorDescription);
+                log.Error("cel_DataError:" + errorDescription);
                 m_CQGHostForm.Message = errorDescription;
                 m_CQGHostForm.BringToFront();
             }
             catch (Exception myE)
             {
-                _log.Error("cel_DataError", myE);
+                log.Error("cel_DataError", myE);
             }
         }
 
@@ -3785,7 +3785,7 @@ namespace KTACQG
                         FillAccountsMap();
                         try
                         {
-                            _driverLog.Info("cel_AccountChanged:Will requiery orders");
+                            driverLog.Info("cel_AccountChanged:Will requiery orders");
                             foreach (CQGAccount acc in m_CQGHostForm.CQGApp.Accounts)
                             {
                                 CQGOrdersQuery oq = m_CQGHostForm.CQGApp.QueryOrders(acc);
@@ -3813,7 +3813,7 @@ namespace KTACQG
                         }
                         break;
                     default:
-                        _driverLog.Error("cel_AccountChanged: Change type not processed:" + change.ToString());
+                        driverLog.Error("cel_AccountChanged: Change type not processed:" + change.ToString());
                         break;
                 }
                 
@@ -3821,7 +3821,7 @@ namespace KTACQG
             }
             catch (Exception ex)
             {
-                _log.Error("cel_AccountChanged", ex);
+                log.Error("cel_AccountChanged", ex);
             }
         }
 
@@ -3878,7 +3878,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CQGApp_OnQueryProgress", myE);
+                log.Error("CQGApp_OnQueryProgress", myE);
             }
         }
 
@@ -3912,11 +3912,11 @@ namespace KTACQG
                 Facade.ProcessPositionUpdate(posn);
 
                 //string info = posn.ToString();
-                //_driverLog.Info("handlePosition:" + info);
+                //driverLog.Info("handlePosition:" + info);
             }
             catch  (Exception ex)
             {
-                _log.Error("handlePosition", ex);
+                log.Error("handlePosition", ex);
             }
              
         }
@@ -3959,7 +3959,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("publishTradeUpdate", myE);
+                log.Error("publishTradeUpdate", myE);
             }
         }
 
@@ -4029,7 +4029,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("publishQuote", myE);
+                log.Error("publishQuote", myE);
             }
         }
 
@@ -4066,7 +4066,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_TradableCommoditiesResolved", myE);
+                log.Error("CEL_TradableCommoditiesResolved", myE);
             }
         }
 
@@ -4130,7 +4130,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_TradableCommoditiesResolved", myE);
+                log.Error("CEL_TradableCommoditiesResolved", myE);
             }
              *  */
         }
@@ -4155,16 +4155,16 @@ namespace KTACQG
                 {
                     try
                     {
-                        _driverLog.Info("CEL_TimedBarsResolved:" + cqg_timed_bars.Id.ToString());
+                        driverLog.Info("CEL_TimedBarsResolved:" + cqg_timed_bars.Id.ToString());
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         if (m_TSSets.ContainsKey(cqg_timed_bars.Id))
                         {
                             mySet = m_TSSets[cqg_timed_bars.Id];
 
-                            if (m_WireLog.IsInfoEnabled)
+                            if (wireLog.IsInfoEnabled)
                             {
-                                m_WireLog.Info("CEL_TimedBarsResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                                wireLog.Info("CEL_TimedBarsResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                             }
 
                             if (cqg_timed_bars.Status == eRequestStatus.rsSuccess)
@@ -4181,12 +4181,12 @@ namespace KTACQG
                         }
                         else
                         {
-                            _driverLog.Info("CEL_TimedBarsResolved:Dataset not found");
+                            driverLog.Info("CEL_TimedBarsResolved:Dataset not found");
                         }
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_TimedBarsResolved", myE);
+                        log.Error("CEL_TimedBarsResolved", myE);
                     }
                 }
             }
@@ -4210,7 +4210,7 @@ namespace KTACQG
                     try
                     {
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         if (m_TSSets.ContainsKey(cqg_timed_bars.Id))
                         {
                             mySet = m_TSSets[cqg_timed_bars.Id];
@@ -4227,7 +4227,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_TimedBarsAdded", myE);
+                        log.Error("CEL_TimedBarsAdded", myE);
                     }
                 }
             }
@@ -4254,7 +4254,7 @@ namespace KTACQG
                     try
                     {
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         //return;
                         if (m_TSSets.ContainsKey(cqg_timed_bars.Id))
                         {
@@ -4275,7 +4275,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_TimedBarsUpdated", myE);
+                        log.Error("CEL_TimedBarsUpdated", myE);
                     }
                 }
             }
@@ -4287,7 +4287,7 @@ namespace KTACQG
         /// <summary>
         /// Dumps all request data (outputs\parameters\records)
         /// </summary>
-        private void DumpAllData(CQG.CQGTimedBars myBars, KaiTrade.Interfaces.TSSet mySet)
+        private void DumpAllData(CQG.CQGTimedBars myBars, KaiTrade.Interfaces.ITSSet mySet)
         {
             try
             {
@@ -4322,9 +4322,9 @@ namespace KTACQG
 
 
                     mySet.AddItem(myItem);
-                    if (m_WireLog.IsInfoEnabled)
+                    if (wireLog.IsInfoEnabled)
                     {
-                        m_WireLog.Info("TBADD:" + myItem.ToTabSeparated());
+                        wireLog.Info("TBADD:" + myItem.ToTabSeparated());
                     }
                 }
                 
@@ -4335,13 +4335,13 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("DumpAllData", myE);
+                log.Error("DumpAllData", myE);
             }
         }
 
 
 
-        private void DumpRecord(KaiTrade.Interfaces.TSItem myItem, KaiTrade.Interfaces.TSSet mySet, CQGTimedBar myBar, long myIndex)
+        private void DumpRecord(KaiTrade.Interfaces.TSItem myItem, KaiTrade.Interfaces.ITSSet mySet, CQGTimedBar myBar, long myIndex)
         {
             try
             {
@@ -4367,14 +4367,14 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("DumpRecord", myE);
+                log.Error("DumpRecord", myE);
             }
         }
 
         /// <summary>
         /// Dumps all request data (outputs\parameters\records)
         /// </summary>
-        private void DumpAllData(CQG.CQGConstantVolumeBars myBars, KaiTrade.Interfaces.TSSet mySet)
+        private void DumpAllData(CQG.CQGConstantVolumeBars myBars, KaiTrade.Interfaces.ITSSet mySet)
         {
             try
             {
@@ -4394,9 +4394,9 @@ namespace KTACQG
                     myItem.SourceActionType = KaiTrade.Interfaces.TSItemSourceActionType.barAdded;
                     myItem.ItemType = KaiTrade.Interfaces.TSItemType.constantVolume;
                     mySet.AddItem(myItem);
-                    if (m_WireLog.IsInfoEnabled)
+                    if (wireLog.IsInfoEnabled)
                     {
-                        m_WireLog.Info("TBADD:" + myItem.ToTabSeparated());
+                        wireLog.Info("TBADD:" + myItem.ToTabSeparated());
                     }
                 }
 
@@ -4406,11 +4406,11 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("DumpAllData", myE);
+                log.Error("DumpAllData", myE);
             }
         }
 
-        private void DumpRecord(KaiTrade.Interfaces.TSItem myItem, KaiTrade.Interfaces.TSSet mySet, CQGConstantVolumeBar myBar, long myIndex)
+        private void DumpRecord(KaiTrade.Interfaces.TSItem myItem, KaiTrade.Interfaces.ITSSet mySet, CQGConstantVolumeBar myBar, long myIndex)
         {
             try
             {
@@ -4433,7 +4433,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("DumpRecord:CV", myE);
+                log.Error("DumpRecord:CV", myE);
             }
         }
 
@@ -4457,16 +4457,16 @@ namespace KTACQG
                 {
                     try
                     {
-                        _driverLog.Info("CEL_ConstantVolumeBarsResolved:" + cqg_constant_volume_bars.Id.ToString());
+                        driverLog.Info("CEL_ConstantVolumeBarsResolved:" + cqg_constant_volume_bars.Id.ToString());
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         if (m_TSSets.ContainsKey(cqg_constant_volume_bars.Id))
                         {
                             mySet = m_TSSets[cqg_constant_volume_bars.Id];
 
-                            if (m_WireLog.IsInfoEnabled)
+                            if (wireLog.IsInfoEnabled)
                             {
-                                m_WireLog.Info("CEL_ConstantVolumeBarsResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                                wireLog.Info("CEL_ConstantVolumeBarsResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                             }
 
                             if (cqg_constant_volume_bars.Status == eRequestStatus.rsSuccess)
@@ -4483,12 +4483,12 @@ namespace KTACQG
                         }
                         else
                         {
-                            _driverLog.Info("CEL_ConstantVolumeBarsResolved:Dataset not found");
+                            driverLog.Info("CEL_ConstantVolumeBarsResolved:Dataset not found");
                         }
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_ConstantVolumeBarsResolved", myE);
+                        log.Error("CEL_ConstantVolumeBarsResolved", myE);
                     }
                 }
             }
@@ -4513,7 +4513,7 @@ namespace KTACQG
                     try
                     {
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         if (m_TSSets.ContainsKey(cqg_constant_volume_bars.Id))
                         {
                             mySet = m_TSSets[cqg_constant_volume_bars.Id];
@@ -4530,7 +4530,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_ConstantVolumeBarsAdded", myE);
+                        log.Error("CEL_ConstantVolumeBarsAdded", myE);
                     }
                 }
             }
@@ -4557,7 +4557,7 @@ namespace KTACQG
                     try
                     {
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         //return;
                         if (m_TSSets.ContainsKey(cqg_constant_volume_bars.Id))
                         {
@@ -4577,7 +4577,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_ConstantVolumeBarsUpdated", myE);
+                        log.Error("CEL_ConstantVolumeBarsUpdated", myE);
                     }
                 }
             }
@@ -4606,20 +4606,20 @@ namespace KTACQG
         {
             try
             {
-                _driverLog.Info("CEL_ConditionResolved:" + myCondition.Id.ToString());
+                driverLog.Info("CEL_ConditionResolved:" + myCondition.Id.ToString());
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(myCondition.Id))
                 {
                     mySet = m_TSSets[myCondition.Id];
 
-                    if (m_WireLog.IsInfoEnabled)
+                    if (wireLog.IsInfoEnabled)
                     {
-                        m_WireLog.Info("CEL_ConditionResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                        wireLog.Info("CEL_ConditionResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                     }
-                    if (_driverLog.IsInfoEnabled)
+                    if (driverLog.IsInfoEnabled)
                     {
-                        _driverLog.Info("CEL_ConditionResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                        driverLog.Info("CEL_ConditionResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                     }
                      
                     if (myCondition.Status == eRequestStatus.rsSuccess)
@@ -4661,12 +4661,12 @@ namespace KTACQG
                 }
                 else
                 {
-                    _driverLog.Info("CEL_ConditionResolved:TSDAta set not found");
+                    driverLog.Info("CEL_ConditionResolved:TSDAta set not found");
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_ConditionResolved", myE);
+                log.Error("CEL_ConditionResolved", myE);
             }
         }
 
@@ -4679,7 +4679,7 @@ namespace KTACQG
         {
             try
             {
-                _log.Info("CEL_ConditionDefinitionsResolved:entered");
+                log.Info("CEL_ConditionDefinitionsResolved:entered");
                 foreach (CQG.CQGConditionDefinition myCond in myConditions)
                 {
                     //myCond.
@@ -4697,7 +4697,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_ConditionDefinitionsResolved", myE);
+                log.Error("CEL_ConditionDefinitionsResolved", myE);
             }
             
         }
@@ -4712,7 +4712,7 @@ namespace KTACQG
             try
             {
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(myCondition.Id))
                 {
                     mySet = m_TSSets[myCondition.Id];
@@ -4721,13 +4721,13 @@ namespace KTACQG
                         // they only want added bars - so exit
                         return;
                     }
-                    if (m_WireLog.IsInfoEnabled)
+                    if (wireLog.IsInfoEnabled)
                     {
-                        m_WireLog.Info("CEL_ConditionUpdated:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                        wireLog.Info("CEL_ConditionUpdated:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                     }
-                    if (_driverLog.IsInfoEnabled)
+                    if (driverLog.IsInfoEnabled)
                     {
-                        _driverLog.Info("CEL_ConditionUpdated:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                        driverLog.Info("CEL_ConditionUpdated:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                     }
                     if (myCondition.Status == eRequestStatus.rsSuccess)
                     {
@@ -4757,7 +4757,7 @@ namespace KTACQG
 
 
 
-                        //m_WireLog.Info(myDump);
+                        //wireLog.Info(myDump);
                         if (myItem.ConditionValue != myCondition[index_].Value)
                         {
                             myItem.ConditionValue = myCondition[index_].Value;
@@ -4765,7 +4765,7 @@ namespace KTACQG
                             myDump += "|" + myItem.ConditionValue;
                             mySet.Changed = true;
                         }
-                        _driverLog.Info(myDump);
+                        driverLog.Info(myDump);
                          */
                     }
                     else
@@ -4776,7 +4776,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_ConditionUpdated", myE);
+                log.Error("CEL_ConditionUpdated", myE);
             }
         }
 
@@ -4790,17 +4790,17 @@ namespace KTACQG
             try
             {
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(myCondition.Id))
                 {
                     mySet = m_TSSets[myCondition.Id];
-                    if (m_WireLog.IsInfoEnabled)
+                    if (wireLog.IsInfoEnabled)
                     {
-                        m_WireLog.Info("CEL_ConditionAdded:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                        wireLog.Info("CEL_ConditionAdded:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                     }
-                    if (_driverLog.IsInfoEnabled)
+                    if (driverLog.IsInfoEnabled)
                     {
-                        _driverLog.Info("CEL_ConditionAdded:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                        driverLog.Info("CEL_ConditionAdded:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                     }
                     if (myCondition.Status == eRequestStatus.rsSuccess)
                     {
@@ -4829,13 +4829,13 @@ namespace KTACQG
                             myDump += "|" + myCondition[i].Value + "|" + myCondition.Definition.Name;
                         }
                         mySet.Added = true;
-                        if (m_WireLog.IsInfoEnabled)
+                        if (wireLog.IsInfoEnabled)
                         {
-                            m_WireLog.Info(myDump);
+                            wireLog.Info(myDump);
                         }
-                        if (_driverLog.IsInfoEnabled)
+                        if (driverLog.IsInfoEnabled)
                         {
-                            _driverLog.Info(myDump);
+                            driverLog.Info(myDump);
                         }
                         */
                     }
@@ -4847,7 +4847,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_ConditionAdded", myE);
+                log.Error("CEL_ConditionAdded", myE);
             }
         }
 
@@ -4856,7 +4856,7 @@ namespace KTACQG
         {
             try
             {
-                _log.Info("CQGApp_TradingSystemDefinitionsResolved:entered");
+                log.Info("CQGApp_TradingSystemDefinitionsResolved:entered");
                 foreach (CQGTradingSystemDefinition cqgTrdSystem in trdSysDefs)
                 {
                     KaiTrade.TradeObjects.TradingSystem tradeSystem = new KaiTrade.TradeObjects.TradingSystem();
@@ -4888,7 +4888,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CQGApp_TradingSystemDefinitionsResolved", myE);
+                log.Error("CQGApp_TradingSystemDefinitionsResolved", myE);
             }
         }
 
@@ -4896,10 +4896,10 @@ namespace KTACQG
         {
             try
             {
-                _log.Info("copyTSDefParameters");
+                log.Info("copyTSDefParameters");
                 foreach (CQGParameterDefinition cqgParm in parameterDefintions)
                 {
-                    KaiTrade.Interfaces.K2Parameter parm = new K2DataObjects.K2Parameter(cqgParm.Name, (cqgParm.DefaultValue as object).ToString());
+                    KaiTrade.Interfaces.IParameter parm = new K2DataObjects.K2Parameter(cqgParm.Name, (cqgParm.DefaultValue as object).ToString());
                     switch (cqgParm.Type)
                     {
                         case eUserFormulaParameterType.ufptDouble:
@@ -4920,7 +4920,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("copyTSDefParameters", myE);
+                log.Error("copyTSDefParameters", myE);
             }
         }
 
@@ -4934,13 +4934,13 @@ namespace KTACQG
                     {
                         //return;
                         // looks like you have to read the sodding trading system - this just tells you it happened
-                        _driverLog.Info("CQGApp_TradingSystemInsertNotification:" + cqg_trading_system.Id);
+                        driverLog.Info("CQGApp_TradingSystemInsertNotification:" + cqg_trading_system.Id);
                         //logTradingSystem(cqg_trading_system);
                         //TradingSystemInsert(cqg_trading_system, cqg_trading_system_insert_info);
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CQGApp_TradingSystemUpdateNotification", myE);
+                        log.Error("CQGApp_TradingSystemUpdateNotification", myE);
                     }
                 }
             }
@@ -4957,9 +4957,9 @@ namespace KTACQG
                 {
                     try
                     {
-                        if (m_WireLog.IsInfoEnabled)
+                        if (wireLog.IsInfoEnabled)
                         {
-                            m_WireLog.Info("CQGApp_TradingSystemUpdateNotification:" + cqg_trading_system.Id);
+                            wireLog.Info("CQGApp_TradingSystemUpdateNotification:" + cqg_trading_system.Id);
                             //logTradingSystem(cqg_trading_system);
                             LogCQGTSUdateInfo(cqg_trading_system, cqg_trading_system_update_info);
                         }
@@ -4969,7 +4969,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CQGApp_TradingSystemUpdateNotification", myE);
+                        log.Error("CQGApp_TradingSystemUpdateNotification", myE);
                     }
                 }
             }
@@ -4987,8 +4987,8 @@ namespace KTACQG
                     try
                     {
                         
-                        _driverLog.Info("CQGApp_TradingSystemAddNotification:" + cqg_trading_system.Id);
-                        if (m_WireLog.IsInfoEnabled)
+                        driverLog.Info("CQGApp_TradingSystemAddNotification:" + cqg_trading_system.Id);
+                        if (wireLog.IsInfoEnabled)
                         {
                             //logTradingSystem(cqg_trading_system);
                         }
@@ -5000,7 +5000,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CQGApp_TradingSystemAddNotification", myE);
+                        log.Error("CQGApp_TradingSystemAddNotification", myE);
                     }
                 }
             }
@@ -5016,11 +5016,11 @@ namespace KTACQG
             try
             {
                 string myTemp = string.Format("Log CQGTradingSystem>>> ID={0}  Status={1} numRows={2}", cqgts.Id, cqgts.Status.ToString(), cqgts.TradesRows.Count);
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
 
 
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(cqgts.Id))
                 {
                     //mySet = m_TSSets[cqgts.Id];
@@ -5028,7 +5028,7 @@ namespace KTACQG
                     {
                         mySet = m_TSSets[cqgts.Id];
                         myTemp = string.Format("CQGTradingSystem>>> Set found Alias = {0} numItems = {1}", mySet.Alias, mySet.Items.Count);
-                        m_WireLog.Info(myTemp);
+                        wireLog.Info(myTemp);
 
                         
                         CQGTradingSystemTradesRows myTradeRows = cqgts.TradesRows;
@@ -5036,7 +5036,7 @@ namespace KTACQG
                         if (myTradeRows.Count == 0)
                         {
                             myTemp = string.Format("CQGTradingSystem>>> No Trade Rows in ts ID={0}", cqgts.Id);
-                            m_WireLog.Info(myTemp);
+                            wireLog.Info(myTemp);
                             return;
                         }
 
@@ -5051,13 +5051,13 @@ namespace KTACQG
                 }
                 else
                 {
-                    m_WireLog.Info("TradingSystemImage:TradingSystemImage:TSData not found");
+                    wireLog.Info("TradingSystemImage:TradingSystemImage:TSData not found");
                 }
-                m_WireLog.Info(">>>>>>>>>End of trade system log<<<<<<<<<<<<<<<");
+                wireLog.Info(">>>>>>>>>End of trade system log<<<<<<<<<<<<<<<");
             }
             catch (Exception myE)
             {
-                _log.Error("TradingSystemImage", myE);
+                log.Error("TradingSystemImage", myE);
             }
         }
 
@@ -5091,10 +5091,10 @@ namespace KTACQG
                     m_inTradingSystemImage = true;
                 }
 
-                m_WireLog.Info("TradingSystemImage2: " + cqg_trading_system.Id + " count:" + cqg_trading_system.TradesRows.Count.ToString());
+                wireLog.Info("TradingSystemImage2: " + cqg_trading_system.Id + " count:" + cqg_trading_system.TradesRows.Count.ToString());
 
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(cqg_trading_system.Id))
                 {
                     mySet = m_TSSets[cqg_trading_system.Id];
@@ -5121,7 +5121,7 @@ namespace KTACQG
                         //cqg_trading_system.TradesRows[0][0].Definition.Exits[0]
                         if (myTradeRows.Count == 0)
                         {
-                            m_WireLog.Info("TradingSystemImage2: No Rows - just return " + cqg_trading_system.Id);
+                            wireLog.Info("TradingSystemImage2: No Rows - just return " + cqg_trading_system.Id);
                             return;
                         }
 
@@ -5133,13 +5133,13 @@ namespace KTACQG
                             appendCQGTradeRow2(i, ref signals, myTradeRow, mySet);
                         }
 
-                        m_WireLog.Info("TradingSystemImage2: Set Added = true " + cqg_trading_system.Id);
+                        wireLog.Info("TradingSystemImage2: Set Added = true " + cqg_trading_system.Id);
 
 
                         foreach (KaiTrade.Interfaces.TradeSignal signal in signals)
                         {
                             Facade.ProcessTradeSignal(mySet, signal);
-                            m_WireLog.Info("TradingSystemImage2:" + signal.ToString());
+                            wireLog.Info("TradingSystemImage2:" + signal.ToString());
                         }
                          
                     }
@@ -5152,20 +5152,20 @@ namespace KTACQG
                 }
                 else
                 {
-                    m_WireLog.Info("TradingSystemImage2:TradingSystemImage:TSData not found");
+                    wireLog.Info("TradingSystemImage2:TradingSystemImage:TSData not found");
                 }
 
                 
-                m_WireLog.Info("TradingSystemImage2:Exited " + cqg_trading_system.Id);
+                wireLog.Info("TradingSystemImage2:Exited " + cqg_trading_system.Id);
             }
             catch (Exception myE)
             {
-                _log.Error("TradingSystemImage2", myE);
+                log.Error("TradingSystemImage2", myE);
             }
             m_inTradingSystemImage = false;
         }
 
-        private void appendCQGTradeRow2(int rowIndex, ref List<KaiTrade.Interfaces.TradeSignal> signals, CQGTradingSystemTradesRow tradeRow, KaiTrade.Interfaces.TSSet tsSet)
+        private void appendCQGTradeRow2(int rowIndex, ref List<KaiTrade.Interfaces.TradeSignal> signals, CQGTradingSystemTradesRow tradeRow, KaiTrade.Interfaces.ITSSet tsSet)
         {
             try
             {
@@ -5189,15 +5189,15 @@ namespace KTACQG
                     }
                 }
 
-                //m_WireLog.Info("appendCQGTradeRow2 - Exit");
+                //wireLog.Info("appendCQGTradeRow2 - Exit");
             }
 
             catch (Exception myE)
             {
-                _log.Error("appendCQGTradeRow2", myE);
+                log.Error("appendCQGTradeRow2", myE);
             }
         }
-        private void appendTradeEntry2(int rowIndex, int tradeIndex, ref List<KaiTrade.Interfaces.TradeSignal> signals, KaiTrade.Interfaces.TSSet tsSet,CQGTradingSystemTrade systemTrade,DateTime timeStamp, int timeStampOffset)
+        private void appendTradeEntry2(int rowIndex, int tradeIndex, ref List<KaiTrade.Interfaces.TradeSignal> signals, KaiTrade.Interfaces.ITSSet tsSet,CQGTradingSystemTrade systemTrade,DateTime timeStamp, int timeStampOffset)
         {
             try
             {
@@ -5211,7 +5211,7 @@ namespace KTACQG
 
                     signals.Add(signal);
                 }
-                //m_WireLog.Info("appendTradeEntry2:entry trade>>> " + signal.ToString());
+                //wireLog.Info("appendTradeEntry2:entry trade>>> " + signal.ToString());
 
                 // process the exits for the trade
                 for (int k = 0; k < systemTrade.Definition.Exits.Count; k++)
@@ -5225,13 +5225,13 @@ namespace KTACQG
                         signal.Origin = tsSet.Alias + "." + tsSet.ConditionName + "." + systemTrade.Definition.Name;
                         signal.Mnemonic = tsSet.Mnemonic;
                         signals.Add(signal);
-                        //m_WireLog.Info("appendTradeEntry2:exitloop>>> " + signal.ToString());
+                        //wireLog.Info("appendTradeEntry2:exitloop>>> " + signal.ToString());
                     }
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("appendTradeEntry2", myE);
+                log.Error("appendTradeEntry2", myE);
             }
         }
 
@@ -5243,10 +5243,10 @@ namespace KTACQG
             try
             {
 
-                m_WireLog.Info("LogTradingSystemImage2: " + cqg_trading_system.Id + " count:" + cqg_trading_system.TradesRows.Count.ToString());
+                wireLog.Info("LogTradingSystemImage2: " + cqg_trading_system.Id + " count:" + cqg_trading_system.TradesRows.Count.ToString());
 
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(cqg_trading_system.Id))
                 {
                     mySet = m_TSSets[cqg_trading_system.Id];
@@ -5261,7 +5261,7 @@ namespace KTACQG
                         //cqg_trading_system.TradesRows[0][0].Definition.Exits[0]
                         if (myTradeRows.Count == 0)
                         {
-                            m_WireLog.Info("LogTradingSystemImage2: No Rows - just return " + cqg_trading_system.Id);
+                            wireLog.Info("LogTradingSystemImage2: No Rows - just return " + cqg_trading_system.Id);
                             return;
                         }
 
@@ -5281,21 +5281,21 @@ namespace KTACQG
                 }
                 else
                 {
-                    m_WireLog.Info("logTradingSystemImage2:TradingSystemImage:TSData not found");
+                    wireLog.Info("logTradingSystemImage2:TradingSystemImage:TSData not found");
                 }
 
 
-                m_WireLog.Info("logTradingSystemImage2:Exited " + cqg_trading_system.Id);
+                wireLog.Info("logTradingSystemImage2:Exited " + cqg_trading_system.Id);
             }
             catch (Exception myE)
             {
-                _log.Error("logTradingSystemImage2", myE);
+                log.Error("logTradingSystemImage2", myE);
             }
 
         }
 
 
-        private void logCQGTradeRow2(int rowIndex, ref List<KaiTrade.Interfaces.TradeSignal> signals, CQGTradingSystemTradesRow tradeRow, KaiTrade.Interfaces.TSSet tsSet)
+        private void logCQGTradeRow2(int rowIndex, ref List<KaiTrade.Interfaces.TradeSignal> signals, CQGTradingSystemTradesRow tradeRow, KaiTrade.Interfaces.ITSSet tsSet)
         {
             try
             {
@@ -5308,28 +5308,28 @@ namespace KTACQG
                     {
                         string origin = tsSet.Alias + "." + tsSet.ConditionName + "." + systemTrade.Definition.Name;
                         string systemTradeInfo = string.Format("row={0} tradeIndex={1}, TimeStamp={2}, TimeStampOffset={3}, Origin={4}, IsActive={5},  IsSet={6}", rowIndex, j, tradeRow.Timestamp, tradeRow.TimestampOffset, origin, systemTrade.IsActive, systemTrade.TradeEntry.Signal);
-                        m_TSLog.Info("logTradeEntry2:" + systemTradeInfo);
+                        tSLog.Info("logTradeEntry2:" + systemTradeInfo);
 
                         // process the exits for the trade
                         for (int k = 0; k < systemTrade.Definition.Exits.Count; k++)
                         {
                             CQGTradeExit myExit = systemTrade.TradeExits.get_ItemByName(systemTrade.Definition.Exits[k].Name);
                             string exitTradeInfo = string.Format("row={0} tradeIndex={1}, TimeStamp={2}, TimeStampOffset={3}, Origin={4}, Name={5}, IsActive={6},  IsSet={7}", rowIndex, j, tradeRow.Timestamp, tradeRow.TimestampOffset, origin, myExit.Definition.Name, systemTrade.IsActive, myExit.Signal);
-                            m_TSLog.Info("logTradeEntry2:" + exitTradeInfo);
+                            tSLog.Info("logTradeEntry2:" + exitTradeInfo);
                         }
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("logTradeEntry2", myE);
+                        log.Error("logTradeEntry2", myE);
                     }
                 }
 
-                //m_WireLog.Info("appendCQGTradeRow2 - Exit");
+                //wireLog.Info("appendCQGTradeRow2 - Exit");
             }
 
             catch (Exception myE)
             {
-                _log.Error("logCQGTradeRow2", myE);
+                log.Error("logCQGTradeRow2", myE);
             }
         }
         
@@ -5358,10 +5358,10 @@ namespace KTACQG
                     m_inTradingSystemImage = true;
                 }
 
-                m_WireLog.Info("TradingSystemImage: " + cqg_trading_system.Id);
+                wireLog.Info("TradingSystemImage: " + cqg_trading_system.Id);
 
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(cqg_trading_system.Id))
                 {
                     mySet = m_TSSets[cqg_trading_system.Id];
@@ -5387,7 +5387,7 @@ namespace KTACQG
                         //cqg_trading_system.TradesRows[0][0].Definition.Exits[0]
                         if (myTradeRows.Count == 0)
                         {
-                            m_WireLog.Info("TradingSystemImage: No Rows - just return " + cqg_trading_system.Id);
+                            wireLog.Info("TradingSystemImage: No Rows - just return " + cqg_trading_system.Id);
                             return;
                         }
 
@@ -5399,7 +5399,7 @@ namespace KTACQG
                             appendCQGTradeRow(i, mySet, myTradeRow);
                         }
 
-                        m_WireLog.Info("TradingSystemImage: Set Added = true " + cqg_trading_system.Id);
+                        wireLog.Info("TradingSystemImage: Set Added = true " + cqg_trading_system.Id);
                         mySet.Added = true;
                     }
                     else
@@ -5411,13 +5411,13 @@ namespace KTACQG
                 }
                 else
                 {
-                    m_WireLog.Info("TradingSystemImage:TradingSystemImage:TSData not found");
+                    wireLog.Info("TradingSystemImage:TradingSystemImage:TSData not found");
                 }
-                m_WireLog.Info("TradingSystemImage:Exited " + cqg_trading_system.Id);
+                wireLog.Info("TradingSystemImage:Exited " + cqg_trading_system.Id);
             }
             catch (Exception myE)
             {
-                _log.Error("TradingSystemImage", myE);
+                log.Error("TradingSystemImage", myE);
             }
             m_inTradingSystemImage = false;
         }
@@ -5427,7 +5427,7 @@ namespace KTACQG
             try
             {
                 string myTemp = string.Format("Log TradeRow>>> count ={0} TimeStamp={1} ", tradeRow.Count, tradeRow.Timestamp);
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
 
                 // Each row can have N trades - these have 1 enter and N exits
                 for (int j = 0; j < tradeRow.Count; j++)
@@ -5440,7 +5440,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("appendTradeEntry", myE);
+                log.Error("appendTradeEntry", myE);
             }
         }
 
@@ -5449,7 +5449,7 @@ namespace KTACQG
             try
             {
                 string myTemp = string.Format("Log TradeRow:systemTrade:>>> rowIndex{0} tradeIndex:{1} tradeTime ={2} IsActive={3} DefName={4}  numExits={5}, Offset={6}", rowIndex, tradeIndex, systemTrade.Timestamp, systemTrade.IsActive, systemTrade.Definition.Name, systemTrade.TradeExits.Count, systemTrade.TimestampOffset);
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
 
 
                 KaiTrade.Interfaces.TradeSignal signal;
@@ -5458,7 +5458,7 @@ namespace KTACQG
                 setSignalData(signal, systemTrade.TradeEntry, systemTrade.Definition.Name, getKTAOrderSide(systemTrade.Definition.Side), systemTrade.Timestamp, systemTrade.TimestampOffset);
 
                 myTemp = string.Format("Log TradeRow:systemTrade:Entry>>> Origin = {0} signal={1} ", systemTrade.Definition.Name, signal.ToString());
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
 
                 // process the exits for the trade
                 for (int k = 0; k < systemTrade.TradeExits.Count; k++)
@@ -5466,19 +5466,19 @@ namespace KTACQG
                     CQGTradeExit myExit = systemTrade.TradeExits[k];
 
                     myTemp = string.Format("Log TradeRow:systemTrade:Exit>>> Name ={0} signal={1} ", myExit.Definition.Name, myExit.Signal);
-                    m_WireLog.Info(myTemp);
+                    wireLog.Info(myTemp);
 
                     signal = m_Facade.Factory.GetTradeSignalManager().CreateSignal(myExit.Definition.Name);
 
                     setSignalData(signal, myExit, systemTrade.Timestamp, systemTrade.TimestampOffset);
 
                     myTemp = string.Format("Log TradeRow:systemTrade:Exit:>>> Origin ={0} signal={1} ", systemTrade.Definition.Name, signal.ToString());
-                    m_WireLog.Info(myTemp);
+                    wireLog.Info(myTemp);
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("appendTradeEntry", myE);
+                log.Error("appendTradeEntry", myE);
             }
         }
 
@@ -5486,7 +5486,7 @@ namespace KTACQG
 
 
 
-        private void appendCQGTradeRow(int rowIndex, KaiTrade.Interfaces.TSSet tsSet, CQGTradingSystemTradesRow tradeRow)
+        private void appendCQGTradeRow(int rowIndex, KaiTrade.Interfaces.ITSSet tsSet, CQGTradingSystemTradesRow tradeRow)
         {
             try
             {
@@ -5500,7 +5500,7 @@ namespace KTACQG
                 tsItem.Mnemonic = tsSet.Mnemonic;
 
                 string myTemp = string.Format("appendCQGTradeRow>>> rowIndex{0} cond={1} Time={2} Index={3} RowCount={4} trTime{5}", rowIndex, tsItem.ConditionName, tsItem.TimeStamp.ToString(), tsItem.Index.ToString(), tradeRow.Count, tradeRow.Timestamp);
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
 
                 // Each row can have N trades - these have 1 enter and N exits
                 for (int j = 0; j < tradeRow.Count; j++)
@@ -5520,12 +5520,12 @@ namespace KTACQG
                     }
                 }
                 myTemp = "appendCQGTradeRow - Exit";
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
             }
 
             catch (Exception myE)
             {
-                _log.Error("appendCQGTradeRow", myE);
+                log.Error("appendCQGTradeRow", myE);
             }
         }
 
@@ -5533,7 +5533,7 @@ namespace KTACQG
 
 
 
-        private void appendTradeEntry(int rowIndex, int tradeIndex, KaiTrade.Interfaces.TSSet tsSet, KaiTrade.Interfaces.TSItem tsItem, CQGTradingSystemTrade systemTrade)
+        private void appendTradeEntry(int rowIndex, int tradeIndex, KaiTrade.Interfaces.ITSSet tsSet, KaiTrade.Interfaces.TSItem tsItem, CQGTradingSystemTrade systemTrade)
         {
             try
             {
@@ -5545,7 +5545,7 @@ namespace KTACQG
 
                 tsItem.Signals.Add(signal.Origin + ":" + ENTRY_TRADE, signal);
 
-                m_WireLog.Info("appendTradeEntry:entry trade>>> " + signal.ToString());
+                wireLog.Info("appendTradeEntry:entry trade>>> " + signal.ToString());
 
                 // process the exits for the trade
                 for (int k = 0; k < systemTrade.TradeExits.Count; k++)
@@ -5558,12 +5558,12 @@ namespace KTACQG
                     signal.Origin = tsSet.Alias + "." + tsSet.ConditionName + "." + systemTrade.Definition.Name;
                     signal.Mnemonic = tsSet.Mnemonic;
                     tsItem.Signals.Add(signal.Origin + ":" + myExit.Definition.Name, signal);
-                    m_WireLog.Info("appendTradeEntry:exitloop>>> " + signal.ToString());
+                    wireLog.Info("appendTradeEntry:exitloop>>> " + signal.ToString());
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("appendTradeEntry", myE);
+                log.Error("appendTradeEntry", myE);
             }
         }
 
@@ -5589,7 +5589,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("setEntrySignal:entry", myE);
+                log.Error("setEntrySignal:entry", myE);
             }
         }
 
@@ -5611,7 +5611,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("setEntrySignal:entry", myE);
+                log.Error("setEntrySignal:entry", myE);
             }
         }
 
@@ -5656,7 +5656,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("updateEntrySignal:entry", myE);
+                log.Error("updateEntrySignal:entry", myE);
             }
 
             return changed;
@@ -5703,7 +5703,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("updateEntrySignal:exit", myE);
+                log.Error("updateEntrySignal:exit", myE);
             }
 
             return changed;
@@ -5715,10 +5715,10 @@ namespace KTACQG
         {
             try
             {
-                m_WireLog.Info("TradingSystemAdd: " + cqg_trading_system.Id);
+                wireLog.Info("TradingSystemAdd: " + cqg_trading_system.Id);
 
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
 
                 if (m_TSSets.ContainsKey(cqg_trading_system.Id))
                 {
@@ -5739,12 +5739,12 @@ namespace KTACQG
                 }
                 else
                 {
-                    m_WireLog.Info("TradingSystemAdd:TSData not found");
+                    wireLog.Info("TradingSystemAdd:TSData not found");
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("TradingSystemAdd", myE);
+                log.Error("TradingSystemAdd", myE);
             }
         }
 
@@ -5755,7 +5755,7 @@ namespace KTACQG
         {
             try
             {
-                m_WireLog.Info("TradingSystemInsert: " + cqg_trading_system.Id);
+                wireLog.Info("TradingSystemInsert: " + cqg_trading_system.Id);
                 if (cqg_trading_system_insert_info.Index == 0)
                 {
                     TradingSystemImage(cqg_trading_system);
@@ -5763,7 +5763,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("TradingSystemInsert:TradingSystemImage", myE);
+                log.Error("TradingSystemInsert:TradingSystemImage", myE);
             }
         }
 
@@ -5774,16 +5774,16 @@ namespace KTACQG
             try
             {
                 string myTemp = string.Format("LogCQGTSUdateInfo>>> index={0} id={1} ", cqgUpdate.Index, cqg_trading_system.Id);
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
 
 
                 foreach (CQGChangedTradeEntry tradeEntry in cqgUpdate.ChangedEntries)
                 {
                     myTemp = string.Format("LogCQGTSUdateInfo:EntryChange>>> ChangeCat={0} id={1} ", tradeEntry.ChangeCategory, cqg_trading_system.Id);
-                    m_WireLog.Info(myTemp);
+                    wireLog.Info(myTemp);
 
                     myTemp = string.Format("LogCQGTSUdateInfo:EntryChange:Values>>> Signal={0} Px={1}, Qty={2}, StopPx={3}", tradeEntry.TradeEntry.Signal, tradeEntry.TradeEntry.Price, tradeEntry.TradeEntry.Quantity, tradeEntry.TradeEntry.StopLimitPrice);
-                    m_WireLog.Info(myTemp);
+                    wireLog.Info(myTemp);
                 }
 
 
@@ -5791,30 +5791,30 @@ namespace KTACQG
                 foreach (CQGChangedTradeExit tradeExit in cqgUpdate.ChangedExits)
                 {
                     myTemp = string.Format("LogCQGTSUdateInfo:ExitChange>>> Name={0} ChangeCat={1} id={2} ", tradeExit.TradeExit.Definition.Name, tradeExit.ChangeCategory, cqg_trading_system.Id);
-                    m_WireLog.Info(myTemp);
+                    wireLog.Info(myTemp);
 
                     myTemp = string.Format("LogCQGTSUdateInfo:ExitChange:Values>>> Signal={0} Px={1}, Qty={2}, StopPx={3}", tradeExit.TradeExit.Signal, tradeExit.TradeExit.Price, tradeExit.TradeExit.Quantity, tradeExit.TradeExit.StopLimitPrice);
-                    m_WireLog.Info(myTemp);
+                    wireLog.Info(myTemp);
                 }
 
                 myTemp = "<<< LogCQGTSUdateInfo: Ended>>>";
-                m_WireLog.Info(myTemp);
+                wireLog.Info(myTemp);
             }
             catch (Exception myE)
             {
-                _log.Error("LogCQGTSUdateInfo", myE);
+                log.Error("LogCQGTSUdateInfo", myE);
             }
             return changed;
         }
 
 
-        private bool updateTSRow(CQGTradingSystem cqg_trading_system, CQGTradingSystemUpdateInfo cqgUpdate, KaiTrade.Interfaces.TSSet tsSet)
+        private bool updateTSRow(CQGTradingSystem cqg_trading_system, CQGTradingSystemUpdateInfo cqgUpdate, KaiTrade.Interfaces.ITSSet tsSet)
         {
             bool changed = false;
             try
             {
                 // There is only 1 entry signal
-                m_WireLog.Info("updateTSRow: " + cqg_trading_system.Id);
+                wireLog.Info("updateTSRow: " + cqg_trading_system.Id);
                 KaiTrade.Interfaces.TSItem tsItem = tsSet.Items[cqgUpdate.Index];
                 foreach (CQGChangedTradeEntry tradeEntry in cqgUpdate.ChangedEntries)
                 {
@@ -5879,7 +5879,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("updateTSRow", myE);
+                log.Error("updateTSRow", myE);
             }
             return changed;
         }
@@ -5889,23 +5889,23 @@ namespace KTACQG
         {
             try
             {
-                m_WireLog.Info("TradingSystemUpdate: " + cqg_trading_system.Id);
+                wireLog.Info("TradingSystemUpdate: " + cqg_trading_system.Id);
 
                 return;
 
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(cqg_trading_system.Id))
                 {
                     mySet = m_TSSets[cqg_trading_system.Id];
-                    m_WireLog.Info("TradingSystemUpdate: no items so doing image" + cqg_trading_system.Id);
+                    wireLog.Info("TradingSystemUpdate: no items so doing image" + cqg_trading_system.Id);
                     this.TradingSystemImage(cqg_trading_system);
                     //mySet.Changed = true;
                     mySet.Updated = true;
                     /*
                     if (mySet.Items.Count == 0)
                     {
-                        _driverLog.Info("TradingSystemUpdate: no items so doing image" + cqg_trading_system.Id);
+                        driverLog.Info("TradingSystemUpdate: no items so doing image" + cqg_trading_system.Id);
                         this.TradingSystemImage(cqg_trading_system);
                         mySet.Changed = true;
                         mySet.Updated = true;
@@ -5927,12 +5927,12 @@ namespace KTACQG
                 }
                 else
                 {
-                    m_WireLog.Info("TradingSystemUpdate:TSData not found");
+                    wireLog.Info("TradingSystemUpdate:TSData not found");
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("TradingSystemUpdate", myE);
+                log.Error("TradingSystemUpdate", myE);
             }
         }
 
@@ -5951,8 +5951,8 @@ namespace KTACQG
                 {
                     try
                     {
-                        _driverLog.Info("CQGApp_TradingSystemResolved:" + cqg_trading_system.Id);
-                        if (m_WireLog.IsInfoEnabled)
+                        driverLog.Info("CQGApp_TradingSystemResolved:" + cqg_trading_system.Id);
+                        if (wireLog.IsInfoEnabled)
                         {
                             logTradingSystem(cqg_trading_system);
                         }
@@ -5963,7 +5963,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CQGApp_TradingSystemResolved", myE);
+                        log.Error("CQGApp_TradingSystemResolved", myE);
                     }
                 }
             }
@@ -5977,23 +5977,23 @@ namespace KTACQG
             try
             {
                 
-                _log.Info("logTradeSystemParameters:default:enter:" + ts.Id);
+                log.Info("logTradeSystemParameters:default:enter:" + ts.Id);
 
                 foreach (CQGParameterDefinition p in ts.Definition.ParameterDefinitions)
                 {
-                    _driverLog.Info("parameters:name:" + p.Name + "Default value:" + p.DefaultValue.ToString());
-                    _driverLog.Info("parameters:name:" + p.Name + "Param   value:" + ts.Request.Parameter[ p.Name].ToString());
+                    driverLog.Info("parameters:name:" + p.Name + "Default value:" + p.DefaultValue.ToString());
+                    driverLog.Info("parameters:name:" + p.Name + "Param   value:" + ts.Request.Parameter[ p.Name].ToString());
                     
                 }
-                _log.Info("setRequestParameters:default:exit:" + ts.Id);
+                log.Info("setRequestParameters:default:exit:" + ts.Id);
                 
-                _driverLog.Info("baseExpression:" + ts.Request.BaseExpression);
+                driverLog.Info("baseExpression:" + ts.Request.BaseExpression);
                
 
             }
             catch (Exception myE)
             {
-                _log.Error("setRequestParameters", myE);
+                log.Error("setRequestParameters", myE);
             }
         }
 
@@ -6025,7 +6025,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_CustomStudyDefinitionsResolved", myE);
+                log.Error("CEL_CustomStudyDefinitionsResolved", myE);
             }
         }
 
@@ -6049,10 +6049,10 @@ namespace KTACQG
                 {
                     try
                     {
-                        _driverLog.Info("CEL_CustomStudyResolved:" + cqg_custom_study.Id);
+                        driverLog.Info("CEL_CustomStudyResolved:" + cqg_custom_study.Id);
 
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         if (m_TSSets.ContainsKey(cqg_custom_study.Id))
                         {
                             mySet = m_TSSets[cqg_custom_study.Id];
@@ -6095,12 +6095,12 @@ namespace KTACQG
                         }
                         else
                         {
-                            _driverLog.Info("CEL_CustomStudyResolved:TSData not found");
+                            driverLog.Info("CEL_CustomStudyResolved:TSData not found");
                         }
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_CustomStudyResolved", myE);
+                        log.Error("CEL_CustomStudyResolved", myE);
                     }
                 }
             }
@@ -6122,7 +6122,7 @@ namespace KTACQG
             try
             {
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
                 if (m_TSSets.ContainsKey(cqg_custom_study.Id))
                 {
                     mySet = m_TSSets[cqg_custom_study.Id];
@@ -6165,7 +6165,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_CustomStudyAdded", myE);
+                log.Error("CEL_CustomStudyAdded", myE);
             }
         }
 
@@ -6183,7 +6183,7 @@ namespace KTACQG
             try
             {
                 // try get the set
-                KaiTrade.Interfaces.TSSet mySet;
+                KaiTrade.Interfaces.ITSSet mySet;
 
                 if (m_TSSets.ContainsKey(cqg_custom_study.Id))
                 {
@@ -6211,7 +6211,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("CEL_CustomStudyUpdated", myE);
+                log.Error("CEL_CustomStudyUpdated", myE);
             }
         }
 
@@ -6236,16 +6236,16 @@ namespace KTACQG
                 {
                     try
                     {
-                        _driverLog.Info("CEL_ExpressionResolved:" + cqg_expression.Id.ToString());
+                        driverLog.Info("CEL_ExpressionResolved:" + cqg_expression.Id.ToString());
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         if (m_TSSets.ContainsKey(cqg_expression.Id))
                         {
                             mySet = m_TSSets[cqg_expression.Id];
 
-                            if (m_WireLog.IsInfoEnabled)
+                            if (wireLog.IsInfoEnabled)
                             {
-                                m_WireLog.Info("CEL_ExpressionResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                                wireLog.Info("CEL_ExpressionResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                             }
 
                             if (cqg_expression.Status == eRequestStatus.rsSuccess)
@@ -6287,12 +6287,12 @@ namespace KTACQG
                         }
                         else
                         {
-                            _driverLog.Info("CEL_ExpressionResolved:TSData not found");
+                            driverLog.Info("CEL_ExpressionResolved:TSData not found");
                         }
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_ExpressionResolved", myE);
+                        log.Error("CEL_ExpressionResolved", myE);
                     }
                 }
             }
@@ -6315,20 +6315,20 @@ namespace KTACQG
                 {
                     try
                     {
-                        if (m_WireLog.IsInfoEnabled)
+                        if (wireLog.IsInfoEnabled)
                         {
-                            m_WireLog.Info("CEL_ExpressionAdded:enter");
+                            wireLog.Info("CEL_ExpressionAdded:enter");
                         }
 
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         if (m_TSSets.ContainsKey(cqg_expression.Id))
                         {
                             mySet = m_TSSets[cqg_expression.Id];
 
-                            if (m_WireLog.IsInfoEnabled)
+                            if (wireLog.IsInfoEnabled)
                             {
-                                m_WireLog.Info("CEL_ExpressionAdded:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                                wireLog.Info("CEL_ExpressionAdded:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                             }
 
                             if (cqg_expression.Status == eRequestStatus.rsSuccess)
@@ -6359,7 +6359,7 @@ namespace KTACQG
                                     }
                                     myItem.DriverChangedData = true;
                                     mySet.AddItem(myItem);
-                                    m_WireLog.Info(myDump);
+                                    wireLog.Info(myDump);
                                 }
                                 mySet.Added = true;
                             }
@@ -6371,7 +6371,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_ExpressionAdded", myE);
+                        log.Error("CEL_ExpressionAdded", myE);
                     }
                 }
             }
@@ -6398,7 +6398,7 @@ namespace KTACQG
                     try
                     {
                         // try get the set
-                        KaiTrade.Interfaces.TSSet mySet;
+                        KaiTrade.Interfaces.ITSSet mySet;
                         lock (m_Token1)
                         {
                             if (m_TSSets.ContainsKey(cqg_expression.Id))
@@ -6409,9 +6409,9 @@ namespace KTACQG
                                     // they only want added bars - so exit
                                     return;
                                 }
-                                if (m_WireLog.IsInfoEnabled)
+                                if (wireLog.IsInfoEnabled)
                                 {
-                                    m_WireLog.Info("CEL_ExpressionUpdated:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
+                                    wireLog.Info("CEL_ExpressionUpdated:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
                                 }
 
 
@@ -6434,7 +6434,7 @@ namespace KTACQG
                                         mySet.SetUDCurveName(j, cqg_expression.OutputHeaders[j].ToString());
                                         myDump += "|" + cqg_expression.OutputHeaders[j].ToString() + "|" + expressionOutputs[j].ToString();
                                     }
-                                    m_WireLog.Info(myDump);
+                                    wireLog.Info(myDump);
                                 }
                                 else
                                 {
@@ -6448,7 +6448,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("CEL_ExpressionUpdated", myE);
+                        log.Error("CEL_ExpressionUpdated", myE);
                     }
                 }
             }
@@ -6488,13 +6488,13 @@ namespace KTACQG
             return myCFI;
         }
 
-        public override void GetProduct(KaiTrade.Interfaces.TradableProduct myProduct, string myGenericName)
+        public override void GetProduct(KaiTrade.Interfaces.IProduct myProduct, string myGenericName)
         {
             try
             {
                 if (myGenericName.Trim().Length > 0)
                 {
-                    _driverLog.Info("GetProduct:" + myGenericName);
+                    driverLog.Info("GetProduct:" + myGenericName);
                     m_ProductRegister.Add(myGenericName, myProduct);
                     if (m_GWStatus == eConnectionStatus.csConnectionUp)
                     {
@@ -6502,14 +6502,14 @@ namespace KTACQG
                     }
                     else
                     {
-                        _driverLog.Info("GetProduct:GW not up save for later subscription" + myGenericName);
+                        driverLog.Info("GetProduct:GW not up save for later subscription" + myGenericName);
                         m_DelayedProductRequests.Push(myProduct);
                     }
                 }
             }
             catch (Exception myE)
             {
-                _log.Error("GetProduct", myE);
+                log.Error("GetProduct", myE);
             }
         }
         /// <summary>
@@ -6521,13 +6521,13 @@ namespace KTACQG
         {
             try
             {
-                _driverLog.Info("cel_InstrumentSubscribed:Pre" + symbol);
+                driverLog.Info("cel_InstrumentSubscribed:Pre" + symbol);
                 lock (m_InstrSubscribed)
                 {
                     try
                     {
-                        _driverLog.Info("cel_InstrumentSubscribed" + symbol);
-                        KaiTrade.Interfaces.TradableProduct myProduct = null;
+                        driverLog.Info("cel_InstrumentSubscribed" + symbol);
+                        KaiTrade.Interfaces.IProduct myProduct = null;
                         if (m_ProductRegister.ContainsKey(symbol))
                         {
                             myProduct = m_ProductRegister[symbol];
@@ -6560,7 +6560,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("cel_InstrumentSubscribed", myE);
+                        log.Error("cel_InstrumentSubscribed", myE);
                     }
                 }
             }
@@ -6569,7 +6569,7 @@ namespace KTACQG
             }
         }
 
-        private void setProductValues(KaiTrade.Interfaces.TradableProduct myProduct, string symbol, CQGInstrument instrument)
+        private void setProductValues(KaiTrade.Interfaces.IProduct myProduct, string symbol, CQGInstrument instrument)
         {
             try
             {
@@ -6589,7 +6589,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("setProductValues", myE);
+                log.Error("setProductValues", myE);
             }
         }
 
@@ -6603,12 +6603,12 @@ namespace KTACQG
             {
                 string myText = "CQG:The symbol '" + symbol + "' is incorrect.";
                 this.SendAdvisoryMessage(myText);
-                _log.Error("cel_IncorrectSymbol:" + myText);
+                log.Error("cel_IncorrectSymbol:" + myText);
                 m_CQGHostForm.Message = myText;
             }
             catch (Exception myE)
             {
-                _log.Error("cel_IncorrectSymbol", myE);
+                log.Error("cel_IncorrectSymbol", myE);
             }
         }
 
@@ -6779,7 +6779,7 @@ namespace KTACQG
                     }
                     catch (Exception ex)
                     {
-                        _log.Error("cel_InstrumentChanged", ex);
+                        log.Error("cel_InstrumentChanged", ex);
                     }
                 }
             }
@@ -6845,7 +6845,7 @@ namespace KTACQG
             }
             catch (Exception ex)
             {
-                _log.Error("cel_OrderChanged:", ex);
+                log.Error("cel_OrderChanged:", ex);
             }
         }
 
@@ -6875,7 +6875,7 @@ namespace KTACQG
                                     m_TimeWarningCount++;
                                     string myMsg = "cel_LineTimeChanged: Difference in time too great CQG=:" + dateTime.ToString() + " Sys=" + DateTime.Now.ToString();
                                     this.SendAdvisoryMessage(myMsg);
-                                    m_WireLog.Info(myMsg);
+                                    wireLog.Info(myMsg);
                                 }
                             }
                             else
@@ -6890,7 +6890,7 @@ namespace KTACQG
                     }
                     catch (Exception myE)
                     {
-                        _log.Error("cel_LineTimeChanged", myE);
+                        log.Error("cel_LineTimeChanged", myE);
                     }
                 }
             }
@@ -6973,7 +6973,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("DefineCQGStrategy", myE);
+                log.Error("DefineCQGStrategy", myE);
             }
         }
 
@@ -6999,7 +6999,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("GetCQGStrategyDefinition", myE);
+                log.Error("GetCQGStrategyDefinition", myE);
             }
             return sd;
         }
@@ -7014,13 +7014,13 @@ namespace KTACQG
                
                 // Extract the raw FIX Message from the inbound message
                 string strOrder = myMsg.Data;
-                if (m_WireLog.IsInfoEnabled)
+                if (wireLog.IsInfoEnabled)
                 {
-                    m_WireLog.Info("submitOrder:" + strOrder);
+                    wireLog.Info("submitOrder:" + strOrder);
                 }
-                if (_driverLog.IsInfoEnabled)
+                if (driverLog.IsInfoEnabled)
                 {
-                    _driverLog.Info("submitOrder:" + strOrder);
+                    driverLog.Info("submitOrder:" + strOrder);
                 }
 
                 // Use QuickFix to handle the message
@@ -7057,7 +7057,7 @@ namespace KTACQG
                     myAccount = GetAccount(account.getValue());
                     if (myAccount != null)
                     {
-                        _driverLog.Info("CQGAcct:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
+                        driverLog.Info("CQGAcct:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
                     }
                 }
                 if (myAccount == null)
@@ -7187,11 +7187,11 @@ namespace KTACQG
                     
                 }
 
-                _driverLog.Info("ExecPatternKey:" + execPatternKey + " stringis:" + execPattern);
+                driverLog.Info("ExecPatternKey:" + execPatternKey + " stringis:" + execPattern);
 
                 CQGExecutionPattern debugCqgEP = m_CQGHostForm.CQGApp.CreateExecutionPattern(sd, orderType);
                 string debugExecPattern = debugCqgEP.PatternString;
-                _driverLog.Info("CQG DefaultExecPatternKey:" + debugExecPattern );
+                driverLog.Info("CQG DefaultExecPatternKey:" + debugExecPattern );
 
                 if (execPattern.Length == 0)
                 {
@@ -7212,14 +7212,14 @@ namespace KTACQG
                 m_ClOrdIDOrderMap.Add(clOrdID.getValue(), myContext);
 
                 // send the order
-                _driverLog.Info("CQGAcctA:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
+                driverLog.Info("CQGAcctA:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
                 order.Place();
                 myContext.CurrentCommand = DriverBase.ORCommand.Submit;
-                _driverLog.Info("CQGAcctB:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
+                driverLog.Info("CQGAcctB:" + myAccount.GWAccountID.ToString() + ":" + myAccount.GWAccountName.ToString() + ":" + myAccount.FcmID.ToString());
             }
             catch (Exception myE)
             {
-                _log.Error("submitOrder", myE);
+                log.Error("submitOrder", myE);
                 // To provide the end user with more information
                 // send an advisory message, again this is optional
                 // and depends on the adpater
@@ -7317,7 +7317,7 @@ namespace KTACQG
             }
             catch (Exception myE)
             {
-                _log.Error("FromFileJSONExecPatternString:" + myDataPath, myE);
+                log.Error("FromFileJSONExecPatternString:" + myDataPath, myE);
             }
             finally
             {

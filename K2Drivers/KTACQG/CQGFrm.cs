@@ -27,7 +27,7 @@ namespace KTACQG
     {
 
         private KTACQG m_Adapter;
-        public delegate void RegisterSubject(KaiTrade.Interfaces.Publisher myPub, int depthLevels, string requestID);
+        public delegate void RegisterSubject(KaiTrade.Interfaces.IPublisher myPub, int depthLevels, string requestID);
         public RegisterSubject m_RegisterSubject;
 
         public delegate void ProcessMessage(KaiTrade.Interfaces.Message myMsg);
@@ -123,7 +123,7 @@ namespace KTACQG
             }
         }
 
-        public void Register(KaiTrade.Interfaces.Publisher myPub, int depthLevels, string requestID)
+        public void Register(KaiTrade.Interfaces.IPublisher myPub, int depthLevels, string requestID)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace KTACQG
 
         }
 
-        private void doRegisterSubject(KaiTrade.Interfaces.Publisher myPub, int depthLevels, string requestID)
+        private void doRegisterSubject(KaiTrade.Interfaces.IPublisher myPub, int depthLevels, string requestID)
         {
             try
             {
@@ -149,7 +149,7 @@ namespace KTACQG
             }
         }
 
-        public void UnRegister(KaiTrade.Interfaces.Publisher myPub)
+        public void UnRegister(KaiTrade.Interfaces.IPublisher myPub)
         {
         }
 
