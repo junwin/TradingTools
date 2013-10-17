@@ -89,11 +89,13 @@ namespace DriverBase
             set { _priceHandler = value; }
         }
 
-        
-      
 
+
+        public string GetUserProfileProperty(string section, string propertyName)
+        {
+            return "";
+        }
        
-  
         
     }
 

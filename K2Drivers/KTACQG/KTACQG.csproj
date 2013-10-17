@@ -113,12 +113,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CQGConfig.cs" />
     <Compile Include="CQGFrm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CQGFrm.designer.cs">
       <DependentUpon>CQGFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CQGOrderHandling.cs" />
+    <Compile Include="CQGTradeSystem.cs" />
     <Compile Include="ExecutionPattern.cs" />
     <Compile Include="ILegsObject.cs" />
     <Compile Include="KTACQG.cs" />

@@ -20,5 +20,7 @@ namespace K2ServiceInterface
         //KaiTrade.Interfaces.IDOM  GetDOM(KaiTrade.Interfaces.IProduct product);
         //void SetDOM(KaiTrade.Interfaces.IProduct product, KaiTrade.Interfaces.IDOM DOM);
         IPriceHandler PriceHandler { get; set; }
+
+        string GetUserProfileProperty(string section, string propertyName);
     }
 }

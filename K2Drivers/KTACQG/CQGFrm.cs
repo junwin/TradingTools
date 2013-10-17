@@ -123,11 +123,11 @@ namespace KTACQG
             }
         }
 
-        public void Register(KaiTrade.Interfaces.IPublisher myPub, int depthLevels, string requestID)
+        public void Register(KaiTrade.Interfaces.IProduct myProd, int depthLevels, string requestID)
         {
             try
             {
-                this.Invoke(this.m_RegisterSubject, new object[] { myPub, depthLevels, requestID });
+                this.Invoke(this.m_RegisterSubject, new object[] { myProd, depthLevels, requestID });
             }
             catch (Exception myE)
             {
@@ -137,11 +137,11 @@ namespace KTACQG
 
         }
 
-        private void doRegisterSubject(KaiTrade.Interfaces.IPublisher myPub, int depthLevels, string requestID)
+        private void doRegisterSubject(KaiTrade.Interfaces.IProduct myProduct, int depthLevels, string requestID)
         {
             try
             {
-               m_Adapter.DoReg(myPub, depthLevels,  requestID);
+                m_Adapter.DoReg(myProduct, depthLevels, requestID);
             }
             catch (Exception myE)
             {
