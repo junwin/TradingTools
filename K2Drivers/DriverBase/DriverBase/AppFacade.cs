@@ -95,6 +95,10 @@ namespace DriverBase
         {
             return "";
         }
+
+        public void ProcessPositionUpdate(KaiTrade.Interfaces.IPosition position)
+        {
+        }
        
         
     }

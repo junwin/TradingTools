@@ -948,6 +948,19 @@ namespace DriverBase
             }
         }
 
+        public void ApplyDOMUpdate(string mnemonic,  KaiTrade.Interfaces.IDOMSlot[] domSlots)
+        {
+            try
+            {
+                // uses a blocking collection
+                //pxUpdates.Add(update);
+            }
+            catch (Exception myE)
+            {
+                log.Error("ApplyDOMUpdate", myE);
+            }
+        }
+
         public  void DoApplyPriceUpdate(KaiTrade.Interfaces.IPXUpdate update)
         {
             try

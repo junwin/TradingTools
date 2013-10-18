@@ -113,6 +113,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CQGBarsStudies.cs" />
+    <Compile Include="CQGConditions.cs" />
     <Compile Include="CQGConfig.cs" />
     <Compile Include="CQGFrm.cs">
       <SubType>Form</SubType>
@@ -121,6 +123,7 @@
       <DependentUpon>CQGFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="CQGOrderHandling.cs" />
+    <Compile Include="CQGSpreader.cs" />
     <Compile Include="CQGTradeSystem.cs" />
     <Compile Include="ExecutionPattern.cs" />
     <Compile Include="ILegsObject.cs" />

@@ -52,6 +52,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulatorTest", "KTASimulat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2DepthTest", "K2Depth\K2DepthTest\K2DepthTest.csproj", "{01CCC222-A570-43D4-86E2-3CD85BB9401D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KTACQG", "KTACQG\KTACQG.csproj", "{D60F8D77-17DB-439B-83D2-53F48BA227B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KTACQGTest", "KTACQGTest\KTACQGTest.csproj", "{54312B81-75B6-4572-B886-61613F7379B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +102,14 @@ Global
 		{01CCC222-A570-43D4-86E2-3CD85BB9401D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01CCC222-A570-43D4-86E2-3CD85BB9401D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01CCC222-A570-43D4-86E2-3CD85BB9401D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D60F8D77-17DB-439B-83D2-53F48BA227B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D60F8D77-17DB-439B-83D2-53F48BA227B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D60F8D77-17DB-439B-83D2-53F48BA227B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D60F8D77-17DB-439B-83D2-53F48BA227B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54312B81-75B6-4572-B886-61613F7379B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54312B81-75B6-4572-B886-61613F7379B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54312B81-75B6-4572-B886-61613F7379B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54312B81-75B6-4572-B886-61613F7379B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

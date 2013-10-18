@@ -47,7 +47,7 @@ namespace KTACQG
             {
                 InitializeComponent();
                 m_Log = log4net.LogManager.GetLogger("Kaitrade");
-                m_RegisterSubject = new RegisterSubject(this.doRegisterSubject);
+                //m_RegisterSubject = new RegisterSubject(this.doRegisterSubject);
                 m_ProcessMessage = new ProcessMessage(this.doProcessMessage);
                 // Start connection to CQG
                 m_CQG = null;

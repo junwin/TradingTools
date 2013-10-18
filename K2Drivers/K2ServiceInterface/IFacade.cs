@@ -22,5 +22,7 @@ namespace K2ServiceInterface
         IPriceHandler PriceHandler { get; set; }
 
         string GetUserProfileProperty(string section, string propertyName);
+        //void RaiseAlert("KTACQG", "CQG Data Connection is Down", 0, KaiTrade.Interfaces.ErrorLevel.fatal, KaiTrade.Interfaces.FlashMessageType.error);
+        void ProcessPositionUpdate(KaiTrade.Interfaces.IPosition position);
     }
 }

@@ -13,6 +13,273 @@ namespace KTACQG
     public partial class KTACQG : DriverBase.DriverBase
     {
         /*
+         * 
+          /// <summary>
+        /// Will request any trade systems that the driver supports - note that this
+        /// is asyncronous the driver will add any trading systems using the Facade - see AddReplaceTradeSystem(
+        /// see callback CQGApp_TradingSystemDefinitionsResolved
+        /// </summary>
+        public override void RequestTradeSystems()
+        {
+            try
+            {
+                m_CQGHostForm.CQGApp.RequestTradingSystemDefinitions();
+                
+            }
+            catch (Exception myE)
+            {
+                log.Error("RequestTradeSystems", myE);
+            }
+        }
+         
+         
+          private void getTradingSystem(ref KaiTrade.Interfaces.ITSSet myTSSet)
+        {
+            CQGTradingSystem myTradingSystem;
+            CQGTradingSystemRequest myReq;
+
+            //myTSSet.UpdatesEnabled
+            try
+            {
+                tSLog.Info("getTradingSystem:" + myTSSet.ToString());
+
+                try
+                {
+                    if (tSLog.IsInfoEnabled)
+                    {
+                        tSLog.Info(myTSSet.ToDataBinding().ToXml());
+                        tSLog.Info("CalculationMode=" + myTSSet.CalculationMode.ToString() + "CalculationPeriod=" + myTSSet.CalculationPeriod.ToString());
+                    }
+                }
+                catch
+                {
+                    // dont expect to have an exception
+                }
+
+                myTSSet.Status = KaiTrade.Interfaces.Status.opening;
+                myReq = m_CQGHostForm.CQGApp.CreateTradingSystemRequest(myTSSet.ConditionName);
+
+
+                CQGInstrument instrument = GetInstrument(myTSSet.Mnemonic);
+
+                // IF they have given an expression then use that instead of
+                // the raw menmonic
+                if (myTSSet.Expressions.Count > 0)
+                {
+                    KaiTrade.Interfaces.ITSExpression myExpression = myTSSet.Expressions[0];
+                    string myTemp = "";
+                    if (instrument != null)
+                    {
+                        myTemp = myExpression.Expression.Replace("DJI", instrument.FullName);
+                    }
+                    else
+                    {
+                        myTemp = myExpression.Expression;
+                    }
+                    myReq.BaseExpression = myTemp;
+                    tSLog.Info("getTSTradeSystemData:using expression:" + myTemp);
+                }
+                else
+                {
+                    if (instrument == null)
+                    {
+                        instrument = GetInstrumentWithMnemonic(myTSSet.Mnemonic);
+                        if (instrument == null)
+                        {
+                            Exception myE = new Exception("Invalid instrument");
+                            throw myE;
+                        }
+                    }
+                    myReq.BaseExpression = instrument.FullName;
+                }
+
+
+                switch (myTSSet.RangeType)
+                {
+                    case KaiTrade.Interfaces.TSRangeType.IntInt:
+                        myReq.RangeStart = myTSSet.IntStart;
+                        myReq.RangeEnd = myTSSet.IntEnd;
+                        break;
+                    case KaiTrade.Interfaces.TSRangeType.DateInt:
+                        myReq.RangeStart = myTSSet.DateTimeStart;
+                        myReq.RangeEnd = myTSSet.IntEnd;
+                        break;
+                    case KaiTrade.Interfaces.TSRangeType.DateDate:
+                        myReq.RangeStart = myTSSet.DateTimeStart;
+                        myReq.RangeEnd = myTSSet.DateTimeEnd;
+                        break;
+                    default:
+                        break;
+                }
+
+
+                myReq.IncludeEnd = myTSSet.IncludeEnd;
+
+
+                if (myTSSet.Period == KaiTrade.Interfaces.TSPeriod.IntraDay)
+                {
+                    myReq.IntradayPeriod = myTSSet.IntraDayInterval;
+                }
+                else
+                {
+                    switch (myTSSet.Period)
+                    {
+                        case KaiTrade.Interfaces.TSPeriod.Day:
+                            myReq.HistoricalPeriod = eHistoricalPeriod.hpDaily;
+                            break;
+                        case KaiTrade.Interfaces.TSPeriod.Week:
+                            myReq.HistoricalPeriod = eHistoricalPeriod.hpWeekly;
+                            break;
+                        case KaiTrade.Interfaces.TSPeriod.Month:
+                            myReq.HistoricalPeriod = eHistoricalPeriod.hpMonthly;
+                            break;
+                        case KaiTrade.Interfaces.TSPeriod.Quarter:
+                            myReq.HistoricalPeriod = eHistoricalPeriod.hpQuarterly;
+                            break;
+                        case KaiTrade.Interfaces.TSPeriod.SemiYear:
+                            myReq.HistoricalPeriod = eHistoricalPeriod.hpSemiannual;
+                            break;
+                        case KaiTrade.Interfaces.TSPeriod.Year:
+                            myReq.HistoricalPeriod = eHistoricalPeriod.hpYearly;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+
+                // Not used
+                myReq.Continuation = eTimeSeriesContinuationType.tsctNoContinuation;
+                myReq.EqualizeCloses = true;
+                myReq.DaysBeforeExpiration = 0;
+
+                // set calc mode for Trading system
+                switch (myTSSet.CalculationMode)
+                {
+                    case KaiTrade.Interfaces.TSBarCalculationMode.endBarPeriodic:
+                        myReq.SubscriptionLevel = eTimeSeriesSubscriptionLevel.tslEndOfBarAndPeriod;
+                        myReq.RecalcPeriod = myTSSet.CalculationPeriod;
+                        break;
+                    case KaiTrade.Interfaces.TSBarCalculationMode.tick:
+                        myReq.SubscriptionLevel = eTimeSeriesSubscriptionLevel.tslEachTick;
+                        break;
+                    default:
+                        myReq.SubscriptionLevel = eTimeSeriesSubscriptionLevel.tslEachBar;
+                        break;
+                }
+
+
+                myReq.SessionsFilter = (int)myTSSet.TSSessionFilter;
+                myReq.SessionFlags = eSessionFlag.sfUndefined;
+
+                // Set Any Parameters
+                if (myTSSet.Parameters != null)
+                {
+                    setRequestParameters(myReq, myTSSet.Parameters);
+                }
+
+ 
+                myTradingSystem = m_CQGHostForm.CQGApp.RequestTradingSystem(myReq);
+                logTSReqParameters(myReq);
+
+
+                myTSSet.ExternalID = myTradingSystem.Id;
+                myTSSet.ExternalRef = myTradingSystem;
+
+                m_TSSets.Add(myTSSet.ExternalID, myTSSet);
+
+
+                tSLog.Info("getTradingSystem completed cqgid:" + myTradingSystem.Id.ToString() + ":" + myTradingSystem.Status.ToString());
+            }
+            catch (Exception myE)
+            {
+                this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "getTradingSystem" + myE.Message);
+                tSLog.Error("getTradingSystem", myE);
+                log.Error("getTradingSystem", myE);
+                myTSSet.Status = KaiTrade.Interfaces.Status.error;
+                myTSSet.Text = myE.Message;
+            }
+        }
+
+        private void logTSReqParameters(CQGTradingSystemRequest myReq)
+        {
+            try
+            {
+
+                driverLog.Info("logTSParameters:enter:" + myReq.BaseExpression);
+                foreach (CQGParameterDefinition p in myReq.Definition.ParameterDefinitions)
+                {
+                    driverLog.Info("parameters:name:" + p.Name + "def value:" + p.DefaultValue.ToString());
+                    driverLog.Info("parameters:name:" + p.Name + " value:" + myReq.Parameter[p.Name].ToString());
+
+                }
+                log.Info("logTSParameters:exit:" );
+                
+
+
+            }
+            catch (Exception myE)
+            {
+                log.Error("setRequestParameters", myE);
+            }
+        }
+
+        private void logValidReqParmNames(CQGTradingSystemRequest myReq)
+        {
+            try
+            {
+
+                driverLog.Info("logValidReqParmNames");
+                foreach (CQGParameterDefinition pd in myReq.Definition.ParameterDefinitions)
+                {
+                    string plog = string.Format("Name:{0}:Type:{1}:DefaultValue:{2}", pd.Name, pd.Type.ToString(), pd.DefaultValue);
+                    driverLog.Info(plog);
+                }
+                
+            }
+            catch (Exception myE)
+            {
+                log.Error("logValidReqParmNames", myE);
+            }
+        }
+        private void setRequestParameters(CQGTradingSystemRequest myReq, List<KaiTrade.Interfaces.IParameter> parms)
+        {
+            try
+            {
+                driverLog.Info("setRequestParameters:enter:"+myReq.BaseExpression);
+                logValidReqParmNames(myReq);
+
+                foreach (KaiTrade.Interfaces.IParameter p in parms)
+                {
+                    try
+                    {
+                        switch (p.ParameterType)
+                        {
+                            case KaiTrade.Interfaces.ATDLType.Float:
+                                myReq.set_Parameter(p.ParameterName, double.Parse(p.ParameterValue));
+                                break;
+                            default:
+                                myReq.set_Parameter(p.ParameterName, int.Parse(p.ParameterValue));
+                                break;
+                        }
+                        driverLog.Info("setParameters:name:" + p.ParameterName+" value:"+p.ParameterValue);
+                    }
+                    catch (Exception myE)
+                    {
+                        log.Error("setRequestParameters:InvalidParameter" + p.ParameterName + ":" + p.ParameterValue, myE);
+                    }
+                    
+
+                }
+                driverLog.Info("setRequestParameters:exit:" + myReq.BaseExpression);
+            }
+            catch (Exception myE)
+            {
+                log.Error("setRequestParameters", myE);
+            }
+        }
+  
+          
         void CQGApp_TradingSystemDefinitionsResolved(CQGTradingSystemDefinitions trdSysDefs, CQGError cqg_error)
         {
             try
@@ -365,7 +632,7 @@ namespace KTACQG
                 KaiTrade.Interfaces.TradeSignal signal;
                 if (systemTrade.TradeEntry.Signal)
                 {
-                    signal = m_Facade.Factory.GetTradeSignalManager().CreateSignal(systemTrade.Definition.Name);
+                    signal = Facade.Factory.GetTradeSignalManager().CreateSignal(systemTrade.Definition.Name);
 
                     setSignalData(signal, systemTrade.TradeEntry, systemTrade.Definition.Name, getKTAOrderSide(systemTrade.Definition.Side), timeStamp, timeStampOffset);
                     signal.Origin = tsSet.Alias + "." + tsSet.ConditionName + "." + systemTrade.Definition.Name;
@@ -380,7 +647,7 @@ namespace KTACQG
                     CQGTradeExit myExit = systemTrade.TradeExits.get_ItemByName(systemTrade.Definition.Exits[k].Name);
                     if (myExit.Signal)
                     {
-                        signal = m_Facade.Factory.GetTradeSignalManager().CreateSignal(myExit.Definition.Name);
+                        signal = Facade.Factory.GetTradeSignalManager().CreateSignal(myExit.Definition.Name);
 
                         setSignalData(signal, myExit, timeStamp, timeStampOffset);
                         signal.Origin = tsSet.Alias + "." + tsSet.ConditionName + "." + systemTrade.Definition.Name;
@@ -614,7 +881,7 @@ namespace KTACQG
 
 
                 KaiTrade.Interfaces.TradeSignal signal;
-                signal = m_Facade.Factory.GetTradeSignalManager().CreateSignal(systemTrade.Definition.Name);
+                signal = Facade.Factory.GetTradeSignalManager().CreateSignal(systemTrade.Definition.Name);
 
                 setSignalData(signal, systemTrade.TradeEntry, systemTrade.Definition.Name, getKTAOrderSide(systemTrade.Definition.Side), systemTrade.Timestamp, systemTrade.TimestampOffset);
 
@@ -629,7 +896,7 @@ namespace KTACQG
                     myTemp = string.Format("Log TradeRow:systemTrade:Exit>>> Name ={0} signal={1} ", myExit.Definition.Name, myExit.Signal);
                     wireLog.Info(myTemp);
 
-                    signal = m_Facade.Factory.GetTradeSignalManager().CreateSignal(myExit.Definition.Name);
+                    signal = Facade.Factory.GetTradeSignalManager().CreateSignal(myExit.Definition.Name);
 
                     setSignalData(signal, myExit, systemTrade.Timestamp, systemTrade.TimestampOffset);
 
@@ -651,7 +918,7 @@ namespace KTACQG
         {
             try
             {
-                KaiTrade.Interfaces.TSItem tsItem = tsSet.GetNewItem();
+                KaiTrade.Interfaces.ITSItem tsItem = tsSet.GetNewItem();
 
                 tsItem.Index = tsSet.Items.Count;
 
@@ -694,12 +961,12 @@ namespace KTACQG
 
 
 
-        private void appendTradeEntry(int rowIndex, int tradeIndex, KaiTrade.Interfaces.ITSSet tsSet, KaiTrade.Interfaces.TSItem tsItem, CQGTradingSystemTrade systemTrade)
+        private void appendTradeEntry(int rowIndex, int tradeIndex, KaiTrade.Interfaces.ITSSet tsSet, KaiTrade.Interfaces.ITSItem tsItem, CQGTradingSystemTrade systemTrade)
         {
             try
             {
                 KaiTrade.Interfaces.TradeSignal signal;
-                signal = m_Facade.Factory.GetTradeSignalManager().CreateSignal(systemTrade.Definition.Name);
+                signal = Facade.Factory.GetTradeSignalManager().CreateSignal(systemTrade.Definition.Name);
 
                 setSignalData(signal, systemTrade.TradeEntry, systemTrade.Definition.Name, getKTAOrderSide(systemTrade.Definition.Side), systemTrade.Timestamp, systemTrade.TimestampOffset);
                 signal.Origin = tsSet.Alias + "." + tsSet.ConditionName + "." + systemTrade.Definition.Name;
@@ -713,7 +980,7 @@ namespace KTACQG
                 {
                     CQGTradeExit myExit = systemTrade.TradeExits[k];
 
-                    signal = m_Facade.Factory.GetTradeSignalManager().CreateSignal(myExit.Definition.Name);
+                    signal = Facade.Factory.GetTradeSignalManager().CreateSignal(myExit.Definition.Name);
 
                     setSignalData(signal, myExit, systemTrade.Timestamp, systemTrade.TimestampOffset);
                     signal.Origin = tsSet.Alias + "." + tsSet.ConditionName + "." + systemTrade.Definition.Name;
@@ -976,7 +1243,7 @@ namespace KTACQG
             {
                 // There is only 1 entry signal
                 wireLog.Info("updateTSRow: " + cqg_trading_system.Id);
-                KaiTrade.Interfaces.TSItem tsItem = tsSet.Items[cqgUpdate.Index];
+                KaiTrade.Interfaces.ITSItem tsItem = tsSet.Items[cqgUpdate.Index];
                 foreach (CQGChangedTradeEntry tradeEntry in cqgUpdate.ChangedEntries)
                 {
                     KaiTrade.Interfaces.TradeSignal signal = tsItem.Signals[ENTRY_TRADE];
