@@ -170,6 +170,11 @@ namespace K2DataObjects
         /// </summary>
         private KaiTrade.Interfaces.Status m_Status = KaiTrade.Interfaces.Status.loaded;
 
+        private List<KaiTrade.Interfaces.ITSExpression> expressions;
+
+        
+      
+
         public TSDataSetData()
         {
             m_ID = System.Guid.NewGuid().ToString();
@@ -189,6 +194,7 @@ namespace K2DataObjects
             m_SetLow = decimal.MinValue;
             m_SetHigh = decimal.MaxValue;
             m_Parameters = new List<KaiTrade.Interfaces.IParameter>();
+            expressions = new List<KaiTrade.Interfaces.ITSExpression>();
         }
 
         /// <summary>
@@ -218,6 +224,13 @@ namespace K2DataObjects
             {
                 m_RequestID = value;
             }
+        }
+
+        [DataMember]
+        public List<KaiTrade.Interfaces.ITSExpression> Expressions
+        {
+            get { return expressions; }
+            set { expressions = value; }
         }
 
         /// <summary>

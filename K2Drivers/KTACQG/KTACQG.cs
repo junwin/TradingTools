@@ -1985,16 +1985,16 @@ namespace KTACQG
             switch (ordType)
             {
                 case eOrderType.otLimit:
-                    myRet = KaiTrade.Interfaces.OrderType.LIMIT;
+                    myRet = KaiTrade.Interfaces.IOrderType.LIMIT;
                     break;
                 case eOrderType.otMarket:
-                    myRet = KaiTrade.Interfaces.OrderType.MARKET;
+                    myRet = KaiTrade.Interfaces.IOrderType.MARKET;
                     break;
                 case eOrderType.otStop:
-                    myRet = KaiTrade.Interfaces.OrderType.STOP;
+                    myRet = KaiTrade.Interfaces.IOrderType.STOP;
                     break;
                 case eOrderType.otStopLimit:
-                    myRet = KaiTrade.Interfaces.OrderType.STOPLIMIT;
+                    myRet = KaiTrade.Interfaces.IOrderType.STOPLIMIT;
                     break;
                 case eOrderType.otUndefined:
                     myRet = "";
@@ -2656,7 +2656,7 @@ namespace KTACQG
                 // is the order in a state where it can be modified
                 if (!(replaceData.OrderContext.ExternalOrder as CQGOrder).CanBeModified)
                 {
-                    return KaiTrade.Interfaces.orderReplaceResult.replacePending;
+                    return KaiTrade.Interfaces.IOrderReplaceResult.replacePending;
                 }
 
                 // modify the qty 
@@ -2727,7 +2727,7 @@ namespace KTACQG
                     log.Warn("Order was not replaced as all fields were the same");
                 }
 
-                return KaiTrade.Interfaces.orderReplaceResult.success;
+                return KaiTrade.Interfaces.IOrderReplaceResult.success;
 
             }
             catch (Exception myE)
@@ -2742,7 +2742,7 @@ namespace KTACQG
                 // and depends on the adpater
                 this.SendAdvisoryMessage("CQG:modifyOrderRD: problem modifying order:" + myE.ToString());
 
-                return KaiTrade.Interfaces.orderReplaceResult.error;
+                return KaiTrade.Interfaces.IOrderReplaceResult.error;
             }
         }
 
@@ -2770,7 +2770,7 @@ namespace KTACQG
                 // is the order in a state where it can be cancelled
                 if (!(replaceData.OrderContext.ExternalOrder as CQGOrder).CanBeCanceled)
                 {
-                    return KaiTrade.Interfaces.orderReplaceResult.cancelPending;
+                    return KaiTrade.Interfaces.IOrderReplaceResult.cancelPending;
                 }
 
                 // Cancel the order
@@ -2781,7 +2781,7 @@ namespace KTACQG
                 // record the context against the new clordid
                 //m_ClIDOrder.Add(clOrdID.getValue(), myContext);
 
-                return KaiTrade.Interfaces.orderReplaceResult.success;
+                return KaiTrade.Interfaces.IOrderReplaceResult.success;
             }
             catch (Exception myE)
             {
@@ -2795,7 +2795,7 @@ namespace KTACQG
                 // and depends on the adpater
                 this.SendAdvisoryMessage("CQG:pullOrderRepData: problem pulling order:" + myE.ToString());
 
-                return KaiTrade.Interfaces.orderReplaceResult.error;
+                return KaiTrade.Interfaces.IOrderReplaceResult.error;
             }
         }
 
@@ -2842,16 +2842,16 @@ namespace KTACQG
                 orderData.OrdType = getKTAOrderType(order.Type);
                 switch (orderData.OrdType)
                 {
-                    case KaiTrade.Interfaces.OrderType.MARKET:
+                    case KaiTrade.Interfaces.IOrderType.MARKET:
                         break;
-                    case KaiTrade.Interfaces.OrderType.LIMIT:
+                    case KaiTrade.Interfaces.IOrderType.LIMIT:
                         orderData.Price = order.LimitPrice;
                         break;
-                    case KaiTrade.Interfaces.OrderType.STOP:
+                    case KaiTrade.Interfaces.IOrderType.STOP:
                         
                         orderData.StopPx = order.StopPrice;
                         break;
-                    case KaiTrade.Interfaces.OrderType.STOPLIMIT:
+                    case KaiTrade.Interfaces.IOrderType.STOPLIMIT:
                         orderData.Price = order.LimitPrice;
                         orderData.StopPx = order.StopPrice;
                         break;
@@ -3367,9 +3367,9 @@ namespace KTACQG
 
 
                 // get the current full name for a generic
-                if (m_ProductRegister.ContainsKey(myKey))
+                if (_productRegister.ContainsKey(myKey))
                 {
-                    myKey = m_ProductRegister[myKey].SecurityID;
+                    myKey = _productRegister[myKey].SecurityID;
 
                     // processing for generics - in this case they mnemonic is not the
                     // name of the product CQG uses so we alos need to add the publisher by its
@@ -3733,7 +3733,7 @@ namespace KTACQG
                                 int x = m_CQGHostForm.CQGApp.Orders.Count;
 
                                 // try get the order
-                                KaiTrade.Interfaces.Order o = Facade.Factory.GetOrderManager().GetOrderWithClOrdIDID(myContext.ClOrdID);
+                                KaiTrade.Interfaces.IOrder o = Facade.Factory.GetOrderManager().GetOrderWithClOrdIDID(myContext.ClOrdID);
                                 if (o != null)
                                 {
                                     ktOrder.Identity = o.Identity;
@@ -5232,7 +5232,7 @@ namespace KTACQG
                 if (myGenericName.Trim().Length > 0)
                 {
                     driverLog.Info("GetProduct:" + myGenericName);
-                    m_ProductRegister.Add(myGenericName, myProduct);
+                    _productRegister.Add(myGenericName, myProduct);
                     if (m_GWStatus == eConnectionStatus.csConnectionUp)
                     {
                         m_CQGHostForm.CQGApp.NewInstrument(myGenericName.Trim());
@@ -5265,9 +5265,9 @@ namespace KTACQG
                     {
                         driverLog.Info("cel_InstrumentSubscribed" + symbol);
                         KaiTrade.Interfaces.IProduct myProduct = null;
-                        if (m_ProductRegister.ContainsKey(symbol))
+                        if (_productRegister.ContainsKey(symbol))
                         {
-                            myProduct = m_ProductRegister[symbol];
+                            myProduct = _productRegister[symbol];
                             if (symbol != instrument.FullName)
                             {
                                 if (m_ProductGenericNameRegister.ContainsKey(instrument.FullName))
@@ -5288,7 +5288,7 @@ namespace KTACQG
                         {
                             // Use the product manager directly to add a product
                             myProduct = m_Facade.Factory.GetProductManager().CreateProductWithSecID(instrument.FullName, m_Name, instrument.ExchangeAbbreviation, instrument.FullName, m_Name);
-                            m_ProductRegister.Add(symbol, myProduct);
+                            _productRegister.Add(symbol, myProduct);
                             
                         }
                         setProductValues(myProduct, symbol, instrument);
@@ -5988,16 +5988,16 @@ namespace KTACQG
             switch (orderType)
             {
                 case eOrderType.otLimit:
-                    key = KaiTrade.Interfaces.OrderType.LIMIT + "." + name;
+                    key = KaiTrade.Interfaces.IOrderType.LIMIT + "." + name;
                     break;
                 case eOrderType.otMarket:
-                    key = KaiTrade.Interfaces.OrderType.MARKET + "." + name;
+                    key = KaiTrade.Interfaces.IOrderType.MARKET + "." + name;
                     break;
                 case eOrderType.otStop:
-                    key = KaiTrade.Interfaces.OrderType.STOP + "." + name;
+                    key = KaiTrade.Interfaces.IOrderType.STOP + "." + name;
                     break;
                 case eOrderType.otStopLimit:
-                    key = KaiTrade.Interfaces.OrderType.STOP + "." + name;
+                    key = KaiTrade.Interfaces.IOrderType.STOP + "." + name;
                     break;
 
             }

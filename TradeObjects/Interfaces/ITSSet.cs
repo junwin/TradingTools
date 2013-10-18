@@ -518,8 +518,8 @@ namespace KaiTrade.Interfaces
         /// <summary>
         /// Get/Set the list of expressions
         /// </summary>
-        //List<KaiTrade.Interfaces.ITSExpression> Expressions
-        //{ get; set;}
+        List<KaiTrade.Interfaces.ITSExpression> Expressions
+        { get; set;}
 
         /// <summary>
         /// get/set the list of pattern matchers
