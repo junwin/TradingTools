@@ -215,7 +215,7 @@ namespace KTACQG
                 m_CQGHostForm.Show();
                 if (base._state.HideDriverUI)
                 {                   
-                        m_CQGHostForm.Hide();
+                        //CQGHostForm.Hide();
                 }
                 // Read the configuration data
                 try
