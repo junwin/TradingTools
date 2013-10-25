@@ -16,6 +16,8 @@
     <SccProvider>SAK</SccProvider>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,6 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,23 +36,20 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="K2DataObjects">
-      <HintPath>..\bin\K2DataObjects.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\build\bin\K2DataObjects.dll</HintPath>
     </Reference>
     <Reference Include="KTInterfaces">
-      <HintPath>..\bin\KTInterfaces.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\build\bin\KTInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\bin\log4net.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\build\bin\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\bin\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\build\bin\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,16 +76,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bins\hdf5dll.dll">
+    <Content Include="Properties\bins\hdf5dll.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="bins\hdf5_hldll.dll">
+    <Content Include="Properties\bins\hdf5_hldll.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="bins\szip.dll">
+    <Content Include="Properties\bins\szip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="bins\zlib.dll">
+    <Content Include="Properties\bins\zlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
