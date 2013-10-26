@@ -68,6 +68,9 @@ namespace K2DataObjects
         /// </summary>
         private object m_Tag = null;
 
+        private string externalID = "";
+
+       
         /// <summary>
         /// used by CQG
         /// </summary>
@@ -239,6 +242,15 @@ namespace K2DataObjects
             get { return m_Tag; }
             set { m_Tag = value; }
         }
+
+        [DataMember]
+        [JsonProperty]
+        public string ExternalID
+        {
+            get { return externalID; }
+            set { externalID = value; }
+        }
+
 
         [DataMember]
         [JsonProperty]

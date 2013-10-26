@@ -73,6 +73,9 @@ namespace DriverBase
 
         private PriceUpdate _priceUpdate;
 
+        private BarUpdate _barUpdate;
+
+        
         
 
         /// <summary>
@@ -921,8 +924,15 @@ namespace DriverBase
             }
         }
 
-       
 
+
+        public void BarUpdateClients(string requestID, KaiTrade.Interfaces.ITSItem[] bars)
+        {
+            if (BarUpdate != null)
+            {
+                BarUpdate(requestID, bars);
+            }
+        }
 
         /// <summary>
         /// Do an async update to any registered delegates
@@ -1117,8 +1127,13 @@ namespace DriverBase
             }
         }
 
-       
 
+
+        public BarUpdate BarUpdate
+        {
+            get { return _barUpdate; }
+            set { _barUpdate = value; }
+        }
 
 
         public PriceUpdate PriceUpdate

@@ -235,22 +235,21 @@ namespace KaiTrade.Interfaces
         }
 
         /// <summary>
+        /// Identified allocated by a driver or other system
+        /// </summary>
+        string ExternalID
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// has the driver (prices source) changed the data in the item
         /// </summary>
         bool DriverChangedData
         { get; set; }
 
-        /// <summary>
-        /// render as XML
-        /// </summary>
-        /// <returns></returns>
-        //string AsXML();
-
-        /// <summary>
-        /// set state from xml
-        /// </summary>
-        /// <param name="myDB"></param>
-        //void FromXML(string xml);
+        
 
         /// <summary>
         /// Return a string of Tab separated data good for Excel

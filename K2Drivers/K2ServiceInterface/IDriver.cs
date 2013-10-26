@@ -46,6 +46,12 @@ namespace K2ServiceInterface
     /// </summary>
     /// <param name="pxUpdate"></param>
     public delegate void PriceUpdate(KaiTrade.Interfaces.IPXUpdate pxUpdate);
+
+    /// <summary>
+    /// Used to get bat updates
+    /// </summary>
+    /// <param name="bar"></param>
+    public delegate void BarUpdate(string requestID, KaiTrade.Interfaces.ITSItem[] bars);
  
 
     /// <summary>
@@ -80,6 +86,13 @@ namespace K2ServiceInterface
         /// to register a specific publisher
         /// </summary>
         PriceUpdate PriceUpdate
+        { get; set; }
+
+
+        /// <summary>
+        /// used to register delegates that will handle bar updates from the driver
+        /// </summary>
+        BarUpdate BarUpdate
         { get; set; }
 
        

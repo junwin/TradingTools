@@ -363,26 +363,27 @@ namespace KTACQG
                 {
                     switch (myTSSet.TSType)
                     {
-                            /*
+                           
                         case KaiTrade.Interfaces.TSType.BarData:
                             getTSBarData(ref myTSSet);
                             break;
-                        case KaiTrade.Interfaces.TSType.ConstantBars:
-                            getTSConstantBarData(ref myTSSet);
-                            break;
-                        case KaiTrade.Interfaces.TSType.Condition:
-                            getTSConditionData(ref myTSSet);
-                            break;
-                        case KaiTrade.Interfaces.TSType.StudyData:
-                            getTSStudyData(ref myTSSet);
-                            break;
-                        case KaiTrade.Interfaces.TSType.Expression:
-                            getTSExpressionData(ref myTSSet);
-                            break;
-                        case KaiTrade.Interfaces.TSType.TradeSystem:
-                            this.getTradingSystem(ref myTSSet);
-                            break;
-                             */
+                        /*
+                   case KaiTrade.Interfaces.TSType.ConstantBars:
+                       getTSConstantBarData(ref myTSSet);
+                       break;
+                   case KaiTrade.Interfaces.TSType.Condition:
+                       getTSConditionData(ref myTSSet);
+                       break;
+                   case KaiTrade.Interfaces.TSType.StudyData:
+                       getTSStudyData(ref myTSSet);
+                       break;
+                   case KaiTrade.Interfaces.TSType.Expression:
+                       getTSExpressionData(ref myTSSet);
+                       break;
+                   case KaiTrade.Interfaces.TSType.TradeSystem:
+                       this.getTradingSystem(ref myTSSet);
+                       break;
+                        */
 
                         default:
                             driverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
@@ -1784,308 +1785,7 @@ namespace KTACQG
              *  */
         }
 
-        /// <summary>
-        /// Fired when the collection of timed bars (CQGTimedBars) is resolved or
-        /// when some error occured during timed bars request processing.
-        /// </summary>
-        /// <param name="cqg_timed_bars">
-        /// Reference to resolved CQGTimedBars
-        /// </param>
-        /// <param name="cqg_error">
-        /// The CQGError object that describes the last error occurred
-        /// while processing the TimedBars request or
-        /// Nothing/Invalid_Error in case of no error.
-        /// </param>
-        private void CEL_TimedBarsResolved(CQG.CQGTimedBars cqg_timed_bars, CQG.CQGError cqg_error)
-        {
-            try
-            {
-                lock (m_BarToken1)
-                {
-                    try
-                    {
-                        driverLog.Info("CEL_TimedBarsResolved:" + cqg_timed_bars.Id.ToString());
-                        // try get the set
-                        KaiTrade.Interfaces.ITSSet mySet;
-                        if (m_TSSets.ContainsKey(cqg_timed_bars.Id))
-                        {
-                            mySet = m_TSSets[cqg_timed_bars.Id];
-
-                            if (wireLog.IsInfoEnabled)
-                            {
-                                wireLog.Info("CEL_TimedBarsResolved:TSSetFound:" + mySet.Name + ":" + mySet.Alias + ":" + mySet.Mnemonic);
-                            }
-
-                            if (cqg_timed_bars.Status == eRequestStatus.rsSuccess)
-                            {
-                                mySet.Status = KaiTrade.Interfaces.Status.open;
-                                DumpAllData(cqg_timed_bars, mySet);
-                            }
-                            else
-                            {
-                                mySet.Status = KaiTrade.Interfaces.Status.error;
-                                mySet.Text = cqg_error.Description;
-                                this.SendStatusMessage(KaiTrade.Interfaces.Status.open, "CEL_TimedBarsResolved" + mySet.Text);
-                            }
-                        }
-                        else
-                        {
-                            driverLog.Info("CEL_TimedBarsResolved:Dataset not found");
-                        }
-                    }
-                    catch (Exception myE)
-                    {
-                        log.Error("CEL_TimedBarsResolved", myE);
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Fired when CQGTimedBar item is added to the end of CQGTimedBars.
-        /// </summary>
-        /// <param name="cqg_timed_bars">
-        /// Reference to changed CQGTimedBars.
-        /// </param>
-        private void CEL_TimedBarsAdded(CQG.CQGTimedBars cqg_timed_bars)
-        {
-            try
-            {
-                lock (m_BarToken1)
-                {
-                    try
-                    {
-                        // try get the set
-                        KaiTrade.Interfaces.ITSSet mySet;
-                        if (m_TSSets.ContainsKey(cqg_timed_bars.Id))
-                        {
-                            mySet = m_TSSets[cqg_timed_bars.Id];
-                            //mySet.Items.Clear();  Done in the dump all
-                            if (cqg_timed_bars.Status == eRequestStatus.rsSuccess)
-                            {
-                                DumpAllData(cqg_timed_bars, mySet);
-                            }
-                            else
-                            {
-                                mySet.Text = cqg_timed_bars.LastError.Description;
-                            }
-                        }
-                    }
-                    catch (Exception myE)
-                    {
-                        log.Error("CEL_TimedBarsAdded", myE);
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Fired when CQGTimedBar item is updated.
-        /// </summary>
-        /// <param name="cqg_timed_bars">
-        /// Reference to changed CQGTimedBars
-        /// </param>
-        /// <param name="index_">
-        /// Specifies the updated CQGTimedBar index.
-        /// </param>
-        private void CEL_TimedBarsUpdated(CQG.CQGTimedBars cqg_timed_bars, int index_)
-        {
-            try
-            {
-                lock (m_BarToken1)
-                {
-                    try
-                    {
-                        // try get the set
-                        KaiTrade.Interfaces.ITSSet mySet;
-                        //return;
-                        if (m_TSSets.ContainsKey(cqg_timed_bars.Id))
-                        {
-                            mySet = m_TSSets[cqg_timed_bars.Id];
-                            if (!mySet.ReportAll)
-                            {
-                                // they only want added bars - so exit
-                                return;
-                            }
-                            KaiTrade.Interfaces.ITSItem myItem = mySet.GetNewItem();
-
-                            DumpRecord(myItem, mySet, cqg_timed_bars[index_], index_);
-                            myItem.SourceActionType = KaiTrade.Interfaces.TSItemSourceActionType.barUpdated;
-                            myItem.DriverChangedData = true;
-                            mySet.ReplaceItem(myItem, index_);
-                            mySet.Changed = true;
-                        }
-                    }
-                    catch (Exception myE)
-                    {
-                        log.Error("CEL_TimedBarsUpdated", myE);
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Dumps all request data (outputs\parameters\records)
-        /// </summary>
-        private void DumpAllData(CQG.CQGTimedBars myBars, KaiTrade.Interfaces.ITSSet mySet)
-        {
-            try
-            {
-                int exitingItemCount = mySet.Items.Count;
-                // Clears all records
-                mySet.Items.Clear();
-
-                if (myBars.Count == 0)
-                {
-                    return;
-                }
-
-                for (int i = 0; i < myBars.Count; i++)
-                {
-                    // get a new TS item
-                    KaiTrade.Interfaces.ITSItem myItem = mySet.GetNewItem();
-                    DumpRecord(myItem, mySet, myBars[i], i);
-                    myItem.SourceActionType = KaiTrade.Interfaces.TSItemSourceActionType.barAdded;
-                    myItem.ItemType = KaiTrade.Interfaces.TSItemType.time;
-                    if (i >= exitingItemCount)
-                    {
-                        myItem.DriverChangedData = true;
-                    }
-                    else if (i >= myBars.Count - 2)
-                    {
-                        myItem.DriverChangedData = true;
-                    }
-                    else
-                    {
-                        myItem.DriverChangedData = false;
-                    }
-
-
-                    mySet.AddItem(myItem);
-                    if (wireLog.IsInfoEnabled)
-                    {
-                        wireLog.Info("TBADD:" + myItem.ToTabSeparated());
-                    }
-                }
-                
-
-                // mark the set as changed - will cause the publisher
-                // to do an update or image
-                mySet.Added = true;
-            }
-            catch (Exception myE)
-            {
-                log.Error("DumpAllData", myE);
-            }
-        }
-
-
-
-        private void DumpRecord(KaiTrade.Interfaces.ITSItem myItem, KaiTrade.Interfaces.ITSSet mySet, CQGTimedBar myBar, long myIndex)
-        {
-            try
-            {
-                // get a new TS item
-                myItem.ItemType = KaiTrade.Interfaces.TSItemType.time;
-                myItem.Index = myIndex;
-                myItem.TimeStamp = myBar.Timestamp;
-                myItem.Open = myBar.Open;
-                myItem.High = myBar.High;
-                myItem.Low = myBar.Low;
-                myItem.Close = myBar.Close;
-                myItem.Mid = myBar.Mid;
-                myItem.HLC3 = myBar.HLC3;
-                myItem.Avg = myBar.Avg;
-                myItem.TrueHigh = myBar.TrueHigh;
-                myItem.TrueLow = myBar.TrueLow;
-                myItem.Range = myBar.Range;
-                myItem.TrueRange = myBar.TrueRange;
-                myItem.AskVolume = myBar.AskVolume;
-                myItem.BidVolume = myBar.BidVolume;
-                myItem.Volume = myBar.ActualVolume;
-                
-            }
-            catch (Exception myE)
-            {
-                log.Error("DumpRecord", myE);
-            }
-        }
-
-        /// <summary>
-        /// Dumps all request data (outputs\parameters\records)
-        /// </summary>
-        private void DumpAllData(CQG.CQGConstantVolumeBars myBars, KaiTrade.Interfaces.ITSSet mySet)
-        {
-            try
-            {
-                // Clears all records
-                mySet.Items.Clear();
-
-                if (myBars.Count == 0)
-                {
-                    return;
-                }
-
-                for (int i = 0; i < myBars.Count; i++)
-                {
-                    // get a new TS item
-                    KaiTrade.Interfaces.ITSItem myItem = mySet.GetNewItem();
-                    DumpRecord(myItem, mySet, myBars[i], i);
-                    myItem.SourceActionType = KaiTrade.Interfaces.TSItemSourceActionType.barAdded;
-                    myItem.ItemType = KaiTrade.Interfaces.TSItemType.constantVolume;
-                    mySet.AddItem(myItem);
-                    if (wireLog.IsInfoEnabled)
-                    {
-                        wireLog.Info("TBADD:" + myItem.ToTabSeparated());
-                    }
-                }
-
-                // mark the set as changed - will cause the publisher
-                // to do an update or image
-                mySet.Added = true;
-            }
-            catch (Exception myE)
-            {
-                log.Error("DumpAllData", myE);
-            }
-        }
-
-        private void DumpRecord(KaiTrade.Interfaces.ITSItem myItem, KaiTrade.Interfaces.ITSSet mySet, CQGConstantVolumeBar myBar, long myIndex)
-        {
-            try
-            {
-                // get a new TS item
-                myItem.Index = myIndex;
-                myItem.TimeStamp = myBar.Timestamp;
-                myItem.Open = myBar.Open;
-                myItem.High = myBar.High;
-                myItem.Low = myBar.Low;
-                myItem.Close = myBar.Close;
-                myItem.Mid = myBar.Mid;
-                myItem.HLC3 = myBar.HLC3;
-                myItem.Avg = myBar.Avg;
-                myItem.TrueHigh = myBar.TrueHigh;
-                myItem.TrueLow = myBar.TrueLow;
-                myItem.Range = myBar.Range;
-                myItem.TrueRange = myBar.TrueRange;
-                myItem.AskVolume = myBar.AskVolume;
-                myItem.BidVolume = myBar.BidVolume;
-            }
-            catch (Exception myE)
-            {
-                log.Error("DumpRecord:CV", myE);
-            }
-        }
-
+        
         /// <summary>
         /// Fired when the collection of constant volume bars (CQGConstantVolumeBars) is
         /// resolved or when some error has occurred during the constant volume bars request processing.
