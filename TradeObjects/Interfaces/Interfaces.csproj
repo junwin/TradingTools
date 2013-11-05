@@ -94,6 +94,7 @@
     <Compile Include="IModifyOrderRequst.cs" />
     <Compile Include="IRequestCancelRejectResponse.cs" />
     <Compile Include="IServer.cs" />
+    <Compile Include="IStrategy.cs" />
     <Compile Include="ISubmitRequest.cs" />
     <Compile Include="IUserTrial.cs" />
     <Compile Include="IDOM.cs" />

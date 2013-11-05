@@ -101,6 +101,7 @@
     <Compile Include="RequestCancelRejectResponse.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Session.cs" />
+    <Compile Include="Strategy.cs" />
     <Compile Include="SubmitRequest.cs" />
     <Compile Include="Trade.cs" />
     <Compile Include="TradeSignal.cs" />
