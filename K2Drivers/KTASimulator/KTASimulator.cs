@@ -442,37 +442,40 @@ namespace KTASimulator
             {
             }
         }
-        public override void RequestTSData(KaiTrade.Interfaces.ITSSet myTSSet)
+        public override void RequestTSData(KaiTrade.Interfaces.ITSSet[] tsSet)
         {
             lock (m_GetTSReqToken)
             {
                
                 try
                 {
-                    switch (myTSSet.TSType)
+                    foreach (var set in tsSet)
                     {
-                        case KaiTrade.Interfaces.TSType.BarData:
-                            loadTSSet(myTSSet); 
-                            break;
-                        case KaiTrade.Interfaces.TSType.ConstantBars:
-                             
-                            break;
-                        case KaiTrade.Interfaces.TSType.Condition:
-                             
-                            break;
-                        case KaiTrade.Interfaces.TSType.StudyData:
-                             
-                            break;
-                        case KaiTrade.Interfaces.TSType.Expression:
-                             
-                            break;
-                        case KaiTrade.Interfaces.TSType.TradeSystem:
-                             
-                            break;
+                        switch (set.TSType)
+                        {
+                            case KaiTrade.Interfaces.TSType.BarData:
+                                loadTSSet(set);
+                                break;
+                            case KaiTrade.Interfaces.TSType.ConstantBars:
 
-                        default:
-                            driverLog.Error("Unknown TS Request type:" + myTSSet.TSType.ToString());
-                            break;
+                                break;
+                            case KaiTrade.Interfaces.TSType.Condition:
+
+                                break;
+                            case KaiTrade.Interfaces.TSType.StudyData:
+
+                                break;
+                            case KaiTrade.Interfaces.TSType.Expression:
+
+                                break;
+                            case KaiTrade.Interfaces.TSType.TradeSystem:
+
+                                break;
+
+                            default:
+                                driverLog.Error("Unknown TS Request type:" + set.TSType.ToString());
+                                break;
+                        }
                     }
 
 

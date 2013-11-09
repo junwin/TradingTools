@@ -1541,7 +1541,7 @@ namespace DriverBase
         /// Get a set of time series data - if supported
         /// </summary>
         /// <param name="myTSSet"></param>
-        public virtual void RequestTSData(KaiTrade.Interfaces.ITSSet myTSSet)
+        public virtual void RequestTSData(KaiTrade.Interfaces.ITSSet[] tsSet)
         {
             //DoGetTSData(myTSSet);
         }

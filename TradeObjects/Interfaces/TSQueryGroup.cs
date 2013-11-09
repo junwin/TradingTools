@@ -24,24 +24,8 @@ namespace KaiTrade.Interfaces
     /// group will have 1 or more TS datasets. The group allows the user to access these at a higher level
     /// for example to get the data, load/store and so on
     /// </summary>
-    public interface TSQueryGroup
-    {
-        /// <summary>
-        /// Set up a TS Query group from XML
-        /// </summary>
-        /// <param name="myXML"></param>
-        void FromXml(string myXML);
-
-        
-
-        /// <summary>
-        /// Store a query group as XML
-        /// </summary>
-        /// <returns></returns>
-        string GetXML();
-
-       
-
+    public interface ITSQueryGroup
+    {        
         /// <summary>
         /// Get/Set the group name
         /// </summary>
@@ -92,7 +76,6 @@ namespace KaiTrade.Interfaces
         void UnSubscribe(KaiTrade.Interfaces.ISubscriber mySubscriber);
 
         
-
         /// <summary>
         /// get/set list of TS Sets
         /// </summary>

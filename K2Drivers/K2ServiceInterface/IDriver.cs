@@ -224,9 +224,9 @@ namespace K2ServiceInterface
         /// <summary>
         /// Request a set of time series data - if supported
         /// </summary>
-        /// <param name="myTSSet"></param>
-        void RequestTSData( KaiTrade.Interfaces.ITSSet myTSSet);
-
+        /// <param name="myTSSet">On or more TSSets</param>
+        void RequestTSData( KaiTrade.Interfaces.ITSSet[] myTSSet);
+      
         /// <summary>
         /// Will request any trade systems that the driver supports - note that this
         /// is asyncronous the driver will add any trading systems using the Facade

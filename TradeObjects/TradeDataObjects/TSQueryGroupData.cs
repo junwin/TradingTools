@@ -18,7 +18,7 @@ using System.Text;
 
 namespace K2DataObjects
 {
-    public class TSQueryGroupData : KaiTrade.Interfaces.TSQueryGroup
+    public class TSQueryGroup : KaiTrade.Interfaces.ITSQueryGroup
     {
         private string m_Mnemonic = "";
         private string m_Name="";
@@ -32,7 +32,7 @@ namespace K2DataObjects
         // Create a logger for use in this class
         public log4net.ILog m_Log;
 
-        public TSQueryGroupData()
+        public TSQueryGroup()
         {
             m_Log = log4net.LogManager.GetLogger("Kaitrade");
             m_Items = new List<KaiTrade.Interfaces.ITSSet>();
