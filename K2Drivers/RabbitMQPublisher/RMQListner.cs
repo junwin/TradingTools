@@ -47,7 +47,6 @@ namespace RabbitMQPublisher
             try
             {
 
-
                 RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).ExchangeDeclare(KaiTrade.Interfaces.MQExchanges.DEFAULT, ExchangeType.Topic);
 
                 //toolStripStatusLabel1.Text="Creating queue...";

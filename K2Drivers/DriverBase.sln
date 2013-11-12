@@ -54,6 +54,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2DepthTest", "K2Depth\K2De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQPublisher", "RabbitMQPublisher\RabbitMQPublisher.csproj", "{18B6882A-1979-4EE9-B3F3-EB97F7DB9042}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMQTest", "RabbitMQPublisher\RMQTest\RMQTest.csproj", "{B6457F4E-2167-4633-83D0-C8C45274B8F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{18B6882A-1979-4EE9-B3F3-EB97F7DB9042}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18B6882A-1979-4EE9-B3F3-EB97F7DB9042}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18B6882A-1979-4EE9-B3F3-EB97F7DB9042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6457F4E-2167-4633-83D0-C8C45274B8F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6457F4E-2167-4633-83D0-C8C45274B8F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6457F4E-2167-4633-83D0-C8C45274B8F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6457F4E-2167-4633-83D0-C8C45274B8F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
