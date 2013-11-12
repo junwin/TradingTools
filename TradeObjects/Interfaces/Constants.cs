@@ -37,12 +37,25 @@ namespace KaiTrade.Interfaces
     /// </summary>
     public struct MQType
     {
-        public const string ORDER = "order";
-        public const string TSIGNAL = "tsignal";
         public const string SUBSCRIBE = "subscribe";
         public const string UPDATE = "update";
-        public const string PRICESl1 = "prices";
-        public const string TSBAR = "tsbar";
+        public const string TRADESIGNAL = "TradeSignal";
+        public const string PRICES = "Prices";
+        public const string TRADE = "Trade";
+        public const string DEPTHSLICE = "DepthSlice";
+        public const string TSBAR = "BarData";
+        public const string ORDER = "Order";
+        public const string EXECREPORT = "Order";
+    }
+
+
+    public struct MQExchanges
+    {
+        public const string DEFAULT = "KTDefault";
+        public const string CHARTINFO = "ChartInfo";
+        public const string TRADESIGNAL = "TradeSignal";
+        public const string PRICES = "TradeSignal";
+        public const string ORDERROUTING = "TradeSignal";
     }
 
     public struct Side
