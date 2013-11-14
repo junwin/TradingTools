@@ -88,6 +88,12 @@ namespace RabbitMQPublisher
             RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, key, null);
         }
 
+        public void SubscribeTSBarsRMQ(string mnemonic)
+        {
+            string key = "TS." + mnemonic;
+            RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, key, null);
+        }
+
         private void RMQListen()
         {
             while (m_Subscribe)

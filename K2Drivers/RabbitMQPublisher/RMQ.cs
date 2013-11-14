@@ -63,5 +63,21 @@ namespace RabbitMQPublisher
             {
             }
         }
+        public void Publish(string routingKey, KaiTrade.Interfaces.ITSItem[] tsBars)
+        {
+            try
+            {
+                routingKey = "TS." + routingKey;
+                string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(tsBars);
+                byte[] messageBody = Encoding.UTF8.GetBytes(jsonData);
+                Publish(KaiTrade.Interfaces.MQExchanges.DEFAULT, KaiTrade.Interfaces.MQType.TSBAR, routingKey, messageBody); 
+
+            }
+            catch (Exception myE)
+            {
+            }
+        }
+
+        
     }
 }

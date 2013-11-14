@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Namespace="AAK2DSData" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="Identity" />
+    </Key>
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="255" ConcurrencyMode="Fixed" />
+    <Property Name="LongName" Type="String" MaxLength="255" ConcurrencyMode="Fixed" />
+    <Property Name="FirmCode" Type="String" MaxLength="255" ConcurrencyMode="Fixed" />
+    <Property Name="Identity" Type="String" Nullable="false" MaxLength="255" ConcurrencyMode="Fixed" />
+    <Property Name="VenueCode" Type="String" Nullable="false" MaxLength="255" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="AccountAllocation">
+    <Key>
+      <PropertyRef Name="Ratio" />
+      <PropertyRef Name="Amount" />
+      <PropertyRef Name="TranchSize" />
+      <PropertyRef Name="Enabled" />
+    </Key>
+    <Property Name="ID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="ParentID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="VenueCode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="AccountCode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Ratio" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="Amount" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="TranchSize" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="Enabled" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="Allocation">
+    <Key>
+      <PropertyRef Name="MinOrderSize" />
+      <PropertyRef Name="TotalQty" />
+    </Key>
+    <Property Name="ID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Name" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Mnemonic" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="MinOrderSize" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="TotalQty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+  </EntityType>
+  <EntityType Name="Fill">
+    <Key>
+      <PropertyRef Name="AvgPx" />
+      <PropertyRef Name="LeavesQty" />
+      <PropertyRef Name="CumQty" />
+      <PropertyRef Name="Ticks" />
+      <PropertyRef Name="FillQty" />
+      <PropertyRef Name="LastPx" />
+    </Key>
+    <Property Name="OrderStatus" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="AvgPx" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="LeavesQty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="CumQty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="Ticks" Type="Int64" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="ExecReport" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="FillQty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="LastPx" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="OrderID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Identity" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="Firm">
+    <Key>
+      <PropertyRef Name="FirmType" />
+      <PropertyRef Name="External" />
+    </Key>
+    <Property Name="ID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="FirmCode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="FirmName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="FirmType" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="External" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="AutoTradeProcessCount" />
+      <PropertyRef Name="AvgPx" />
+      <PropertyRef Name="CumQty" />
+      <PropertyRef Name="IsAutoTrade" />
+      <PropertyRef Name="LastPx" />
+      <PropertyRef Name="LastQty" />
+      <PropertyRef Name="LeavesQty" />
+      <PropertyRef Name="MaxFloor" />
+      <PropertyRef Name="OrderQty" />
+      <PropertyRef Name="Price" />
+      <PropertyRef Name="QuantityLimit" />
+      <PropertyRef Name="StopPx" />
+    </Key>
+    <Property Name="UserID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="CorrelationID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Account" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="AutoTradeProcessCount" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="AvgPx" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="ClOrdID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="CumQty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="ExtendedOrdType" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="HandlInst" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Identity" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="IsAutoTrade" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="LastPx" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="LastQty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="LeavesQty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="LocateReqd" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="LocationID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="MaxFloor" Type="Int64" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="Mnemonic" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="OCAGroupName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="OrdStatus" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="OrdType" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="OrderID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="OrderQty" Type="Int64" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="OrigClOrdID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="ParentIdentity" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Price" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="QuantityLimit" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="ShortSaleLocate" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Side" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="StopPx" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="StrategyName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Tag" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Text" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TimeInForce" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TradeVenue" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TransactTime" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TriggerOrderID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="QtyIncrement" />
+      <PropertyRef Name="StrikePrice" />
+      <PropertyRef Name="TickSize" />
+      <PropertyRef Name="TickValue" />
+      <PropertyRef Name="NumberDecimalPlaces" />
+      <PropertyRef Name="PriceFeedQuantityMultiplier" />
+      <PropertyRef Name="ContractSize" />
+      <PropertyRef Name="DepthLevelCount" />
+    </Key>
+    <Property Name="CFICode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Currency" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DriverID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Exchange" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="IDSource" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Identity" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="LongName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Commodity" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="MMY" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="GenericName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Mnemonic" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="QtyIncrement" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="SecurityID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="StrikePrice" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="Symbol" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Tag" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TickSize" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="TickValue" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="NumberDecimalPlaces" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="PriceFeedQuantityMultiplier" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="ContractSize" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="TradeVenue" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="BrokerService" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="ExDestination" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DepthLevelCount" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="SyntheticPriceCalcName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="Strategy">
+    <Key>
+      <PropertyRef Name="QtyLimit" />
+      <PropertyRef Name="MaxIterations" />
+      <PropertyRef Name="MaxEntries" />
+      <PropertyRef Name="MaxPrice" />
+      <PropertyRef Name="MinPrice" />
+      <PropertyRef Name="Qty" />
+      <PropertyRef Name="Price" />
+      <PropertyRef Name="FlattenOnExit" />
+      <PropertyRef Name="CancelOnExit" />
+      <PropertyRef Name="UseStrategyTimes" />
+      <PropertyRef Name="StartTime" />
+      <PropertyRef Name="EndTime" />
+      <PropertyRef Name="StopPx" />
+      <PropertyRef Name="Type" />
+      <PropertyRef Name="AutoConnectTrg" />
+      <PropertyRef Name="ConditionInterval" />
+      <PropertyRef Name="Enabled" />
+      <PropertyRef Name="State" />
+      <PropertyRef Name="Initialized" />
+    </Key>
+    <Property Name="LastOrdIdentity" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="UserID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Identity" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="ProductID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Mnemonic" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DataMnemonic" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Side" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="ShortSaleLocate" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="OrdType" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TimeInForce" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TIFDateTime" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="QtyLimit" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="MaxIterations" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="MaxEntries" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="MaxPrice" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="MinPrice" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="Qty" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="MaxFloor" Type="Double" ConcurrencyMode="None" />
+    <Property Name="Price" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="FlattenOnExit" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="CancelOnExit" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="UseStrategyTimes" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="StartTime" Type="DateTime" Nullable="false" Precision="3" ConcurrencyMode="Fixed" />
+    <Property Name="EndTime" Type="DateTime" Nullable="false" Precision="3" ConcurrencyMode="Fixed" />
+    <Property Name="UserName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="StopPx" Type="Double" Nullable="false" ConcurrencyMode="None" />
+    <Property Name="Account" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Type" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="PXAlgorithmName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TriggerName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="EntryTriggerName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="AutoConnectTrg" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="ConditionInterval" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="Enabled" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="ORAlgorithmName" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="ParameterBag" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="RunIdentifier" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="CorrelationID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TSQueryGroupPath" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Info" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="State" Type="Int32" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="Initialized" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Enabled" />
+    </Key>
+    <Property Name="Enabled" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+    <Property Name="ID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="UserPwd" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="UserID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="K2Config" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityType Name="Venue">
+    <Key>
+      <PropertyRef Name="UseSymbol" />
+    </Key>
+    <Property Name="AccountNumber" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="BeginString" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="CancelBag" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Code" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="VenueCode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TargetVenue" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DataFeedVenue" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DriverCode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="NOSBag" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="Name" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="ReplaceBag" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="SID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="TID" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DefaultCurrencyCode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DefaultSecurityExchange" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="DefaultCFICode" Type="String" MaxLength="4000" ConcurrencyMode="Fixed" />
+    <Property Name="UseSymbol" Type="Boolean" Nullable="false" ConcurrencyMode="Fixed" />
+  </EntityType>
+  <EntityContainer Name="AAK2DSDataObjectContext">
+    <EntitySet Name="Accounts" EntityType="AAK2DSData.Account" />
+    <EntitySet Name="AccountAllocations" EntityType="AAK2DSData.AccountAllocation" />
+    <EntitySet Name="Allocations" EntityType="AAK2DSData.Allocation" />
+    <EntitySet Name="Fills" EntityType="AAK2DSData.Fill" />
+    <EntitySet Name="Firms" EntityType="AAK2DSData.Firm" />
+    <EntitySet Name="Orders" EntityType="AAK2DSData.Order" />
+    <EntitySet Name="Products" EntityType="AAK2DSData.Product" />
+    <EntitySet Name="Strategies" EntityType="AAK2DSData.Strategy" />
+    <EntitySet Name="Users" EntityType="AAK2DSData.User" />
+    <EntitySet Name="Venues" EntityType="AAK2DSData.Venue" />
+  </EntityContainer>
+</Schema>

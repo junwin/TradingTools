@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping CdmEntityContainer="AAK2DSDataObjectContext" StorageEntityContainer="AAK2DSDataStore">
+    <EntitySetMapping Name="Accounts">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Account)">
+        <MappingFragment StoreEntitySet="Account">
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="LongName" ColumnName="LongName" />
+          <ScalarProperty Name="FirmCode" ColumnName="FirmCode" />
+          <ScalarProperty Name="Identity" ColumnName="Identity" />
+          <ScalarProperty Name="VenueCode" ColumnName="VenueCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AccountAllocations">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.AccountAllocation)">
+        <MappingFragment StoreEntitySet="AccountAllocation">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+          <ScalarProperty Name="VenueCode" ColumnName="VenueCode" />
+          <ScalarProperty Name="AccountCode" ColumnName="AccountCode" />
+          <ScalarProperty Name="Ratio" ColumnName="Ratio" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="TranchSize" ColumnName="TranchSize" />
+          <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Allocations">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Allocation)">
+        <MappingFragment StoreEntitySet="Allocation">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Mnemonic" ColumnName="Mnemonic" />
+          <ScalarProperty Name="MinOrderSize" ColumnName="MinOrderSize" />
+          <ScalarProperty Name="TotalQty" ColumnName="TotalQty" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Fills">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Fill)">
+        <MappingFragment StoreEntitySet="Fill">
+          <ScalarProperty Name="OrderStatus" ColumnName="OrderStatus" />
+          <ScalarProperty Name="AvgPx" ColumnName="AvgPx" />
+          <ScalarProperty Name="LeavesQty" ColumnName="LeavesQty" />
+          <ScalarProperty Name="CumQty" ColumnName="CumQty" />
+          <ScalarProperty Name="Ticks" ColumnName="Ticks" />
+          <ScalarProperty Name="ExecReport" ColumnName="ExecReport" />
+          <ScalarProperty Name="FillQty" ColumnName="FillQty" />
+          <ScalarProperty Name="LastPx" ColumnName="LastPx" />
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="Identity" ColumnName="Identity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Firms">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Firm)">
+        <MappingFragment StoreEntitySet="Firm">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="FirmCode" ColumnName="FirmCode" />
+          <ScalarProperty Name="FirmName" ColumnName="FirmName" />
+          <ScalarProperty Name="FirmType" ColumnName="FirmType" />
+          <ScalarProperty Name="External" ColumnName="External" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Orders">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Order)">
+        <MappingFragment StoreEntitySet="Order">
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="CorrelationID" ColumnName="CorrelationID" />
+          <ScalarProperty Name="Account" ColumnName="Account" />
+          <ScalarProperty Name="AutoTradeProcessCount" ColumnName="AutoTradeProcessCount" />
+          <ScalarProperty Name="AvgPx" ColumnName="AvgPx" />
+          <ScalarProperty Name="ClOrdID" ColumnName="ClOrdID" />
+          <ScalarProperty Name="CumQty" ColumnName="CumQty" />
+          <ScalarProperty Name="ExtendedOrdType" ColumnName="ExtendedOrdType" />
+          <ScalarProperty Name="HandlInst" ColumnName="HandlInst" />
+          <ScalarProperty Name="Identity" ColumnName="Identity" />
+          <ScalarProperty Name="IsAutoTrade" ColumnName="IsAutoTrade" />
+          <ScalarProperty Name="LastPx" ColumnName="LastPx" />
+          <ScalarProperty Name="LastQty" ColumnName="LastQty" />
+          <ScalarProperty Name="LeavesQty" ColumnName="LeavesQty" />
+          <ScalarProperty Name="LocateReqd" ColumnName="LocateReqd" />
+          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+          <ScalarProperty Name="MaxFloor" ColumnName="MaxFloor" />
+          <ScalarProperty Name="Mnemonic" ColumnName="Mnemonic" />
+          <ScalarProperty Name="OCAGroupName" ColumnName="OCAGroupName" />
+          <ScalarProperty Name="OrdStatus" ColumnName="OrdStatus" />
+          <ScalarProperty Name="OrdType" ColumnName="OrdType" />
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="OrderQty" ColumnName="OrderQty" />
+          <ScalarProperty Name="OrigClOrdID" ColumnName="OrigClOrdID" />
+          <ScalarProperty Name="ParentIdentity" ColumnName="ParentIdentity" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="QuantityLimit" ColumnName="QuantityLimit" />
+          <ScalarProperty Name="ShortSaleLocate" ColumnName="ShortSaleLocate" />
+          <ScalarProperty Name="Side" ColumnName="Side" />
+          <ScalarProperty Name="StopPx" ColumnName="StopPx" />
+          <ScalarProperty Name="StrategyName" ColumnName="StrategyName" />
+          <ScalarProperty Name="Tag" ColumnName="Tag" />
+          <ScalarProperty Name="Text" ColumnName="Text" />
+          <ScalarProperty Name="TimeInForce" ColumnName="TimeInForce" />
+          <ScalarProperty Name="TradeVenue" ColumnName="TradeVenue" />
+          <ScalarProperty Name="TransactTime" ColumnName="TransactTime" />
+          <ScalarProperty Name="TriggerOrderID" ColumnName="TriggerOrderID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Products">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Product)">
+        <MappingFragment StoreEntitySet="Product">
+          <ScalarProperty Name="CFICode" ColumnName="CFICode" />
+          <ScalarProperty Name="Currency" ColumnName="Currency" />
+          <ScalarProperty Name="DriverID" ColumnName="DriverID" />
+          <ScalarProperty Name="Exchange" ColumnName="Exchange" />
+          <ScalarProperty Name="IDSource" ColumnName="IDSource" />
+          <ScalarProperty Name="Identity" ColumnName="Identity" />
+          <ScalarProperty Name="LongName" ColumnName="LongName" />
+          <ScalarProperty Name="Commodity" ColumnName="Commodity" />
+          <ScalarProperty Name="MMY" ColumnName="MMY" />
+          <ScalarProperty Name="GenericName" ColumnName="GenericName" />
+          <ScalarProperty Name="Mnemonic" ColumnName="Mnemonic" />
+          <ScalarProperty Name="QtyIncrement" ColumnName="QtyIncrement" />
+          <ScalarProperty Name="SecurityID" ColumnName="SecurityID" />
+          <ScalarProperty Name="StrikePrice" ColumnName="StrikePrice" />
+          <ScalarProperty Name="Symbol" ColumnName="Symbol" />
+          <ScalarProperty Name="Tag" ColumnName="Tag" />
+          <ScalarProperty Name="TickSize" ColumnName="TickSize" />
+          <ScalarProperty Name="TickValue" ColumnName="TickValue" />
+          <ScalarProperty Name="NumberDecimalPlaces" ColumnName="NumberDecimalPlaces" />
+          <ScalarProperty Name="PriceFeedQuantityMultiplier" ColumnName="PriceFeedQuantityMultiplier" />
+          <ScalarProperty Name="ContractSize" ColumnName="ContractSize" />
+          <ScalarProperty Name="TradeVenue" ColumnName="TradeVenue" />
+          <ScalarProperty Name="BrokerService" ColumnName="BrokerService" />
+          <ScalarProperty Name="ExDestination" ColumnName="ExDestination" />
+          <ScalarProperty Name="DepthLevelCount" ColumnName="DepthLevelCount" />
+          <ScalarProperty Name="SyntheticPriceCalcName" ColumnName="SyntheticPriceCalcName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Strategies">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Strategy)">
+        <MappingFragment StoreEntitySet="Strategy">
+          <ScalarProperty Name="LastOrdIdentity" ColumnName="LastOrdIdentity" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="Identity" ColumnName="Identity" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="Mnemonic" ColumnName="Mnemonic" />
+          <ScalarProperty Name="DataMnemonic" ColumnName="DataMnemonic" />
+          <ScalarProperty Name="Side" ColumnName="Side" />
+          <ScalarProperty Name="ShortSaleLocate" ColumnName="ShortSaleLocate" />
+          <ScalarProperty Name="OrdType" ColumnName="OrdType" />
+          <ScalarProperty Name="TimeInForce" ColumnName="TimeInForce" />
+          <ScalarProperty Name="TIFDateTime" ColumnName="TIFDateTime" />
+          <ScalarProperty Name="QtyLimit" ColumnName="QtyLimit" />
+          <ScalarProperty Name="MaxIterations" ColumnName="MaxIterations" />
+          <ScalarProperty Name="MaxEntries" ColumnName="MaxEntries" />
+          <ScalarProperty Name="MaxPrice" ColumnName="MaxPrice" />
+          <ScalarProperty Name="MinPrice" ColumnName="MinPrice" />
+          <ScalarProperty Name="Qty" ColumnName="Qty" />
+          <ScalarProperty Name="MaxFloor" ColumnName="MaxFloor" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="FlattenOnExit" ColumnName="FlattenOnExit" />
+          <ScalarProperty Name="CancelOnExit" ColumnName="CancelOnExit" />
+          <ScalarProperty Name="UseStrategyTimes" ColumnName="UseStrategyTimes" />
+          <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="StopPx" ColumnName="StopPx" />
+          <ScalarProperty Name="Account" ColumnName="Account" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="PXAlgorithmName" ColumnName="PXAlgorithmName" />
+          <ScalarProperty Name="TriggerName" ColumnName="TriggerName" />
+          <ScalarProperty Name="EntryTriggerName" ColumnName="EntryTriggerName" />
+          <ScalarProperty Name="AutoConnectTrg" ColumnName="AutoConnectTrg" />
+          <ScalarProperty Name="ConditionInterval" ColumnName="ConditionInterval" />
+          <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+          <ScalarProperty Name="ORAlgorithmName" ColumnName="ORAlgorithmName" />
+          <ScalarProperty Name="ParameterBag" ColumnName="ParameterBag" />
+          <ScalarProperty Name="RunIdentifier" ColumnName="RunIdentifier" />
+          <ScalarProperty Name="CorrelationID" ColumnName="CorrelationID" />
+          <ScalarProperty Name="TSQueryGroupPath" ColumnName="TSQueryGroupPath" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+          <ScalarProperty Name="State" ColumnName="State" />
+          <ScalarProperty Name="Initialized" ColumnName="Initialized" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.User)">
+        <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="UserPwd" ColumnName="UserPwd" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="K2Config" ColumnName="K2Config" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Venues">
+      <EntityTypeMapping TypeName="IsTypeOf(AAK2DSData.Venue)">
+        <MappingFragment StoreEntitySet="Venue">
+          <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+          <ScalarProperty Name="BeginString" ColumnName="BeginString" />
+          <ScalarProperty Name="CancelBag" ColumnName="CancelBag" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="VenueCode" ColumnName="VenueCode" />
+          <ScalarProperty Name="TargetVenue" ColumnName="TargetVenue" />
+          <ScalarProperty Name="DataFeedVenue" ColumnName="DataFeedVenue" />
+          <ScalarProperty Name="DriverCode" ColumnName="DriverCode" />
+          <ScalarProperty Name="NOSBag" ColumnName="NOSBag" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ReplaceBag" ColumnName="ReplaceBag" />
+          <ScalarProperty Name="SID" ColumnName="SID" />
+          <ScalarProperty Name="TID" ColumnName="TID" />
+          <ScalarProperty Name="DefaultCurrencyCode" ColumnName="DefaultCurrencyCode" />
+          <ScalarProperty Name="DefaultSecurityExchange" ColumnName="DefaultSecurityExchange" />
+          <ScalarProperty Name="DefaultCFICode" ColumnName="DefaultCFICode" />
+          <ScalarProperty Name="UseSymbol" ColumnName="UseSymbol" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
