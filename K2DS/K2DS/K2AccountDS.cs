@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *    
- *      Copyright (c) 2009,2010,2011 KaiTrade LLC (registered in Delaware)
+ *      Copyright (c) 2009,2010,2011,2012 KaiTrade LLC (registered in Delaware)
  *                     All Rights Reserved Worldwide
  *
  * STRICTLY PROPRIETARY and CONFIDENTIAL

@@ -18,14 +18,14 @@ namespace K2DStest
 
         private void btnAddAccount_Click(object sender, EventArgs e)
         {
-            K2DS.K2DataSvc svc = new K2DS.K2DataSvc();
+            K2DS.K2AccountDS svc = new K2DS.K2AccountDS();
             K2DataObjects.Account account = new K2DataObjects.Account();
             account.FirmCode="ZZZZ";
             account.AccountCode="acme";
             account.LongName="Some very long name";
             account.VenueCode="super";
 
-            svc.AddAccount(account);
+            svc.Insert(account,true);
         }
 
         private void btnTestCreate_Click(object sender, EventArgs e)

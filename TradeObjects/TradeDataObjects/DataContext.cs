@@ -62,7 +62,7 @@ namespace K2DataObjects
     public class PriceBarDataContext : System.Data.Linq.DataContext
     {
         public System.Data.Linq.Table<PriceBar> PriceBars;
-        //public System.Data.Linq.Table<CurveValue> CurveValues;
+        public System.Data.Linq.Table<CurveValue> CurveValues;
         
 
 

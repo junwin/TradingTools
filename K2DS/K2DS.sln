@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2DS", "K2DS\K2DS.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2DStest", "K2DStest\K2DStest.csproj", "{6DDF6C2B-2BF6-4138-82B3-08F0615736AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K2DomainSvc", "..\K2DomainSvc\K2DomainSvc\K2DomainSvc.csproj", "{26B1666F-A580-4083-BE66-628430794CA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{6DDF6C2B-2BF6-4138-82B3-08F0615736AC}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6DDF6C2B-2BF6-4138-82B3-08F0615736AC}.Release|x86.ActiveCfg = Release|x86
 		{6DDF6C2B-2BF6-4138-82B3-08F0615736AC}.Release|x86.Build.0 = Release|x86
+		{26B1666F-A580-4083-BE66-628430794CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{26B1666F-A580-4083-BE66-628430794CA0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -80,7 +80,8 @@
     </Compile>
     <Compile Include="Factory.cs" />
     <Compile Include="K2AccountDS.cs" />
-    <Compile Include="K2DataSvc.cs" />
+    <Compile Include="K2BarData.cs" />
+    <Compile Include="K2CurveValues.cs" />
     <Compile Include="K2OrderDS.cs" />
     <Compile Include="K2ProductDS.cs" />
     <Compile Include="K2SignalDS.cs" />
@@ -97,6 +98,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="K2VenueDS.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\Create tables.sql" />
