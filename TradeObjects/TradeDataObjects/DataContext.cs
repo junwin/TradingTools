@@ -54,6 +54,9 @@ namespace K2DataObjects
         //public System.Data.Linq.Table<PlugInData> PlugIns;
         //public System.Data.Linq.Table<DriverData> Drivers;
         //public System.Data.Linq.Table<Extension> Extensions;
+
+        public System.Data.Linq.Table<PriceBar> PriceBars;
+        public System.Data.Linq.Table<CurveValue> CurveValues;
         
 
         public DataContext(string connection) : base(connection) { }
@@ -61,8 +64,7 @@ namespace K2DataObjects
 
     public class PriceBarDataContext : System.Data.Linq.DataContext
     {
-        public System.Data.Linq.Table<PriceBar> PriceBars;
-        public System.Data.Linq.Table<CurveValue> CurveValues;
+        
         
 
 

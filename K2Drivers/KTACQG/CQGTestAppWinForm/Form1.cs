@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace CQGTestAppWinForm
 {
@@ -18,6 +20,7 @@ namespace CQGTestAppWinForm
 
         private L1PriceSupport.MemoryPriceHandler _priceHandler = null;
 
+       
         public Form1()
         {
             InitializeComponent();
@@ -58,7 +61,36 @@ namespace CQGTestAppWinForm
             _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
             _driver.Start("");
 
-            System.Threading.Thread.Sleep(100000);
+            //System.Threading.Thread.Sleep(100000);
+        }
+
+        private void btnReqBar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //_driver = new KTACQG.KTACQG();
+                // create reader & open file
+                TextReader tr = new StreamReader(@"BarReq/SimpleReqJSON.txt");
+
+                // read a line of text
+                string jsonData = tr.ReadToEnd();
+
+                var tsItems = JsonConvert.DeserializeObject<K2DataObjects.TSDataSetData[]>(jsonData);
+                // close the stream
+                tr.Close();
+
+                var tsSet = new K2DataObjects.TSDataSetData();
+
+                foreach (var item in tsItems)
+                {
+                    _driver.RequestTSData(item);
+                }
+                
+
+            }
+            catch
+            {
+            }
         }
     }
 }

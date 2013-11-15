@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.btnCQGStartTest = new System.Windows.Forms.Button();
+            this.btnReqBar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnCQGStartTest
@@ -41,11 +42,22 @@
             this.btnCQGStartTest.UseVisualStyleBackColor = true;
             this.btnCQGStartTest.Click += new System.EventHandler(this.btnCQGStartTest_Click);
             // 
+            // btnReqBar
+            // 
+            this.btnReqBar.Location = new System.Drawing.Point(70, 121);
+            this.btnReqBar.Name = "btnReqBar";
+            this.btnReqBar.Size = new System.Drawing.Size(75, 23);
+            this.btnReqBar.TabIndex = 1;
+            this.btnReqBar.Text = "RequestBar";
+            this.btnReqBar.UseVisualStyleBackColor = true;
+            this.btnReqBar.Click += new System.EventHandler(this.btnReqBar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.btnReqBar);
             this.Controls.Add(this.btnCQGStartTest);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -56,6 +68,7 @@
         #endregion
 
         private System.Windows.Forms.Button btnCQGStartTest;
+        private System.Windows.Forms.Button btnReqBar;
     }
 }
 

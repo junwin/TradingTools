@@ -60,6 +60,11 @@ namespace K2DS
             return new K2DataObjects.DataContext(m_ConnectString);
         }
 
+        public K2DataObjects.PriceBarDataContext GetPriceBarContext()
+        {
+            return new K2DataObjects.PriceBarDataContext(m_ConnectString);
+        }
+
 
     }
 }

@@ -85,6 +85,7 @@ namespace KTACQG
                             myReq.HistoricalPeriod = eHistoricalPeriod.hpYearly;
                             break;
                         default:
+                            myReq.HistoricalPeriod = eHistoricalPeriod.hpUndefined;
                             break;
                     }
                 }

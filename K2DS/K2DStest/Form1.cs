@@ -42,6 +42,10 @@ namespace K2DStest
                 }
                 db.CreateDatabase();
 
+                //K2DataObjects.PriceBarDataContext pdc = K2DS.Factory.Instance().GetPriceBarContext();
+                //pdc.CreateDatabase();
+
+
             }
             catch (Exception myE)
             {
