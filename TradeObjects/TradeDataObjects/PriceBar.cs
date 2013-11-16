@@ -29,8 +29,6 @@ namespace K2DataObjects
     public  class PriceBar
     {
 
-        
-
         private string _Mnemonic;
 
         private string _RequestID;
