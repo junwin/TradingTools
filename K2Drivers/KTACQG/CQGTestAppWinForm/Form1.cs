@@ -20,10 +20,14 @@ namespace CQGTestAppWinForm
 
         private L1PriceSupport.MemoryPriceHandler _priceHandler = null;
 
+        private RabbitMQPublisher.RMQ rmqPub;
+
        
         public Form1()
         {
             InitializeComponent();
+            rmqPub = new RabbitMQPublisher.RMQ();
+
         }
 
         private void btnCQGStartTest_Click(object sender, EventArgs e)
@@ -64,6 +68,14 @@ namespace CQGTestAppWinForm
             //System.Threading.Thread.Sleep(100000);
         }
 
+        public  void OnBarUpdate(string requestID, KaiTrade.Interfaces.ITSItem[] bars)
+        {
+            if (bars.Length > 0)
+            {
+                rmqPub.Publish(KaiTrade.Interfaces.MQRoutingKeyPrefix.TSBAR+bars[0].Mnemonic, bars);
+            }
+        }
+
         private void btnReqBar_Click(object sender, EventArgs e)
         {
             try
@@ -78,6 +90,8 @@ namespace CQGTestAppWinForm
                 var tsItems = JsonConvert.DeserializeObject<K2DataObjects.TSDataSetData[]>(jsonData);
                 // close the stream
                 tr.Close();
+
+                _driver.BarUpdate += OnBarUpdate;
 
                 var tsSet = new K2DataObjects.TSDataSetData();
 

@@ -1,0 +1,3 @@
+﻿{"User":"","AccountCode":"DEMO7081 (16777853)","LongName":"DEMO7081","FirmCode":"TS7081","ID":"eb8b4c7e-6b91-424e-955a-a7bc42838d20","VenueCode":"KTACQG","AccountType":0,"InitialMargin":0.0,"MaintMargin":0.0,"NetLiquidity":0.0,"AvailableFunds":0.0,"ExcessFunds":0.0}
+
+

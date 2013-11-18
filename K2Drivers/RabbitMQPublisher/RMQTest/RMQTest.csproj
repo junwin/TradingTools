@@ -85,6 +85,9 @@
     <Compile Include="RMMQPricePublishTest.cs" />
     <Compile Include="RMQTSDataPublishTest.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="testdata\accountJSON.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

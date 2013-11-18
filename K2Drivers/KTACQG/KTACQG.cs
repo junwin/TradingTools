@@ -349,11 +349,17 @@ namespace KTACQG
         }
 
 
-        
 
+        public override void RequestTSData(KaiTrade.Interfaces.ITSSet[] tsSets)
+        {
+            foreach (var item in tsSets)
+            {
+                RequestTSData(item);
+            }
+        }
        
 
-        public override void RequestTSData(KaiTrade.Interfaces.ITSSet myTSSet)
+        public void RequestTSData(KaiTrade.Interfaces.ITSSet myTSSet)
         {
             lock (m_GetTSReqToken)
             {

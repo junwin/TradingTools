@@ -58,6 +58,17 @@ namespace KaiTrade.Interfaces
         public const string ORDERROUTING = "TradeSignal";
     }
 
+    public struct MQRoutingKeyPrefix
+    {
+        public const string TRADESIGNAL = "TR.";
+        public const string PRICES = "PX.";
+        public const string TRADE = "TRD.";
+        public const string DEPTHSLICE = "DS.";
+        public const string TSBAR = "TS.";
+        public const string ORDER = "OR.";
+        public const string EXECREPORT = "ER.";
+    }
+
     public struct Side
     {
         public const string BUY = "BUY";

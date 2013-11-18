@@ -54,7 +54,7 @@ namespace RabbitMQPublisher
         {
             try
             {
-                routingKey = "PX." + routingKey;
+                routingKey = KaiTrade.Interfaces.MQRoutingKeyPrefix.PRICES + routingKey;
                 string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(px);
                 byte[] messageBody = Encoding.UTF8.GetBytes(jsonData);
                 Publish(KaiTrade.Interfaces.MQExchanges.DEFAULT, KaiTrade.Interfaces.MQType.PRICES, routingKey, messageBody); 
