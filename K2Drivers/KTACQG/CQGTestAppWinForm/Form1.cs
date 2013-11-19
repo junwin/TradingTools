@@ -63,9 +63,19 @@ namespace CQGTestAppWinForm
             // Delete or modify it
             _driver = new KTACQG.KTACQG();
             _driver.Message += new KaiTrade.Interfaces.Message(OnMessage);
+            _driver.Facade.GetProductManager().OnProductUpdate += ProductUpdate;
             _driver.Start("");
 
             //System.Threading.Thread.Sleep(100000);
+        }
+
+        public void ProductUpdate(string updateType, KaiTrade.Interfaces.IProduct product)
+        {
+            if (product != null)
+            {
+                string jsonData = JsonConvert.SerializeObject(product);
+                //rmqPub.
+            }
         }
 
         public  void OnBarUpdate(string requestID, KaiTrade.Interfaces.ITSItem[] bars)

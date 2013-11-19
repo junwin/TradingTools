@@ -67,10 +67,40 @@ namespace RabbitMQPublisher
         {
             try
             {
-                routingKey = "TS." + routingKey;
+                routingKey = KaiTrade.Interfaces.MQRoutingKeyPrefix.TSBAR + routingKey;
                 string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(tsBars);
                 byte[] messageBody = Encoding.UTF8.GetBytes(jsonData);
                 Publish(KaiTrade.Interfaces.MQExchanges.DEFAULT, KaiTrade.Interfaces.MQType.TSBAR, routingKey, messageBody); 
+
+            }
+            catch (Exception myE)
+            {
+            }
+        }
+
+        public void Publish(string routingKey, KaiTrade.Interfaces.IProduct product)
+        {
+            try
+            {
+                routingKey =  KaiTrade.Interfaces.MQRoutingKeyPrefix.PRODUCT + routingKey;
+                string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(product);
+                byte[] messageBody = Encoding.UTF8.GetBytes(jsonData);
+                Publish(KaiTrade.Interfaces.MQExchanges.DEFAULT, KaiTrade.Interfaces.MQType.PRODUCT, routingKey, messageBody);
+
+            }
+            catch (Exception myE)
+            {
+            }
+        }
+
+        public void Publish(string routingKey, KaiTrade.Interfaces.IAccount account)
+        {
+            try
+            {
+                routingKey = KaiTrade.Interfaces.MQRoutingKeyPrefix.ACCOUNT + routingKey;
+                string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(account);
+                byte[] messageBody = Encoding.UTF8.GetBytes(jsonData);
+                Publish(KaiTrade.Interfaces.MQExchanges.DEFAULT, KaiTrade.Interfaces.MQType.ACCOUNT, routingKey, messageBody);
 
             }
             catch (Exception myE)

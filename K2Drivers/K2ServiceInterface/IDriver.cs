@@ -52,6 +52,13 @@ namespace K2ServiceInterface
     /// </summary>
     /// <param name="bar"></param>
     public delegate void BarUpdate(string requestID, KaiTrade.Interfaces.ITSItem[] bars);
+
+    /// <summary>
+    /// Used to get product updates
+    /// </summary>
+    /// <param name="updateType"></param>
+    /// <param name="product"></param>
+    public delegate void ProductUpdate(string updateType, KaiTrade.Interfaces.IProduct product);
  
 
     /// <summary>

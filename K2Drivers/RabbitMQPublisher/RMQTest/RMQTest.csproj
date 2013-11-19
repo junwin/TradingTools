@@ -84,9 +84,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RMMQPricePublishTest.cs" />
     <Compile Include="RMQTSDataPublishTest.cs" />
+    <Compile Include="StandingDataTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="testdata\accountJSON.txt" />
+    <Content Include="testdata\accountJSON.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="testdata\productJSON.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

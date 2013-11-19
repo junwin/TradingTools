@@ -46,6 +46,8 @@ namespace KaiTrade.Interfaces
         public const string TSBAR = "BarData";
         public const string ORDER = "Order";
         public const string EXECREPORT = "Order";
+        public const string ACCOUNT = "Account";
+        public const string PRODUCT = "Product";
     }
 
 
@@ -54,8 +56,10 @@ namespace KaiTrade.Interfaces
         public const string DEFAULT = "KTDefault";
         public const string CHARTINFO = "ChartInfo";
         public const string TRADESIGNAL = "TradeSignal";
-        public const string PRICES = "TradeSignal";
-        public const string ORDERROUTING = "TradeSignal";
+        public const string PRICES = "PRICES";
+        public const string ORDERROUTING = "OrderRouting";
+        public const string ACCOUNT = "Account";
+        public const string PRODUCT = "Product";
     }
 
     public struct MQRoutingKeyPrefix
@@ -67,6 +71,8 @@ namespace KaiTrade.Interfaces
         public const string TSBAR = "TS.";
         public const string ORDER = "OR.";
         public const string EXECREPORT = "ER.";
+        public const string ACCOUNT = "ACCT.";
+        public const string PRODUCT = "PRD.";
     }
 
     public struct Side

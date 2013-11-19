@@ -84,13 +84,25 @@ namespace RabbitMQPublisher
         }
         public void SubscribePricesRMQ(string mnemonic)
         {
-            string key = "PX." + mnemonic;
+            string key = KaiTrade.Interfaces.MQRoutingKeyPrefix.PRICES + mnemonic;
             RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, key, null);
         }
 
         public void SubscribeTSBarsRMQ(string mnemonic)
         {
-            string key = "TS." + mnemonic;
+            string key = KaiTrade.Interfaces.MQRoutingKeyPrefix.TSBAR + mnemonic;
+            RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, key, null);
+        }
+
+        public void SubscribeAccountsRMQ(string routingKay)
+        {
+            string key = KaiTrade.Interfaces.MQRoutingKeyPrefix.ACCOUNT + routingKay;
+            RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, key, null);
+        }
+
+        public void SubscribeProductsRMQ(string routingKay)
+        {
+            string key = KaiTrade.Interfaces.MQRoutingKeyPrefix.PRODUCT + routingKay;
             RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, key, null);
         }
 

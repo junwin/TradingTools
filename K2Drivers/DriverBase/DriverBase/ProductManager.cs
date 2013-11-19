@@ -53,8 +53,24 @@ namespace DriverBase
 
         private string m_Name = "";
 
+        private ProductUpdate onProductUpdate = null;
+
+        public ProductUpdate OnProductUpdate
+        {
+            get { return onProductUpdate; }
+            set { onProductUpdate = value; }
+        }
+
         private void DoUpdate(string s1, string s2)
         {
+            KaiTrade.Interfaces.IProduct product = this.GetProduct(s2);
+            if (product != null)
+            {
+                if (OnProductUpdate != null)
+                {
+                    OnProductUpdate(s1, product);
+                }
+            }
         }
 
         protected ProductManager()

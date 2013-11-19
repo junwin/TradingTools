@@ -3,6 +3,7 @@ namespace K2ServiceInterface
 {
     public interface IProductManager
     {
+        ProductUpdate  OnProductUpdate{get; set;}
         string AddProduct(KaiTrade.Interfaces.IProduct product);
         string AddProductX(KaiTrade.Interfaces.IProduct productData);
         KaiTrade.Interfaces.IProduct CloneProduct(string ID);
