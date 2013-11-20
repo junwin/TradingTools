@@ -34,7 +34,7 @@ namespace K2DS
             try
             {
 
-                using (K2DataObjects.PriceBarDataContext db = new K2DataObjects.PriceBarDataContext(_connectString))
+                using (K2DataObjects.DataContext db = new K2DataObjects.DataContext(_connectString))
                 {
                     var dbCurveVals =
                       (from cv in db.CurveValues
@@ -90,7 +90,7 @@ namespace K2DS
                     }
                 }
                 List<decimal[]> cvResult = new List<decimal[]>();
-                using (K2DataObjects.PriceBarDataContext db = new K2DataObjects.PriceBarDataContext(_connectString))
+                using (K2DataObjects.DataContext db = new K2DataObjects.DataContext(_connectString))
                 {
                     var curveValueSet =
                        (from cv in db.CurveValues
@@ -152,7 +152,7 @@ namespace K2DS
             try
             {
 
-                using (K2DataObjects.PriceBarDataContext db = new K2DataObjects.PriceBarDataContext(_connectString))
+                using (K2DataObjects.DataContext db = new K2DataObjects.DataContext(_connectString))
                 {
                     var curveValueSet =
                        (from cv in db.CurveValues

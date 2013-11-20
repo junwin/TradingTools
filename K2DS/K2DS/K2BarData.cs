@@ -34,7 +34,7 @@ namespace K2DS
             try
             {
                 
-                using (K2DataObjects.PriceBarDataContext db = new K2DataObjects.PriceBarDataContext(_connectString))
+                using (K2DataObjects.DataContext db = new K2DataObjects.DataContext(_connectString))
                 {
                     var dbPriceBars =
                       (from bar in db.PriceBars
@@ -71,7 +71,7 @@ namespace K2DS
         }
         public K2DataObjects.PriceBar[] GetPriceBars(string mnemonic, long startTick, int count)
         {
-            using (K2DataObjects.PriceBarDataContext db = new K2DataObjects.PriceBarDataContext(_connectString))
+            using (K2DataObjects.DataContext db = new K2DataObjects.DataContext(_connectString))
             {
                 var barSet =
                    (from bar in db.PriceBars
@@ -85,7 +85,7 @@ namespace K2DS
 
         public K2DataObjects.PriceBar GetLastPriceBars(string mnemonic, long startTick)
         {
-            using (K2DataObjects.PriceBarDataContext db = new K2DataObjects.PriceBarDataContext(_connectString))
+            using (K2DataObjects.DataContext db = new K2DataObjects.DataContext(_connectString))
             {
                 var barSet =
                    (from bar in db.PriceBars

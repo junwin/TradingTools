@@ -54,5 +54,33 @@ namespace RMQTest
 
             System.Threading.Thread.Sleep(10000);
         }
+        [TestMethod]
+        public void PublishBarNoListenTest()
+        {
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
+            Assert.IsNotNull(channel);
+
+
+            RabbitMQPublisher.RMQ rmqHelper = new RabbitMQPublisher.RMQ();
+
+            KaiTrade.Interfaces.ITSItem[] tsi = new K2DataObjects.TSItem[2];
+
+            tsi[0] = new K2DataObjects.TSItem();
+            tsi[0].Mnemonic = "IBM";
+            tsi[0].Open = 10;
+            tsi[0].Close = 12;
+            tsi[0].High = 13;
+            tsi[0].Low = 9;
+            tsi[1] = new K2DataObjects.TSItem();
+            tsi[1].Mnemonic = "IBM";
+            tsi[1].Open = 12;
+            tsi[1].Close = 14;
+            tsi[1].High = 15;
+            tsi[1].Low = 12;
+
+            rmqHelper.Publish("IBM", tsi);
+
+        }
     }
 }
