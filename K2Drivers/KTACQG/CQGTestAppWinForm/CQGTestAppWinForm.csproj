@@ -68,6 +68,11 @@
       <HintPath>..\..\..\build32\bin\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="RabbitMQ.Client, Version=3.2.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\build32\bin\RabbitMQ.Client.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="RabbitMQPublisher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\build\bin\RabbitMQPublisher.dll</HintPath>

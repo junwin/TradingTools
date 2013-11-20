@@ -21,6 +21,7 @@ namespace CQGTestAppWinForm
         private L1PriceSupport.MemoryPriceHandler _priceHandler = null;
 
         private RabbitMQPublisher.RMQ rmqPub;
+        private RabbitMQPublisher.RMQ rmqHelper;
 
        
         public Form1()
@@ -58,6 +59,11 @@ namespace CQGTestAppWinForm
         public void StartCQG()
         {
             // reset the message cllection
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
+
+            rmqHelper = new RabbitMQPublisher.RMQ();
+
             _messages = null;
             // EAS will just go into the simulators order book - you can
             // Delete or modify it
@@ -74,7 +80,7 @@ namespace CQGTestAppWinForm
             if (product != null)
             {
                 string jsonData = JsonConvert.SerializeObject(product);
-                //rmqPub.
+                rmqHelper.Publish("", product);
             }
         }
 
@@ -82,7 +88,8 @@ namespace CQGTestAppWinForm
         {
             if (bars.Length > 0)
             {
-                rmqPub.Publish(KaiTrade.Interfaces.MQRoutingKeyPrefix.TSBAR+bars[0].Mnemonic, bars);
+                //rmqHelper.Publish("IBM", tsi);
+                rmqPub.Publish("", bars);
             }
         }
 
