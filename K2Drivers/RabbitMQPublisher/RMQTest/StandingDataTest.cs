@@ -18,7 +18,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishProductTest()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 
@@ -43,7 +43,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishProductTestNoListen()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 
@@ -64,7 +64,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishAccountTest()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 
@@ -92,7 +92,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishAccountTestNoListen()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 

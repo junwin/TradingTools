@@ -57,7 +57,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishBarNoListenTest()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 
