@@ -1,4 +1,4 @@
-﻿[{"Name":"TSBar:KTACQG:F.US.EPM09:CQG","RequestID":"","StrategyName":"","Alias":"","Status":0,"PublishUpdates":false,"Identity":"19ce8682-1c3a-420a-960d-201c7443ccf4","TSType":0,"TSSessionFlags":1,"TSSessionFilter":0,
+﻿[{"Name":"TSBar:KTACQG:F.US.EPM09:CQG","RequestID":"","StrategyName":"","Alias":"","Status":0,"PublishUpdates":false,"Identity":"19ce8682-1c3a-420a-960d-201c7443ccf4","TSType":0,"TSSessionFlags":1,"TSSessionFilter":31,
 "ExternalID":"","Tag":null,"Period":8,"RangeType":0,"DateTimeEnd":"2009-03-29T18:04:43","DateTimeStart":"2009-03-29T18:04:43","IntStart":0,"IntEnd":-10,"IncludeEnd":true,"IntraDayInterval":1,"VolumeLevel":10,"IncludeFlatTicks":false,
 "VolumeType":0,"ConditionName":"","StudyName":"",
 "Mnemonic":"F.US.EPZ13","CalculationMode":3,"CalculationPeriod":5,"UpdatesEnabled":true,"Text":"","Changed":false,"TimeStamp":"2013-11-09T16:22:24.5891425-06:00","ReportAll":true,"UseCurrentBar":true}]
