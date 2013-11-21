@@ -7,11 +7,17 @@ namespace RMQTest
     public class RMMQPricePublishTest
     {
         RabbitMQPublisher.RMQListner listner = null;
+         private string hostName;
+
+         public RMMQPricePublishTest()
+         {
+             hostName = RMQTest.Properties.Settings.Default.RMQBrokerAddress;
+         }
 
         [TestMethod]
         public void PublishPriceTest()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = hostName;
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 
@@ -33,7 +39,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishPriceListenTest()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = hostName;
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 

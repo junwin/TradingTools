@@ -33,8 +33,12 @@ namespace RabbitMQPublisher
         // Create a logger for use in this class
         private log4net.ILog m_Log;
 
-        private string UID = "zzzz";
+        private string UID = "";
 
+        public RMQListner()
+        {
+            UID = Environment.MachineName;
+        }
 
         public RMQMessage OnRMQMessage
         {
@@ -51,7 +55,7 @@ namespace RabbitMQPublisher
 
                 //toolStripStatusLabel1.Text="Creating queue...";
                 RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueDeclare(RMQInfoQueueName, false, false, true, null);
-                RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, "TS.S.DELL", null);
+                RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT).QueueBind(RMQInfoQueueName, KaiTrade.Interfaces.MQExchanges.DEFAULT, KaiTrade.Interfaces.MQRoutingKeyPrefix.INFO, null);
 
 
                 m_Consumer = new QueueingBasicConsumer(RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT));

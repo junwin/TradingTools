@@ -15,6 +15,15 @@ namespace RMQTest
     {
         RabbitMQPublisher.RMQListner listner = null;
 
+        private string hostName;
+
+        public RMQTSDataPublishTest()
+         {
+             hostName = RMQTest.Properties.Settings.Default.RMQBrokerAddress;
+         }
+
+
+
         public void OnRMQMessage(string propType, string messageData)
         {
         }
@@ -22,7 +31,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishBarListenTest()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = hostName;
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 
@@ -57,7 +66,7 @@ namespace RMQTest
         [TestMethod]
         public void PublishBarNoListenTest()
         {
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = hostName;
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
             Assert.IsNotNull(channel);
 

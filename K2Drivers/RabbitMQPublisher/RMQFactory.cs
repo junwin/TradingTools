@@ -32,7 +32,7 @@ namespace RabbitMQPublisher
         /// </summary>
         private IModel m_InfoChannel = null;
 
-        private string hostName = "10.1.11.19";
+        private string hostName = "127.0.0.1";
 
         // Create a logger for use in this class
         private log4net.ILog m_Log;

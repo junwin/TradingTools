@@ -33,7 +33,15 @@ namespace CQGTestAppWinForm
 
         private void btnCQGStartTest_Click(object sender, EventArgs e)
         {
-            StartCQG();
+            try
+            {
+                StartCQG();
+                btnCQGStartTest.Enabled = false;
+                btnStopCQG.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
 
@@ -73,6 +81,22 @@ namespace CQGTestAppWinForm
             _driver.Start("");
 
             //System.Threading.Thread.Sleep(100000);
+        }
+
+        public void StopCQG()
+        {
+
+            var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
+            channel.Close();
+
+
+            if (_driver != null)
+            {
+                _driver.Message = null;
+                _driver.Stop();
+                System.Threading.Thread.Sleep(1000);
+                _driver = null;
+            }                
         }
 
         public void ProductUpdate(string updateType, KaiTrade.Interfaces.IProduct product)
@@ -120,6 +144,19 @@ namespace CQGTestAppWinForm
 
             }
             catch
+            {
+            }
+        }
+
+        private void btnStopCQG_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                StopCQG();
+                btnCQGStartTest.Enabled = true;
+                btnStopCQG.Enabled = false;
+            }
+            catch (Exception ex)
             {
             }
         }

@@ -73,6 +73,7 @@ namespace KaiTrade.Interfaces
         public const string EXECREPORT = "ER.";
         public const string ACCOUNT = "ACCT.";
         public const string PRODUCT = "PRD.";
+        public const string INFO = "INFO.";
     }
 
     public struct Side
