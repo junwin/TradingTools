@@ -24,7 +24,7 @@ namespace RMQDBUpdater
         public void Start()
         {
             listner = new RabbitMQPublisher.RMQListner();
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.37";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
             listner.SubscribeInfo();
             listner.OnRMQMessage += OnRMQMessage;
             listner.SubscribeProductsRMQ("");
