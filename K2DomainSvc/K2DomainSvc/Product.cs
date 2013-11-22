@@ -20,6 +20,11 @@ namespace K2DomainSvc
 {
     public class Product
     {
+        /// <summary>
+        /// Inserts a product and creates exchange and venue if needed
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="deleteExisting"></param>
         public void Insert(K2DataObjects.Product p, bool deleteExisting)
         {
             try

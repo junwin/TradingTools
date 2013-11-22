@@ -27,6 +27,14 @@ namespace K2DS
             m_Log = log4net.LogManager.GetLogger("K2DS");
         }
 
+        public K2DataObjects.Account GetAccount(string accountCode)
+        {
+            using (K2DataObjects.DataContext db = Factory.Instance().GetDSContext())
+            {
+                return db.Accounts.Where(a => a.AccountCode == accountCode).Single();
+            }
+
+        }
         
         public void Insert(K2DataObjects.Account account, bool allowUpdate)
         {

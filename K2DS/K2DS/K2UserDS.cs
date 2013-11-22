@@ -53,6 +53,8 @@ namespace K2DS
             }
             catch (Exception myE)
             {
+                m_Log.Error("Add User", myE);
+                throw myE;
             }
         }
 
@@ -77,6 +79,8 @@ namespace K2DS
             }
             catch (Exception myE)
             {
+                m_Log.Error("Update User", myE);
+                throw myE;
             }
         }
 
@@ -127,6 +131,8 @@ namespace K2DS
             }
             catch (Exception myE)
             {
+                m_Log.Error("Get Users", myE);
+                throw myE;
             }
             return null;
         }
@@ -160,6 +166,8 @@ namespace K2DS
             }
             catch (Exception myE)
             {
+                m_Log.Error("Delete User", myE);
+                throw myE;
             }
         }
 

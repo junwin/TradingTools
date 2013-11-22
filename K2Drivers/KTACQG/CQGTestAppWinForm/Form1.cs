@@ -67,7 +67,7 @@ namespace CQGTestAppWinForm
         public void StartCQG()
         {
             // reset the message cllection
-            RabbitMQPublisher.RMQFactory.Instance().HostName = "10.1.11.14";
+            RabbitMQPublisher.RMQFactory.Instance().HostName = CQGTestAppWinForm.Properties.Settings.Default.RMQHostName;
             var channel = RabbitMQPublisher.RMQFactory.Instance().GetRMQChannel(KaiTrade.Interfaces.MQExchanges.DEFAULT);
 
             rmqHelper = new RabbitMQPublisher.RMQ();

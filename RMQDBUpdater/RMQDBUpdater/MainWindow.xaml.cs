@@ -20,16 +20,21 @@ namespace RMQDBUpdater
     /// </summary>
     public partial class MainWindow : Window
     {
-        RMQMessageListener listener = new RMQMessageListener();
+        RMQMessageListener listener = null;
         public MainWindow()
         {
             InitializeComponent();
+            listener = new RMQMessageListener();
+            string rmqHostName = RMQDBUpdater.Properties.Settings.Default.RMQHostName;
+            RabbitMQPublisher.RMQFactory.Instance().HostName = rmqHostName;
         }
 
         private void StartBtn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                string rmqBrokerAddr = RMQDBUpdater.Properties.Settings.Default.RMQHostName;
+                RabbitMQPublisher.RMQFactory.Instance().HostName = rmqBrokerAddr;
                 listener.Start();
             }
             catch
